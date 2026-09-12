@@ -27,6 +27,8 @@
             name="guestName"
             placeholder="Enter name"
             required
+            oninvalid="this.setCustomValidity('Please enter your name.')"
+            oninput="this.setCustomValidity('')"
           />
         </div>
 
@@ -40,6 +42,8 @@
             name="guestSurname"
             placeholder="Enter surname"
             required
+            oninvalid="this.setCustomValidity('Please enter your surname.')"
+            oninput="this.setCustomValidity('')"
           />
         </div>
 
@@ -52,7 +56,14 @@
             id="guestId"
             name="guestId"
             placeholder="Enter ID number"
+            inputmode="numeric"
+            pattern="[0-9]{13}"
+            maxlength="13"
             required
+            oninvalid="
+              this.setCustomValidity('Please enter a valid 13-digit ID number.')
+            "
+            oninput="this.setCustomValidity('')"
           />
         </div>
       </div>

@@ -14,9 +14,9 @@ body {
 }
 
 .registration-logo {
-  max-width: 12%;
   margin-top: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  max-width: 110px;
 }
 
 .login-container {
@@ -24,22 +24,41 @@ body {
   margin: 20px auto 0;
 }
 
-.registration-form {
-  width: 450px;
+.login-form {
   margin: 5px auto;
+  width: 90%;
   border: 2px solid #00889c;
   border-radius: 10px;
-  padding: 5px 25px 10px;
+  background-color: #f9efff;
+  max-width: 450px;
+}
+
+.registration-form {
+  margin: 5px auto;
+  max-width: 650px;
+  padding: 12px 25px;
+  width: 90%;
+  border: 2px solid #00889c;
+  border-radius: 10px;
   background-color: #f9efff;
 }
 
+.registration-form .mb-3 {
+  margin-bottom: 8px !important;
+}
+
+/* Slightly smaller input height */
+.registration-form .form-control {
+  padding: 7px 12px;
+}
+
+/* Reduce space around labels */
+.registration-form .form-label {
+  margin-bottom: 4px;
+}
 .login-form {
-  width: 450px;
   margin: 10px auto;
-  border: 2px solid #00889c;
-  border-radius: 10px;
-  padding: 5px 25px 15px 25px;
-  background-color: #f9efff;
+  padding: 5px 25px 15px;
 }
 
 .login-input {
@@ -62,7 +81,8 @@ body {
 }
 
 .register-btn {
-  margin: 1px auto 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 .login-btn {
   margin: 20px auto 10px;
@@ -78,4 +98,32 @@ body {
 
 .form-check {
   font-weight: 500;
+}
+
+.forgot-password {
+  width: 300px;
+  margin: 5px auto 0;
+  text-align: right;
+}
+
+.forgot-password a {
+  color: #00889c;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.forgot-password a:hover {
+  color: #6c3d91;
+  text-decoration: underline;
+}
+
+/* Radio button colour */
+.form-check-input:checked {
+  background-color: #00889c;
+  border-color: #00889c;
+}
+
+.form-check-input:focus {
+  border-color: #00889c;
+  box-shadow: 0 0 0 0.25rem rgba(0, 136, 156, 0.25);
 }

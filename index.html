@@ -18,14 +18,22 @@
       <!--Login Form-->
       <div class="login-container">
         <div class="mb-3">
-          <label for="studentNumber" class="form-label"> Student Number </label>
+          <label for="studentNumber" class="form-label">
+            Student/Stuff Number
+          </label>
           <input
             type="text"
             class="form-control login-input"
             id="studentNumber"
             name="studentNumber"
-            placeholder="Enter student number"
+            placeholder="Enter student or staff number"
             required
+            oninvalid="
+              this.setCustomValidity(
+                'Please enter your student or staff number.',
+              )
+            "
+            oninput="this.setCustomValidity('')"
           />
         </div>
 
@@ -38,7 +46,15 @@
             name="password"
             placeholder="Enter password"
             required
+            oninvalid="
+              this.setCustomValidity('Please enter the correct password.')
+            "
+            oninput="this.setCustomValidity('')"
           />
+          <!-- Forgot Password Link -->
+          <div class="forgot-password">
+            <a href="Forgot password.html">Forgot Password?</a>
+          </div>
         </div>
       </div>
 
