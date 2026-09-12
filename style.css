@@ -52,16 +52,6 @@ body {
   border: 2px solid #00889c;
   height: 40px;
 }
-.register-btn {
-  margin: 1px auto 10px;
-}
-.login-btn {
-  margin: 20px auto 10px;
-}
-
-.guest-login-btn {
-  width: 10px;
-}
 
 .btn {
   background-color: #6c3d91;
@@ -71,6 +61,17 @@ body {
   width: 150px;
 }
 
+.register-btn {
+  margin: 1px auto 10px;
+}
+.login-btn {
+  margin: 20px auto 10px;
+}
+
+.guest-login-btn {
+  margin: 20px auto 10px;
+  width: 180px;
+}
 .form-label {
   font-weight: bold;
 }
