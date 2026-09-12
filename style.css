@@ -59,6 +59,10 @@ body {
   margin: 20px auto 10px;
 }
 
+.guest-login-btn {
+  width: 10px;
+}
+
 .btn {
   background-color: #6c3d91;
   color: white;
