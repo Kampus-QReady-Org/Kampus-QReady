@@ -2,6 +2,9 @@ body {
   background-color: #6c3d91;
 }
 
+/* =========================
+   GENERAL PAGE STYLING
+   ========================= */
 .logo {
   max-width: 13%;
   height: auto;
@@ -9,16 +12,39 @@ body {
   margin: 0 auto 30px;
 }
 
+.btn {
+  background-color: #6c3d91;
+  color: white;
+  font-weight: bold;
+  border: 2px solid #00889c;
+  width: 150px;
+}
+
+.form-label {
+  font-weight: bold;
+}
+
+.form-check {
+  font-weight: 500;
+}
+
+/* Radio button colour */
+.form-check-input:checked {
+  background-color: #00889c;
+  border-color: #00889c;
+}
+
+.form-check-input:focus {
+  border-color: #00889c;
+  box-shadow: 0 0 0 0.25rem rgba(0, 136, 156, 0.25);
+}
+
+/* =========================
+   LOGIN PAGE STYLING
+   ========================= */
 .login-logo {
   margin-top: 50px; /* moves the image 50 pixels down */
 }
-
-.registration-logo {
-  margin-top: 5px;
-  margin-bottom: 8px;
-  max-width: 110px;
-}
-
 .login-container {
   width: 500px;
   margin: 20px auto 0;
@@ -31,6 +57,46 @@ body {
   border-radius: 10px;
   background-color: #f9efff;
   max-width: 450px;
+}
+
+.login-form {
+  margin: 10px auto;
+  padding: 5px 25px 15px;
+}
+
+.login-input {
+  width: 400px;
+  border: 2px solid #00889c;
+}
+
+.login-btn {
+  margin: 20px auto 10px;
+}
+
+.forgot-password {
+  width: 300px;
+  margin: 5px auto 0;
+  text-align: right;
+}
+
+.forgot-password a {
+  color: #00889c;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.forgot-password a:hover {
+  color: #6c3d91;
+  text-decoration: underline;
+}
+
+/* =========================
+   REGISTRATION PAGE STYLING
+   ========================= */
+.registration-logo {
+  margin-top: 5px;
+  margin-bottom: 8px;
+  max-width: 110px;
 }
 
 .registration-form {
@@ -56,15 +122,6 @@ body {
 .registration-form .form-label {
   margin-bottom: 4px;
 }
-.login-form {
-  margin: 10px auto;
-  padding: 5px 25px 15px;
-}
-
-.login-input {
-  width: 400px;
-  border: 2px solid #00889c;
-}
 
 .registration-input {
   width: 400px;
@@ -72,58 +129,15 @@ body {
   height: 40px;
 }
 
-.btn {
-  background-color: #6c3d91;
-  color: white;
-  font-weight: bold;
-  border: 2px solid #00889c;
-  width: 150px;
-}
-
 .register-btn {
   margin-top: 5px;
   margin-bottom: 5px;
 }
-.login-btn {
-  margin: 20px auto 10px;
-}
 
+/* =========================
+   GUEST PAGE STYLING
+   ========================= */
 .guest-login-btn {
   margin: 20px auto 10px;
   width: 180px;
-}
-.form-label {
-  font-weight: bold;
-}
-
-.form-check {
-  font-weight: 500;
-}
-
-.forgot-password {
-  width: 300px;
-  margin: 5px auto 0;
-  text-align: right;
-}
-
-.forgot-password a {
-  color: #00889c;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.forgot-password a:hover {
-  color: #6c3d91;
-  text-decoration: underline;
-}
-
-/* Radio button colour */
-.form-check-input:checked {
-  background-color: #00889c;
-  border-color: #00889c;
-}
-
-.form-check-input:focus {
-  border-color: #00889c;
-  box-shadow: 0 0 0 0.25rem rgba(0, 136, 156, 0.25);
 }
