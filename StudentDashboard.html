@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Dashboard Kampus Q-Ready</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="dashboard-page">
+    <!-- Page Heading -->
+    <section class="dashboard-heading">
+      <h1>Kampus Q-Ready</h1>
+      <p>Your Health. Our Priority.</p>
+    </section>
+
+    <!-- Main Dashboard Container -->
+    <div class="dashboard-shell">
+      <!-- =========================
+           DESKTOP SIDEBAR
+           ========================= -->
+      <aside class="dashboard-sidebar">
+        <div class="sidebar-brand">
+          <img
+            src="media/images/nwu log2.png"
+            alt="NWU Logo"
+            class="sidebar-logo"
+          />
+
+          <span>Kampus Q-Ready</span>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a href="#" class="active">
+            <i class="bi bi-house-door"></i>
+            <span>Dashboard</span>
+          </a>
+
+          <a href="#">
+            <i class="bi bi-calendar-event"></i>
+            <span>Appointments</span>
+          </a>
+
+          <a href="#">
+            <i class="bi bi-people"></i>
+            <span>Queue</span>
+          </a>
+
+          <a href="#">
+            <i class="bi bi-person"></i>
+            <span>Profile</span>
+          </a>
+
+          <a href="#">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout</span>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- =========================
+           MAIN CONTENT AREA
+           ========================= -->
+      <div class="dashboard-main">
+        <!-- Mobile Header -->
+        <header class="mobile-header">
+          <div class="mobile-brand">
+            <img src="media/nwu-logo.png" alt="NWU Logo" />
+            <span>Kampus Q-Ready</span>
+          </div>
+
+          <button class="menu-button" id="menuButton">
+            <i class="bi bi-list"></i>
+          </button>
+        </header>
+
+        <!-- Desktop Top Bar -->
+        <header class="dashboard-topbar">
+          <div class="topbar-spacer"></div>
+
+          <div class="topbar-right">
+            <button class="notification-button">
+              <i class="bi bi-bell"></i>
+            </button>
+
+            <div class="profile-info">
+              <i class="bi bi-person-circle"></i>
+
+              <div>
+                <strong>Patient</strong>
+                <span>Account</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-content">
+          <!-- Welcome -->
+          <section class="welcome-section">
+            <h2>Welcome back</h2>
+            <p>Manage your clinic visits and appointments with ease.</p>
+          </section>
+
+          <!-- Action Cards -->
+          <section class="dashboard-actions">
+            <div class="action-card queue-action">
+              <div class="action-icon">
+                <i class="bi bi-people"></i>
+              </div>
+
+              <div class="action-text">
+                <h3>Join Walk-In Queue</h3>
+                <p>Get a digital ticket and join the current clinic queue.</p>
+              </div>
+
+              <button class="action-arrow">
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+
+            <div class="action-card">
+              <div class="action-icon">
+                <i class="bi bi-calendar-plus"></i>
+              </div>
+
+              <div class="action-text">
+                <h3>Book Appointment</h3>
+                <p>Choose an available date and time for your visit.</p>
+              </div>
+
+              <button class="action-arrow">
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+          <!-- Queue + Appointment + Calendar -->
+          <section class="dashboard-grid">
+            <!-- Current Queue -->
+
+            <article class="dashboard-card queue-card">
+              <div class="card-heading">
+                <h3>
+                  <i class="bi bi-people"></i>
+                  Current Queue
+                </h3>
+              </div>
+
+              <div class="queue-information">
+                <div class="queue-item">
+                  <span>Ticket</span>
+                  <strong>Q023</strong>
+                </div>
+
+                <div class="queue-item">
+                  <span>Position</span>
+                  <strong>5</strong>
+                </div>
+
+                <div class="queue-item">
+                  <span>People Ahead</span>
+                  <strong>4</strong>
+                </div>
+
+                <div class="queue-item">
+                  <span>Status</span>
+                  <strong class="queue-status">Waiting</strong>
+                </div>
+              </div>
+            </article>
+
+            <!-- Upcoming Appointment -->
+            <article class="dashboard-card appointment-card">
+              <div class="card-heading">
+                <h3>
+                  <i class="bi bi-calendar-check"></i>
+                  Upcoming Appointment
+                </h3>
+              </div>
+
+              <div class="appointment-content">
+                <div class="appointment-date">
+                  <strong>15</strong>
+                  <span>SEP</span>
+                  <small>2026</small>
+                </div>
+
+                <div class="appointment-details">
+                  <h4>General Consultation</h4>
+
+                  <p>
+                    <i class="bi bi-clock"></i>
+                    10:30
+                  </p>
+
+                  <p>
+                    <i class="bi bi-geo-alt"></i>
+                    NWU Healthcare Centre
+                  </p>
+                </div>
+              </div>
+
+              <div class="appointment-buttons">
+                <button class="primary-button">View Details</button>
+
+                <button class="secondary-button">Cancel</button>
+              </div>
+            </article>
+
+            <!-- Calendar -->
+            <article class="dashboard-card calendar-card">
+              <div class="calendar-header">
+                <h3>September 2026</h3>
+
+                <div>
+                  <button>
+                    <i class="bi bi-chevron-left"></i>
+                  </button>
+
+                  <button>
+                    <i class="bi bi-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="calendar-weekdays">
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+                <span>Sun</span>
+              </div>
+
+              <div class="calendar-days">
+                <span></span>
+
+                <span>1</span>
+                <span>2</span>
+                <span>3</span>
+                <span>4</span>
+                <span>5</span>
+                <span>6</span>
+
+                <span>7</span>
+                <span>8</span>
+                <span>9</span>
+                <span>10</span>
+                <span>11</span>
+                <span>12</span>
+                <span>13</span>
+
+                <span>14</span>
+                <span class="appointment-day">15</span>
+                <span>16</span>
+                <span>17</span>
+                <span>18</span>
+                <span>19</span>
+                <span>20</span>
+
+                <span>21</span>
+                <span>22</span>
+                <span>23</span>
+                <span>24</span>
+                <span>25</span>
+                <span>26</span>
+                <span>27</span>
+
+                <span>28</span>
+                <span>29</span>
+                <span>30</span>
+              </div>
+            </article>
+          </section>
+
+          <!-- Bottom Message -->
+          <section class="dashboard-message">
+            <i class="bi bi-heart-pulse"></i>
+
+            <div>
+              <strong>Small steps today, a healthier you tomorrow.</strong>
+              <p>Kampus Q-Ready</p>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <script src="response.js"></script>
+  </body>
+</html>

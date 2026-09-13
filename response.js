@@ -51,3 +51,11 @@ if (password && confirmPassword) {
     }
   });
 }
+
+// Sidebar toggle for mobile view
+const menuButton = document.getElementById("menuButton");
+const sidebar = document.querySelector(".dashboard-sidebar");
+
+menuButton.addEventListener("click", function () {
+  sidebar.classList.toggle("mobile-open");
+});
