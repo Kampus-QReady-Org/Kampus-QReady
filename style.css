@@ -28,10 +28,51 @@ body {
   font-weight: 500;
 }
 
-/* Radio button colour */
-.form-check-input:checked {
-  background-color: #00889c;
-  border-color: #00889c;
+/* Login page account options */
+.account-option {
+  margin: 12px 0;
+  text-align: center;
+  color: #4b3a55;
+  font-size: 14px;
+}
+
+/* Register and Guest links */
+.account-option a {
+  color: #6c3d91;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.account-option a:hover {
+  text-decoration: underline;
+}
+
+/* OR divider */
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.or-divider hr {
+  flex: 1;
+  border: 0;
+  height: 1px;
+  margin: 0;
+
+  background-image: linear-gradient(
+    to right,
+    rgba(0, 136, 156, 0),
+    rgba(0, 136, 156, 0.75),
+    rgba(0, 136, 156, 0)
+  );
+}
+
+.or-divider span {
+  color: #00889c;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .form-check-input:focus {
@@ -70,7 +111,7 @@ body {
 }
 
 .login-btn {
-  margin: 20px auto 10px;
+  margin: 5px auto 10px;
 }
 
 .forgot-password {
