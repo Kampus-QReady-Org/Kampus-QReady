@@ -1,39 +1,40 @@
-// Radio button navigation
-document.getElementById("radioLogin").addEventListener("change", function () {
-  if (this.checked) {
-    window.location.href = "index.html";
-  }
-});
-
-document
-  .getElementById("radioRegister")
-  .addEventListener("change", function () {
-    if (this.checked) {
-      window.location.href = "Registration page.html";
-    }
-  });
-
-document.getElementById("radioGuest").addEventListener("change", function () {
-  if (this.checked) {
-    window.location.href = "Guest login page.html";
-  }
-});
-
-// User type selection validation
+// User type selection
 const studentType = document.getElementById("studentType");
 const staffType = document.getElementById("staffType");
 const userNumberLabel = document.getElementById("userNumberLabel");
 const userNumber = document.getElementById("userNumber");
 
 if (studentType && staffType && userNumberLabel && userNumber) {
+  // Student selected
   studentType.addEventListener("change", function () {
     userNumberLabel.textContent = "Student Number";
     userNumber.placeholder = "Enter student number";
+    userNumber.setCustomValidity("");
   });
 
+  // NWU Staff selected
   staffType.addEventListener("change", function () {
     userNumberLabel.textContent = "Staff Number";
     userNumber.placeholder = "Enter staff number";
+    userNumber.setCustomValidity("");
+  });
+
+  // Validation message
+  userNumber.addEventListener("invalid", function () {
+    if (studentType.checked) {
+      userNumber.setCustomValidity("Please enter your student number.");
+    } else if (staffType.checked) {
+      userNumber.setCustomValidity("Please enter your staff number.");
+    } else {
+      userNumber.setCustomValidity(
+        "Please enter your student or staff number.",
+      );
+    }
+  });
+
+  // Clear error when user starts typing
+  userNumber.addEventListener("input", function () {
+    userNumber.setCustomValidity("");
   });
 }
 
@@ -51,7 +52,6 @@ if (password && confirmPassword) {
     }
   });
 }
-
 // Sidebar toggle for mobile view
 const menuButton = document.getElementById("menuButton");
 const sidebar = document.querySelector(".dashboard-sidebar");
