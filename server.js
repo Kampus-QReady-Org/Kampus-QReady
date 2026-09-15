@@ -7,7 +7,7 @@ app.use(express.json());
 
 // Test route
 app.get("/", (req, res) => {
-    res.send("Kampus-QReady API is running");
+    res.send("Kampus-QReady API is running successfully");
 });
 
 // Render will provide PORT when hosted.
