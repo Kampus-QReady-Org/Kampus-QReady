@@ -1,0 +1,24 @@
+{
+  "name": "kampus-qready",
+  "version": "1.0.0",
+  "description": "A virtual queue and booking system for the NWU Healthcare Centre. Digitises walk-in queue tickets so students can track their position remotely instead of waiting in person.",
+  "main": "index.js",
+  "scripts": {
+  "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kampus-QReady-Org/Kampus-QReady.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Kampus-QReady-Org/Kampus-QReady/issues"
+  },
+  "homepage": "https://github.com/Kampus-QReady-Org/Kampus-QReady#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
