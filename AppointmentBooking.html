@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Book Appointment - Kampus Q-Ready</title>
+
+  <!-- Bootstrap -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+    crossorigin="anonymous"
+  />
+
+  <!-- Bootstrap Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+  />
+
+  <!-- YOUR EXISTING CSS -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+
+<body class="dashboard-page">
+
+  <!-- Main Dashboard Container -->
+  <div class="dashboard-shell">
+
+
+    <!-- =========================
+         DESKTOP SIDEBAR
+         ========================= -->
+
+    <aside class="dashboard-sidebar">
+
+      <div class="sidebar-brand">
+
+        <img
+          src="media/images/nwu log2.png"
+          alt="NWU Logo"
+          class="sidebar-logo"
+        />
+
+        <div class="sidebar-system-branding">
+
+          <h2>
+            Kampus <span>Q-Ready</span>
+          </h2>
+
+          <div class="sidebar-brand-line"></div>
+
+          <p>Your Health. Our Priority.</p>
+
+        </div>
+
+      </div>
+
+
+      <!-- Sidebar Navigation -->
+
+      <nav class="sidebar-nav">
+
+        <a href="StudentDashboard.html">
+
+          <i class="bi bi-house-door"></i>
+
+          <span>Dashboard</span>
+
+        </a>
+
+
+        <!-- CURRENT PAGE -->
+
+        <a href="AppointmentBooking.html" class="active">
+
+          <i class="bi bi-calendar-event"></i>
+
+          <span>Appointments</span>
+
+        </a>
+
+
+        <a href="JoinQueue.html">
+
+          <i class="bi bi-people"></i>
+
+          <span>Queue</span>
+
+        </a>
+
+
+        <a href="Profile.html">
+
+          <i class="bi bi-person"></i>
+
+          <span>Profile</span>
+
+        </a>
+
+
+        <a href="index.html">
+
+          <i class="bi bi-box-arrow-right"></i>
+
+          <span>Logout</span>
+
+        </a>
+
+
+        <!-- Healthcare Centre contact information -->
+
+        <div class="sidebar-contact">
+
+          <p>Healthcare Centre</p>
+
+          <a href="#" class="contact-link">
+
+            <i class="bi bi-geo-alt"></i>
+
+            <span>Contact & Location</span>
+
+          </a>
+
+        </div>
+
+      </nav>
+
+    </aside>
+
+
+
+    <!-- =========================
+         MAIN CONTENT AREA
+         ========================= -->
+
+    <div class="dashboard-main">
+
+
+      <!-- Mobile Header -->
+
+      <header class="mobile-header">
+
+        <div class="mobile-brand">
+
+          <img
+            src="media/nwu-logo.png"
+            alt="NWU Logo"
+          />
+
+          <span>Kampus Q-Ready</span>
+
+        </div>
+
+
+        <button
+          class="menu-button"
+          id="menuButton"
+        >
+
+          <i class="bi bi-list"></i>
+
+        </button>
+
+      </header>
+
+
+
+      <!-- Desktop Top Bar -->
+
+      <header class="dashboard-topbar">
+
+        <div class="topbar-spacer"></div>
+
+
+        <!-- Logged-in patient information -->
+
+        <div class="topbar-right">
+
+          <div class="profile-info">
+
+            <i class="bi bi-person-circle"></i>
+
+            <div>
+
+              <strong id="userName">
+                Patient's Name
+              </strong>
+
+              <span id="userRole">
+                Patient
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </header>
+
+
+
+      <!-- =========================
+           APPOINTMENT BOOKING CONTENT
+           ========================= -->
+
+      <main class="dashboard-content">
+
+
+        <!-- Page Heading -->
+
+        <section class="welcome-section">
+
+          <h2>
+            Book an Appointment
+          </h2>
+
+          <p>
+            Select a date and choose an available appointment time.
+          </p>
+
+        </section>
+
+
+
+        <!-- =========================
+             DATE SELECTION
+             ========================= -->
+
+        <section class="dashboard-card booking-date">
+
+          <div class="card-heading">
+
+            <h3>
+
+              <i class="bi bi-calendar-event"></i>
+
+              Select Date
+
+            </h3>
+
+          </div>
+
+
+          <label for="appointmentDate">
+            Appointment Date
+          </label>
+
+
+          <input
+            type="date"
+            id="appointmentDate"
+          />
+
+        </section>
+
+
+
+        <!-- =========================
+             AVAILABLE TIMES
+             ========================= -->
+
+        <section class="dashboard-card">
+
+
+          <div class="card-heading">
+
+            <h3>
+
+              <i class="bi bi-clock"></i>
+
+              Available Appointment Times
+
+            </h3>
+
+          </div>
+
+
+          <p>
+            Click an available time slot to select it.
+          </p>
+
+
+
+          <!-- Legend -->
+
+          <div class="availability-legend">
+
+
+            <span class="legend-item">
+
+              <span class="legend-box available"></span>
+
+              Available
+
+            </span>
+
+
+            <span class="legend-item">
+
+              <span class="legend-box selected"></span>
+
+              Selected
+
+            </span>
+
+
+            <span class="legend-item">
+
+              <span class="legend-box unavailable"></span>
+
+              Unavailable
+
+            </span>
+
+
+          </div>
+
+
+
+          <!-- =========================
+               TIME SLOTS
+               ========================= -->
+
+          <div
+            class="row g-3"
+            id="timeSlots"
+          >
+
+
+            <!-- 08:00 -->
+
+            <div class="col-6 col-md-3">
+
+              <button
+                type="button"
+                class="time-slot available-slot"
+                data-time="08:00"
+              >
+
+                08:00
+
+              </button>
+
+            </div>
+
+
+
+            <!-- 08:30 -->
+
+            <div class="col-6 col-md-3">
+
+              <button
+                type="button"
+                class="time-slot unavailable-slot"
+                disabled
+              >
+
+                08:30
+
+              </button>
+
+            </div>
+
+
+
+            <!-- 09:00 -->
+
+            <div class="col-6 col-md-3">
+
+              <button
+                type="button"
+                class="time-slot available-slot"
+                data-time="09:00"
+              >
+
+                09:00
+
+              </button>
+
+            </div>
+
+
+
+            <!-- 09:30 -->
+
+            <div class="col-6 col-md-3">
+
+              <button
+                type="button"
+                class="time-slot available-slot"
+                data-time="09:30"
+              >
+
+                09:30
+
+              </button>
+
+            </div>
+
+
+
+            <!-- 10:00 -->
+
+            <div class="col-6 col-md-3">
+
+              <button
+                type="button"
+                class="time-slot unavailable-slot"
+                disabled
+              >
+
+                10:00
+
+              </button>
+
+            </div>
+
+
+
+            <!-- 10:30 -->
+
+            <div class="col-6 col-md-3">
+
+              <button
+                type="button"
+                class="time-slot available-slot"
+                data-time="10:30"
+              >
+
+                10:30
+
+              </button>
+
+            </div>
+
+
+
+            <!-- 11:00 -->
+
+            <div class="col-6 col-md-3">
+
+              <button
+                type="button"
+                class="time-slot available-slot"
+                data-time="11:00"
+              >
+
+                11:00
+
+              </button>
+
+            </div>
+
+
+
+            <!-- 11:30 -->
+
+            <div class="col-6 col-md-3">
+
+              <button
+                type="button"
+                class="time-slot unavailable-slot"
+                disabled
+              >
+
+                11:30
+
+              </button>
+
+            </div>
+
+
+
+            <!-- 12:00 -->
+
+            <div class="col-6 col-md-3">
+
+              <button
+                type="button"
+                class="time-slot available-slot"
+                data-time="12:00"
+              >
+
+                12:00
+
+              </button>
+
+            </div>
+
+
+
+            <!-- 12:30 -->
+
+            <div class="col-6 col-md-3">
+
+              <button
+                type="button"
+                class="time-slot available-slot"
+                data-time="12:30"
+              >
+
+                12:30
+
+              </button>
+
+            </div>
+
+
+
+            <!-- 13:00 -->
+
+            <div class="col-6 col-md-3">
+
+              <button
+                type="button"
+                class="time-slot unavailable-slot"
+                disabled
+              >
+
+                13:00
+
+              </button>
+
+            </div>
+
+
+
+            <!-- 13:30 -->
+
+            <div class="col-6 col-md-3">
+
+              <button
+                type="button"
+                class="time-slot available-slot"
+                data-time="13:30"
+              >
+
+                13:30
+
+              </button>
+
+            </div>
+
+
+          </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             SELECTED APPOINTMENT
+             ========================= -->
+
+        <section class="dashboard-card selected-appointment">
+
+
+          <div class="card-heading">
+
+            <h3>
+
+              <i class="bi bi-calendar-check"></i>
+
+              Selected Appointment
+
+            </h3>
+
+          </div>
+
+
+          <p>
+
+            <strong>Date:</strong>
+
+            <span id="selectedDate">
+              Not selected
+            </span>
+
+          </p>
+
+
+          <p>
+
+            <strong>Time:</strong>
+
+            <span id="selectedTime">
+              Not selected
+            </span>
+
+          </p>
+
+
+          <button
+            type="button"
+            id="confirmButton"
+            class="confirm-appointment-button"
+            disabled
+          >
+
+            Confirm Appointment
+
+          </button>
+
+
+        </section>
+
+
+
+        <!-- Bottom Message -->
+
+        <section class="dashboard-message">
+
+          <i class="bi bi-heart-pulse"></i>
+
+          <div>
+
+            <strong>
+              Small steps today, a healthier you tomorrow.
+            </strong>
+
+            <p>
+              Kampus Q-Ready
+            </p>
+
+          </div>
+
+        </section>
+
+
+      </main>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- Appointment Booking JavaScript -->
+
+  <script src="AppointmentBooking.js"></script>
+
+</body>
+
+</html>

@@ -119,28 +119,3 @@ if (menuButton && dashboardSidebar) {
   });
 }
 
-// -----------------------------------------------------
-// BACKEND INTEGRATION NOTE
-// -----------------------------------------------------
-
-// Do NOT hard-code a patient's actual name here.
-//
-// After backend authentication is connected,
-// the backend should provide the logged-in user's
-// information.
-//
-// Example of the expected information:
-//
-// {
-//   name: "Patient's name",
-//   role: "Patient"
-// }
-//
-// The frontend can then call:
-//
-// displayPatientInfo(user);
-//
-// This will automatically update:
-// 1. The account name
-// 2. The account role
-// 3. The "Welcome back, Name" message
