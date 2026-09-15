@@ -52,13 +52,6 @@ if (password && confirmPassword) {
     }
   });
 }
-// Sidebar toggle for mobile view
-const menuButton = document.getElementById("menuButton");
-const sidebar = document.querySelector(".dashboard-sidebar");
-
-menuButton.addEventListener("click", function () {
-  sidebar.classList.toggle("mobile-open");
-});
 
 // =====================================================
 // PATIENT DASHBOARD
@@ -143,3 +136,139 @@ if (menuButton && dashboardSidebar) {
 // 1. The account name
 // 2. The account role
 // 3. The "Welcome back, Name" message
+
+// =====================================================
+// DASHBOARD CALENDAR
+// =====================================================
+
+// Get the calendar elements from the HTML
+const calendarMonth = document.getElementById("calendarMonth");
+const calendarDays = document.getElementById("calendarDays");
+const previousMonth = document.getElementById("previousMonth");
+const nextMonth = document.getElementById("nextMonth");
+
+// Only run the calendar code if the calendar exists on the page
+if (calendarMonth && calendarDays && previousMonth && nextMonth) {
+  // Start the calendar on the current month and year
+  const today = new Date();
+
+  let displayedMonth = today.getMonth();
+  let displayedYear = today.getFullYear();
+
+  // -----------------------------------------------------
+  // TEMPORARY APPOINTMENT DATA
+  // -----------------------------------------------------
+
+  // Appointment dates will eventually come from the backend.
+  // This temporary date can be used later when testing.
+  const appointmentDates = ["2026-09-15"];
+
+  // -----------------------------------------------------
+  // DISPLAY CALENDAR
+  // -----------------------------------------------------
+
+  function displayCalendar() {
+    // Remove dates from the previously displayed month
+    calendarDays.innerHTML = "";
+
+    // Display the month name and year in the calendar heading
+    const monthName = new Date(displayedYear, displayedMonth).toLocaleString(
+      "en",
+      {
+        month: "long",
+      },
+    );
+
+    calendarMonth.textContent = `${monthName} ${displayedYear}`;
+
+    // Find the first day of the selected month
+    const firstDay = new Date(displayedYear, displayedMonth, 1);
+
+    // Find the number of days in the selected month
+    const daysInMonth = new Date(
+      displayedYear,
+      displayedMonth + 1,
+      0,
+    ).getDate();
+
+    // JavaScript uses:
+    // Sunday = 0
+    // Monday = 1
+    // ...
+    // Saturday = 6
+    //
+    // Our calendar starts on Monday,
+    // so this converts the value to:
+    // Monday = 0
+    // ...
+    // Sunday = 6
+    const startingDay = (firstDay.getDay() + 6) % 7;
+
+    // Add empty spaces before the first day of the month
+    for (let i = 0; i < startingDay; i++) {
+      const emptySpace = document.createElement("span");
+
+      calendarDays.appendChild(emptySpace);
+    }
+
+    // Create each date in the selected month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateElement = document.createElement("span");
+
+      dateElement.textContent = day;
+
+      // Create the date in YYYY-MM-DD format
+      // so that it can be compared with appointment dates.
+      const monthNumber = String(displayedMonth + 1).padStart(2, "0");
+
+      const dayNumber = String(day).padStart(2, "0");
+
+      const dateString = `${displayedYear}-${monthNumber}-${dayNumber}`;
+
+      // Highlight the date if the patient has an appointment
+      if (appointmentDates.includes(dateString)) {
+        dateElement.classList.add("appointment-day");
+      }
+
+      // Add the date to the calendar
+      calendarDays.appendChild(dateElement);
+    }
+  }
+
+  // -----------------------------------------------------
+  // PREVIOUS MONTH BUTTON
+  // -----------------------------------------------------
+
+  previousMonth.addEventListener("click", function () {
+    displayedMonth--;
+
+    // If we move backwards from January,
+    // move to December of the previous year.
+    if (displayedMonth < 0) {
+      displayedMonth = 11;
+      displayedYear--;
+    }
+
+    displayCalendar();
+  });
+
+  // -----------------------------------------------------
+  // NEXT MONTH BUTTON
+  // -----------------------------------------------------
+
+  nextMonth.addEventListener("click", function () {
+    displayedMonth++;
+
+    // If we move forward from December,
+    // move to January of the next year.
+    if (displayedMonth > 11) {
+      displayedMonth = 0;
+      displayedYear++;
+    }
+
+    displayCalendar();
+  });
+
+  // Display the calendar when the dashboard first loads
+  displayCalendar();
+}

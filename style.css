@@ -484,6 +484,37 @@ body {
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8);
 }
 
+.sidebar-contact {
+  margin-top: auto;
+  padding: 18px 15px;
+  border-top: 1px solid rgba(108, 61, 145, 0.15);
+}
+
+.sidebar-contact p {
+  margin: 0 0 8px;
+  color: #796588;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #5a287d;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.contact-link i {
+  color: #00889c;
+}
+
+.contact-link:hover {
+  color: #00889c;
+}
 /* =========================
    MAIN AREA
    ========================= */
@@ -528,7 +559,6 @@ body {
 .profile-info {
   display: flex;
   align-items: center;
-
   gap: 10px;
 }
 
@@ -770,7 +800,7 @@ body {
 }
 
 /* =========================
-   APPOINTMENT
+   UPCOMING APPOINTMENT
    ========================= */
 
 .appointment-content {
@@ -852,7 +882,13 @@ body {
 
   background: transparent;
 }
+.appointment-card {
+  border-top: 4px solid #7b3fa1;
+}
 
+.appointment-card .card-heading i {
+  color: #7b3fa1;
+}
 /* =========================
    CALENDAR
    ========================= */
@@ -1114,6 +1150,22 @@ body {
   select {
     font-size: 16px;
   }
+}
+
+/* =========================
+   CALENDAR
+   ========================= */
+
+/* Light purple accent for the calendar card */
+.calendar-card {
+  border-top: 4px solid #9b6bc4;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
 }
 
 /* =========================
