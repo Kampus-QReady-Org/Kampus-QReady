@@ -17,12 +17,6 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body class="dashboard-page">
-    <!-- Page Heading -->
-    <section class="dashboard-heading">
-      <h1>Kampus Q-Ready</h1>
-      <p>Your Health. Our Priority.</p>
-    </section>
-
     <!-- Main Dashboard Container -->
     <div class="dashboard-shell">
       <!-- =========================
@@ -36,7 +30,11 @@
             class="sidebar-logo"
           />
 
-          <span>Kampus Q-Ready</span>
+          <div class="sidebar-system-branding">
+            <h2>Kampus <span>Q-Ready</span></h2>
+            <div class="sidebar-brand-line"></div>
+            <p>Your Health. Our Priority.</p>
+          </div>
         </div>
 
         <nav class="sidebar-nav">
@@ -50,7 +48,7 @@
             <span>Appointments</span>
           </a>
 
-          <a href="#">
+          <a href="JoinQueue.html">
             <i class="bi bi-people"></i>
             <span>Queue</span>
           </a>
@@ -60,7 +58,7 @@
             <span>Profile</span>
           </a>
 
-          <a href="#">
+          <a href="index.html">
             <i class="bi bi-box-arrow-right"></i>
             <span>Logout</span>
           </a>
@@ -72,6 +70,7 @@
            ========================= -->
       <div class="dashboard-main">
         <!-- Mobile Header -->
+
         <header class="mobile-header">
           <div class="mobile-brand">
             <img src="media/nwu-logo.png" alt="NWU Logo" />
@@ -87,17 +86,15 @@
         <header class="dashboard-topbar">
           <div class="topbar-spacer"></div>
 
+          <!-- Logged-in patient information.
+     Name and role will be populated dynamically from the authenticated user's data by the backend. -->
           <div class="topbar-right">
-            <button class="notification-button">
-              <i class="bi bi-bell"></i>
-            </button>
-
             <div class="profile-info">
               <i class="bi bi-person-circle"></i>
 
               <div>
-                <strong>Patient</strong>
-                <span>Account</span>
+                <strong id="userName">Patient's Name</strong>
+                <span id="userRole">Patient</span>
               </div>
             </div>
           </div>
@@ -107,41 +104,8 @@
         <main class="dashboard-content">
           <!-- Welcome -->
           <section class="welcome-section">
-            <h2>Welcome back</h2>
+            <h2>Welcome back <span id="welcomeName">Patient's Name</span></h2>
             <p>Manage your clinic visits and appointments with ease.</p>
-          </section>
-
-          <!-- Action Cards -->
-          <section class="dashboard-actions">
-            <div class="action-card queue-action">
-              <div class="action-icon">
-                <i class="bi bi-people"></i>
-              </div>
-
-              <div class="action-text">
-                <h3>Join Walk-In Queue</h3>
-                <p>Get a digital ticket and join the current clinic queue.</p>
-              </div>
-
-              <button class="action-arrow">
-                <i class="bi bi-arrow-right"></i>
-              </button>
-            </div>
-
-            <div class="action-card">
-              <div class="action-icon">
-                <i class="bi bi-calendar-plus"></i>
-              </div>
-
-              <div class="action-text">
-                <h3>Book Appointment</h3>
-                <p>Choose an available date and time for your visit.</p>
-              </div>
-
-              <button class="action-arrow">
-                <i class="bi bi-arrow-right"></i>
-              </button>
-            </div>
           </section>
 
           <!-- Queue + Appointment + Calendar -->

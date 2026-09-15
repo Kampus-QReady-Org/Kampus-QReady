@@ -23,38 +23,28 @@
   </head>
 
   <body class="dashboard-page queue-page">
-
-    <!-- Page Heading -->
-    <section class="dashboard-heading">
-      <h1>Kampus Q-Ready</h1>
-      <p>Your Health. Our Priority.</p>
-    </section>
-
-
     <!-- Main Dashboard Container -->
     <div class="dashboard-shell">
-
       <!-- =========================
            SIDEBAR
            ========================= -->
 
       <aside class="dashboard-sidebar">
-
         <div class="sidebar-brand">
-
           <img
             src="media/images/nwu log2.png"
             alt="NWU Logo"
             class="sidebar-logo"
           />
 
-          <span>Kampus Q-Ready</span>
-
+          <div class="sidebar-system-branding">
+            <h2>Kampus <span>Q-Ready</span></h2>
+            <div class="sidebar-brand-line"></div>
+            <p>Your Health. Our Priority.</p>
+          </div>
         </div>
 
-
         <nav class="sidebar-nav">
-
           <a href="StudentDashboard.html">
             <i class="bi bi-house-door"></i>
             <span>Dashboard</span>
@@ -75,391 +65,233 @@
             <span>Profile</span>
           </a>
 
-          <a href="#">
+          <a href="index.html">
             <i class="bi bi-box-arrow-right"></i>
             <span>Logout</span>
           </a>
-
         </nav>
-
       </aside>
-
 
       <!-- =========================
            MAIN CONTENT
            ========================= -->
 
       <div class="dashboard-main">
-
-
         <!-- Mobile Header -->
 
         <header class="mobile-header">
-
           <div class="mobile-brand">
-
-            <img
-              src="media/nwu-logo.png"
-              alt="NWU Logo"
-            />
+            <img src="media/nwu-logo.png" alt="NWU Logo" />
 
             <span>Kampus Q-Ready</span>
-
           </div>
 
-
           <button class="menu-button" id="menuButton">
-
             <i class="bi bi-list"></i>
-
           </button>
-
         </header>
-
-
 
         <!-- Desktop Top Bar -->
 
         <header class="dashboard-topbar">
-
           <div class="topbar-spacer"></div>
 
-
+          <!-- Logged-in patient information.
+     Name and role will be populated dynamically from the authenticated user's data by the backend. -->
           <div class="topbar-right">
-
-            <button class="notification-button">
-
-              <i class="bi bi-bell"></i>
-
-            </button>
-
-
             <div class="profile-info">
-
               <i class="bi bi-person-circle"></i>
 
               <div>
-
-                <strong>Patient</strong>
-
-                <span>Account</span>
-
+                <strong id="userName">Patient's Name</strong>
+                <span id="userRole">Patient</span>
               </div>
-
             </div>
-
           </div>
-
         </header>
-
-
 
         <!-- =========================
              QUEUE CONTENT
              ========================= -->
 
         <main class="dashboard-content">
-
-
           <!-- Page Introduction -->
 
           <section class="welcome-section">
-
             <h2>Join Live Queue</h2>
 
-            <p>
-              View the current clinic queue and join the queue remotely.
-            </p>
-
+            <p>View the current clinic queue and join the queue remotely.</p>
           </section>
-
-
 
           <!-- Queue Status -->
 
           <section class="queue-status-card">
-
             <div>
-
               <span class="queue-live-dot"></span>
 
               <strong>Queue is currently open</strong>
-
             </div>
 
             <span class="queue-location">
               <i class="bi bi-geo-alt"></i>
               NWU Healthcare Centre
             </span>
-
           </section>
-
-
 
           <!-- Queue Statistics -->
 
           <section class="queue-stats">
-
-
             <div class="queue-stat-card">
-
               <div class="queue-stat-icon">
-
                 <i class="bi bi-person-check"></i>
-
               </div>
 
               <div>
-
                 <span>Currently Serving</span>
 
                 <strong>Q018</strong>
-
               </div>
-
             </div>
 
-
-
             <div class="queue-stat-card">
-
               <div class="queue-stat-icon">
-
                 <i class="bi bi-people"></i>
-
               </div>
 
               <div>
-
                 <span>People Waiting</span>
 
                 <strong id="peopleWaiting">7</strong>
-
               </div>
-
             </div>
 
-
-
             <div class="queue-stat-card">
-
               <div class="queue-stat-icon">
-
                 <i class="bi bi-clock"></i>
-
               </div>
 
               <div>
-
                 <span>Estimated Wait</span>
 
                 <strong id="estimatedWait">35 min</strong>
-
               </div>
-
             </div>
-
-
           </section>
-
-
 
           <!-- =========================
                VISUAL QUEUE
                ========================= -->
 
           <section class="dashboard-card live-queue-card">
-
-
             <div class="card-heading">
-
               <div>
-
                 <h3>
-
                   <i class="bi bi-people"></i>
 
                   Current Queue
-
                 </h3>
 
                 <p class="queue-subtitle">
                   People currently waiting to be served
                 </p>
-
               </div>
 
-              <span class="status-badge">
-                Live
-              </span>
-
+              <span class="status-badge"> Live </span>
             </div>
-
-
 
             <!-- Visual Queue -->
 
             <div class="visual-queue">
-
-
               <!-- Currently Serving -->
 
               <div class="queue-position serving-position">
-
                 <div class="queue-circle">
-
                   <i class="bi bi-person"></i>
-
                 </div>
 
                 <strong>Q018</strong>
 
                 <span>Serving</span>
-
               </div>
-
-
 
               <div class="queue-arrow">
                 <i class="bi bi-chevron-right"></i>
               </div>
-
-
 
               <!-- Waiting -->
 
               <div class="queue-position">
-
-                <div class="queue-circle">
-                  Q019
-                </div>
+                <div class="queue-circle">Q019</div>
 
                 <span>Waiting</span>
-
               </div>
-
-
 
               <div class="queue-arrow">
                 <i class="bi bi-chevron-right"></i>
               </div>
 
-
-
               <div class="queue-position">
-
-                <div class="queue-circle">
-                  Q020
-                </div>
+                <div class="queue-circle">Q020</div>
 
                 <span>Waiting</span>
-
               </div>
-
-
 
               <div class="queue-arrow">
                 <i class="bi bi-chevron-right"></i>
               </div>
 
-
-
               <div class="queue-position">
-
-                <div class="queue-circle">
-                  Q021
-                </div>
+                <div class="queue-circle">Q021</div>
 
                 <span>Waiting</span>
-
               </div>
-
-
 
               <div class="queue-arrow">
                 <i class="bi bi-chevron-right"></i>
               </div>
 
-
-
               <div class="queue-position">
-
-                <div class="queue-circle">
-                  Q022
-                </div>
+                <div class="queue-circle">Q022</div>
 
                 <span>Waiting</span>
-
               </div>
-
-
 
               <div class="queue-arrow">
                 <i class="bi bi-chevron-right"></i>
               </div>
 
-
-
               <div class="queue-position">
-
-                <div class="queue-circle">
-                  Q023
-                </div>
+                <div class="queue-circle">Q023</div>
 
                 <span>Waiting</span>
-
               </div>
-
-
-
             </div>
-
-
           </section>
-
-
 
           <!-- =========================
                JOIN QUEUE
                ========================= -->
 
           <section class="join-queue-card">
-
-
             <div class="join-queue-icon">
-
               <i class="bi bi-ticket-perforated"></i>
-
             </div>
 
-
             <div class="join-queue-text">
-
               <h3>Ready to join the queue?</h3>
 
               <p>
-                Get a digital queue ticket and monitor your position
-                without waiting physically at the clinic.
+                Get a digital queue ticket and monitor your position without
+                waiting physically at the clinic.
               </p>
-
             </div>
 
-
-            <button
-              class="join-queue-button"
-              id="joinQueueButton"
-            >
-
+            <button class="join-queue-button" id="joinQueueButton">
               <i class="bi bi-plus-circle"></i>
 
               Join Queue
-
             </button>
-
-
           </section>
-
-
 
           <!-- =========================
                TICKET
@@ -468,127 +300,70 @@
           <section
             class="dashboard-card my-ticket-card"
             id="ticketCard"
-            style="display: none;"
+            style="display: none"
           >
-
             <div class="card-heading">
-
               <h3>
-
                 <i class="bi bi-ticket-perforated"></i>
 
                 Your Queue Ticket
-
               </h3>
 
-              <span class="status-badge">
-                Waiting
-              </span>
-
+              <span class="status-badge"> Waiting </span>
             </div>
-
 
             <div class="my-ticket-content">
-
-
               <div class="ticket-number">
-
                 <span>Your ticket</span>
 
-                <strong id="ticketNumber">
-                  Q024
-                </strong>
-
+                <strong id="ticketNumber"> Q024 </strong>
               </div>
-
 
               <div class="ticket-information">
-
                 <div>
-
                   <span>Position</span>
 
-                  <strong id="myPosition">
-                    7
-                  </strong>
-
+                  <strong id="myPosition"> 7 </strong>
                 </div>
 
-
                 <div>
-
                   <span>People Ahead</span>
 
-                  <strong id="peopleAhead">
-                    6
-                  </strong>
-
+                  <strong id="peopleAhead"> 6 </strong>
                 </div>
-
 
                 <div>
-
                   <span>Estimated Wait</span>
 
-                  <strong id="myWaitTime">
-                    35 min
-                  </strong>
-
+                  <strong id="myWaitTime"> 35 min </strong>
                 </div>
-
               </div>
-
             </div>
 
-
-            <button
-              class="leave-queue-button"
-              id="leaveQueueButton"
-            >
-
+            <button class="leave-queue-button" id="leaveQueueButton">
               <i class="bi bi-box-arrow-left"></i>
 
               Leave Queue
-
             </button>
-
-
           </section>
-
-
 
           <!-- Information -->
 
           <section class="dashboard-message">
-
             <i class="bi bi-info-circle"></i>
 
             <div>
+              <strong> Keep an eye on your queue position. </strong>
 
-              <strong>
-                Keep an eye on your queue position.
-              </strong>
-
-              <p>
-                You will be able to monitor your position while waiting.
-              </p>
-
+              <p>You will be able to monitor your position while waiting.</p>
             </div>
-
           </section>
-
-
         </main>
-
       </div>
-
     </div>
-
 
     <!-- JavaScript -->
 
     <script src="JoinQueue.js"></script>
-
   </body>
-
 </html>

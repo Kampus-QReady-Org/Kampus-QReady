@@ -140,6 +140,40 @@ body {
 .branding-registration {
   margin: -4px 0 22px;
 }
+
+.sidebar-system-branding {
+  text-align: center;
+  margin-top: 8px;
+}
+
+.sidebar-system-branding h2 {
+  margin: 0;
+  color: #35184c;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.sidebar-system-branding h2 span {
+  color: #00889c;
+  text-shadow: 0 0 7px rgba(0, 136, 156, 0.18);
+}
+
+.sidebar-brand-line {
+  width: 45px;
+  height: 2px;
+  margin: 6px auto;
+  border-radius: 10px;
+
+  background: linear-gradient(90deg, transparent, #00889c, transparent);
+}
+
+.sidebar-system-branding p {
+  margin: 0;
+  color: #6b5877;
+  font-size: 10px;
+  letter-spacing: 0.7px;
+}
 /* =========================
    LOGIN PAGE STYLING
    ========================= */
@@ -491,17 +525,6 @@ body {
   gap: 20px;
 }
 
-.notification-button {
-  border: none;
-  background: transparent;
-
-  font-size: 23px;
-
-  color: #53237b;
-
-  cursor: pointer;
-}
-
 .profile-info {
   display: flex;
   align-items: center;
@@ -557,15 +580,6 @@ body {
 /* =========================
    ACTION CARDS
    ========================= */
-
-.dashboard-actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-
-  gap: 18px;
-
-  margin: 25px 0;
-}
 
 .action-card {
   display: grid;
@@ -1068,11 +1082,6 @@ body {
     font-size: 1.5rem;
   }
 
-  /* Cards stack */
-  .dashboard-actions {
-    grid-template-columns: 1fr;
-  }
-
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
@@ -1149,7 +1158,6 @@ body {
    LIVE QUEUE PAGE
    ========================================================== */
 
-
 /* Queue Status */
 
 .queue-status-card {
@@ -1166,10 +1174,8 @@ body {
 
   border: 1px solid rgba(255, 255, 255, 0.8);
 
-  box-shadow:
-    0 8px 20px rgba(73, 36, 98, 0.08);
+  box-shadow: 0 8px 20px rgba(73, 36, 98, 0.08);
 }
-
 
 .queue-status-card > div {
   display: flex;
@@ -1178,7 +1184,6 @@ body {
 
   color: #238339;
 }
-
 
 .queue-live-dot {
   width: 11px;
@@ -1191,27 +1196,23 @@ body {
   box-shadow: 0 0 0 5px rgba(35, 131, 57, 0.12);
 }
 
-
 .queue-location {
   color: #6f5b7c;
 
   font-size: 14px;
 }
 
-
 /* Queue Statistics */
 
 .queue-stats {
   display: grid;
 
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 
   gap: 18px;
 
   margin-bottom: 18px;
 }
-
 
 .queue-stat-card {
   display: flex;
@@ -1232,10 +1233,8 @@ body {
 
   border: 1px solid rgba(255, 255, 255, 0.8);
 
-  box-shadow:
-    0 10px 25px rgba(73, 36, 98, 0.12);
+  box-shadow: 0 10px 25px rgba(73, 36, 98, 0.12);
 }
-
 
 .queue-stat-icon {
   width: 50px;
@@ -1254,7 +1253,6 @@ body {
   font-size: 23px;
 }
 
-
 .queue-stat-card div:last-child {
   display: flex;
 
@@ -1263,13 +1261,11 @@ body {
   gap: 4px;
 }
 
-
 .queue-stat-card span {
   color: #7d688b;
 
   font-size: 13px;
 }
-
 
 .queue-stat-card strong {
   color: #28123d;
@@ -1277,13 +1273,11 @@ body {
   font-size: 1.5rem;
 }
 
-
 /* Live Queue Card */
 
 .live-queue-card {
   margin-bottom: 18px;
 }
-
 
 .queue-subtitle {
   margin: 5px 0 0;
@@ -1292,7 +1286,6 @@ body {
 
   font-size: 13px;
 }
-
 
 /* Visual Queue */
 
@@ -1308,7 +1301,6 @@ body {
   overflow-x: auto;
 }
 
-
 .queue-position {
   min-width: 85px;
 
@@ -1320,7 +1312,6 @@ body {
 
   gap: 7px;
 }
-
 
 .queue-circle {
   width: 65px;
@@ -1343,13 +1334,11 @@ body {
   font-size: 14px;
 }
 
-
 .queue-position > span {
   color: #7d688b;
 
   font-size: 12px;
 }
-
 
 .serving-position .queue-circle {
   background: #00889c;
@@ -1358,10 +1347,8 @@ body {
 
   color: white;
 
-  box-shadow:
-    0 6px 15px rgba(0, 136, 156, 0.25);
+  box-shadow: 0 6px 15px rgba(0, 136, 156, 0.25);
 }
-
 
 .serving-position > span {
   color: #00889c;
@@ -1369,13 +1356,11 @@ body {
   font-weight: 700;
 }
 
-
 .queue-arrow {
   color: #b09abc;
 
   font-size: 18px;
 }
-
 
 /* Join Queue Card */
 
@@ -1402,10 +1387,8 @@ body {
 
   border: 1px solid rgba(0, 136, 156, 0.2);
 
-  box-shadow:
-    0 10px 25px rgba(73, 36, 98, 0.1);
+  box-shadow: 0 10px 25px rgba(73, 36, 98, 0.1);
 }
-
 
 .join-queue-icon {
   width: 58px;
@@ -1424,7 +1407,6 @@ body {
   font-size: 26px;
 }
 
-
 .join-queue-text h3 {
   margin: 0 0 5px;
 
@@ -1433,7 +1415,6 @@ body {
   font-size: 1.1rem;
 }
 
-
 .join-queue-text p {
   margin: 0;
 
@@ -1441,7 +1422,6 @@ body {
 
   font-size: 14px;
 }
-
 
 .join-queue-button {
   padding: 12px 22px;
@@ -1461,13 +1441,11 @@ body {
   transition: 0.2s ease;
 }
 
-
 .join-queue-button:hover {
   background: #007487;
 
   transform: translateY(-1px);
 }
-
 
 .join-queue-button:disabled {
   background: #238339;
@@ -1477,7 +1455,6 @@ body {
   transform: none;
 }
 
-
 /* My Ticket */
 
 .my-ticket-card {
@@ -1485,7 +1462,6 @@ body {
 
   border-top: 4px solid #00889c;
 }
-
 
 .my-ticket-content {
   display: grid;
@@ -1497,7 +1473,6 @@ body {
   align-items: center;
 }
 
-
 .ticket-number {
   padding: 25px;
 
@@ -1507,7 +1482,6 @@ body {
 
   background: rgba(0, 136, 156, 0.08);
 }
-
 
 .ticket-number span {
   display: block;
@@ -1519,13 +1493,11 @@ body {
   font-size: 13px;
 }
 
-
 .ticket-number strong {
   color: #00889c;
 
   font-size: 3rem;
 }
-
 
 .ticket-information {
   display: grid;
@@ -1534,7 +1506,6 @@ body {
 
   gap: 12px;
 }
-
 
 .ticket-information div {
   padding: 15px;
@@ -1546,7 +1517,6 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.7);
 }
 
-
 .ticket-information span {
   display: block;
 
@@ -1557,13 +1527,11 @@ body {
   font-size: 12px;
 }
 
-
 .ticket-information strong {
   color: #28123d;
 
   font-size: 1.3rem;
 }
-
 
 .leave-queue-button {
   margin-top: 18px;
@@ -1581,16 +1549,13 @@ body {
   cursor: pointer;
 }
 
-
 .leave-queue-button:hover {
   background: rgba(184, 92, 92, 0.08);
 }
 
-
 /* Mobile */
 
 @media (max-width: 768px) {
-
   .queue-status-card {
     align-items: flex-start;
 
@@ -1599,21 +1564,17 @@ body {
     gap: 10px;
   }
 
-
   .queue-stats {
     grid-template-columns: 1fr;
   }
-
 
   .visual-queue {
     justify-content: flex-start;
   }
 
-
   .join-queue-card {
     grid-template-columns: auto 1fr;
   }
-
 
   .join-queue-button {
     grid-column: 1 / -1;
@@ -1621,35 +1582,27 @@ body {
     width: 100%;
   }
 
-
   .my-ticket-content {
     grid-template-columns: 1fr;
   }
 
-
   .ticket-information {
     grid-template-columns: 1fr;
   }
-
 }
 
-
 @media (max-width: 420px) {
-
   .join-queue-card {
     grid-template-columns: 1fr;
 
     text-align: center;
   }
 
-
   .join-queue-icon {
     margin: auto;
   }
 
-
   .join-queue-button {
     grid-column: auto;
   }
-
 }
