@@ -73,10 +73,16 @@
           <div class="sidebar-contact">
             <p>Healthcare Centre</p>
 
-            <a href="#" class="contact-link">
+            <!-- Opens Healthcare Centre contact information popup -->
+            <button
+              type="button"
+              class="contact-link"
+              data-bs-toggle="modal"
+              data-bs-target="#contactModal"
+            >
               <i class="bi bi-geo-alt"></i>
               <span>Contact & Location</span>
-            </a>
+            </button>
           </div>
         </nav>
       </aside>
@@ -370,7 +376,98 @@
         </main>
       </div>
     </div>
+    <!-- ==========================================
+     HEALTHCARE CENTRE CONTACT & LOCATION MODAL
+     ========================================== -->
 
+    <div
+      class="modal fade"
+      id="contactModal"
+      tabindex="-1"
+      aria-labelledby="contactModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content contact-modal">
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <div>
+              <h5 class="modal-title" id="contactModalLabel">
+                NWU Healthcare Centre
+              </h5>
+
+              <small>Contact & Location</small>
+            </div>
+
+            <!-- Close X button -->
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="modal-body">
+            <!-- Address -->
+            <div class="contact-detail">
+              <i class="bi bi-geo-alt"></i>
+
+              <div>
+                <strong>Address</strong>
+                <p>Building E16, Jooste Street, Main Campus</p>
+              </div>
+            </div>
+
+            <!-- Telephone -->
+            <div class="contact-detail">
+              <i class="bi bi-telephone"></i>
+
+              <div>
+                <strong>Telephone</strong>
+                <p>018 299 4345</p>
+                <p>018 299 4372</p>
+              </div>
+            </div>
+
+            <!-- Consultation Hours -->
+            <div class="contact-detail">
+              <i class="bi bi-calendar2-week"></i>
+
+              <div>
+                <strong>Consultation Hours</strong>
+                <p>Monday to Thursday: 08:30-16:00</p>
+                <p>Friday: 08:30-13:00</p>
+              </div>
+            </div>
+
+            <!-- Operating Hours -->
+            <div class="contact-detail">
+              <i class="bi bi-clock"></i>
+
+              <div>
+                <strong>Operating Hours</strong>
+                <p>Monday to Thursday: 08:30-16:15</p>
+                <p>Friday: 08:30-13:00</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="secondary-button"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <!-- JavaScript -->
 
     <script src="JoinQueue.js"></script>

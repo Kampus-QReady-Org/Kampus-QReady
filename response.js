@@ -272,3 +272,30 @@ if (calendarMonth && calendarDays && previousMonth && nextMonth) {
   // Display the calendar when the dashboard first loads
   displayCalendar();
 }
+
+// =====================================================
+// RESET EMERGENCY SECTION WHEN CONTACT MODAL OPENS
+// =====================================================
+
+// Get the Contact & Location modal
+const contactModal = document.getElementById("contactModal");
+
+// Get the Emergency Assistance collapsible section
+const emergencyDetails = document.getElementById("emergencyDetails");
+
+// Only run if both elements exist
+if (contactModal && emergencyDetails) {
+  // Runs every time the Contact & Location modal opens
+  contactModal.addEventListener("show.bs.modal", function () {
+    // Get the Bootstrap collapse instance
+    const emergencyCollapse = bootstrap.Collapse.getOrCreateInstance(
+      emergencyDetails,
+      {
+        toggle: false,
+      },
+    );
+
+    // Make sure Emergency Assistance starts collapsed
+    emergencyCollapse.hide();
+  });
+}
