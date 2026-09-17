@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const authRoutes = require('./routes/authRoutes'); // Adjust path if your routes folder is structured differently
+const authRoutes = require('./src/routes/authRoutes');
 
 const app = express();
 
