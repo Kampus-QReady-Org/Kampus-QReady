@@ -2132,3 +2132,75 @@ body {
 .modal-footer {
   padding: 15px 24px;
 }
+
+/* =========================
+   APPOINTMENT BUTTON COLORS
+   ========================= */
+
+.appointment-card .appointment-reschedule-btn,
+.appointment-card .appointment-edit-btn {
+  background-color: #7b3fa1;
+  color: white;
+  border: 1px solid #7b3fa1 ;
+}
+
+.appointment-card .appointment-reschedule-btn:hover,
+.appointment-card .appointment-edit-btn:hover {
+  background-color: #663286;
+  color: white ;
+}
+
+.appointment-card .appointment-cancel-btn,
+.appointment-card .appointment-remove-btn {
+  background-color: #fff0f0;
+  color: #c0392b ;
+  border: 1px solid #e0a0a0 ;
+}
+
+.appointment-card .appointment-cancel-btn:hover,
+.appointment-card .appointment-remove-btn:hover {
+  background-color: #ffe0e0;
+  color: #c0392b;
+}
+
+/* =========================
+   APPOINTMENT / QUEUE STATUS
+   ========================= */
+
+.status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status.waiting {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status.called {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.status.booked {
+  background-color: #e8d9f0;
+  color: #6c3d91;
+}
+
+.status.available {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status.completed {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status.cancelled {
+  background-color: #fff0f0;
+  color: #c0392b;
+}

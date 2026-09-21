@@ -22,6 +22,7 @@
         <!-- ========================= SIDE BAR ========================= -->
         <aside class="dashboard-sidebar">
 
+            <!-- Logo and System Name -->
             <div class="sidebar-brand">
 
                 <img src="media/images/nwu log2.png" alt="NWU Logo" class="sidebar-logo">
@@ -102,7 +103,7 @@
                 <section class="welcome-section">
 
                     <!--Staff name updated from the login details-->
-                    <h2>Welcome back, Staff</h2>
+                    <h2>Welcome back</h2>
                     <p> Manage appointments, walk-in queue and student requests. </p>
                 </section>
 
@@ -115,7 +116,7 @@
                         </div>
                         <div class="queue-item">
                             <!-- Temporary value -->
-                            <strong id="studentsWaiting">7</strong>
+                            <strong id="studentsWaiting"></strong>
                         </div>
                     </div>
 
@@ -126,7 +127,7 @@
                         </div>
                         <div class="queue-item">
                             <!-- Temporary value -->
-                            <strong id="currentTicket">#120</strong>
+                            <strong id="currentTicket"></strong>
                         </div>
                     </div>
 
@@ -137,7 +138,7 @@
                         </div>
                         <div class="queue-item">
                             <!-- Temporary value -->
-                            <strong id="nextTicket">#121</strong>
+                            <strong id="nextTicket"></strong>
                         </div>
                     </div>
 
@@ -148,7 +149,7 @@
                         </div>
                         <div class="queue-item">
                             <!-- Temporary value -->
-                            <strong id="openSlots">5</strong>
+                            <strong id="openSlots"></strong>
                         </div>
                     </div>
                 </section>
@@ -171,37 +172,8 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="queueTableBody"> <!-- Temporary data -->
-                                <tr>
-                                    <td>#121</td>
-                                    <td>T. Nkosi</td>
-                                    <td>1</td>
-                                    <td> <span class="status waiting"> Waiting </span> </td>
-                                    <td> <button class="small-btn view-btn"> View </button> <button
-                                            class="small-btn call-btn"> Call </button> <button
-                                            class="small-btn cancel-btn">
-                                            Cancel </button> </td>
-                                </tr>
-                                <tr>
-                                    <td>#122</td>
-                                    <td>L. Dube</td>
-                                    <td>2</td>
-                                    <td> <span class="status waiting"> Waiting </span> </td>
-                                    <td> <button class="small-btn view-btn"> View </button> <button
-                                            class="small-btn call-btn"> Call </button> <button
-                                            class="small-btn cancel-btn">
-                                            Cancel </button> </td>
-                                </tr>
-                                <tr>
-                                    <td>#123</td>
-                                    <td>S. Pillay</td>
-                                    <td>3</td>
-                                    <td> <span class="status waiting"> Waiting </span> </td>
-                                    <td> <button class="small-btn view-btn"> View </button> <button
-                                            class="small-btn call-btn"> Call </button> <button
-                                            class="small-btn cancel-btn">
-                                            Cancel </button> </td>
-                                </tr>
+                            <tbody id="queueTableBody">
+
                             </tbody>
                         </table>
                     </div>
@@ -210,11 +182,9 @@
                 <!-- ========================= APPOINTMENTS ========================= -->
                 <section class="dashboard-card appointment-card mb-4" id="appointments">
                     <div class="card-heading">
-                        <h3> <i class="bi bi-calendar-check"></i> Manage Appointments </h3>
-                        <button
+                        <h3> <i class="bi bi-calendar-check"></i> Manage Appointments </h3> <button
                             class="primary-button" id="addAppointmentBtn"> <i class="bi bi-calendar-plus"></i> Add
-                            Appointment
-                        </button>
+                            Appointment </button>
                     </div>
                     <p class="queue-subtitle"> View and manage available appointment slots and bookings. </p>
                     <div class="table-responsive mt-3">
@@ -228,23 +198,8 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="appointmentTableBody"> <!-- Temporary data -->
-                                <tr>
-                                    <td>17 Sep</td>
-                                    <td>09:00</td>
-                                    <td>R. van Wyk</td>
-                                    <td> <span class="status booked"> Booked </span> </td>
-                                    <td> <button class="small-btn edit-btn appointment-reschedue-btn"> Reschedule </button> <button
-                                            class="small-btn cancel-btn"> Cancel </button> </td>
-                                </tr>
-                                <tr>
-                                    <td>17 Sep</td>
-                                    <td>09:30</td>
-                                    <td>—</td>
-                                    <td> <span class="status available"> Available </span> </td>
-                                    <td> <button class="small-btn view-btn"> Edit </button> <button
-                                            class="small-btn cancel-btn"> Remove </button> </td>
-                                </tr>
+                            <tbody id="appointmentTableBody">
+
                             </tbody>
                         </table>
                     </div>
@@ -257,9 +212,8 @@
                     </div>
                     <p class="queue-subtitle"> Search for a student using their student number or name. </p>
                     <div class="student-search mt-3"> <input type="text" class="form-control" id="studentSearch"
-                            placeholder="Student number or name">
-                            <button class="primary-button search-btn"
-                            id="searchStudentBtn"> <i class="bi bi-search"></i>Search</button> </div>
+                            placeholder="Student number or name"> <button class="primary-button search-btn"
+                            id="searchStudentBtn"> <i class="bi bi-search"></i> Search </button> </div>
                     <!-- Search Results -->
                     <div class="search-results mt-4">
                         <div class="card-heading">
@@ -275,18 +229,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="studentResultsBody"> <!-- Temporary data -->
-                                    <tr>
-                                        <td>12345678</td>
-                                        <td>T. Nkosi</td>
-                                        <td> <button class="small-btn view-btn"> View </button> <button
-                                                class="small-btn edit-btn"> Edit </button> </td>
-                                    </tr>
-                                    <tr>
-                                        <td>87546378</td>
-                                        <td>L. Nkosi</td>
-                                        <td> <button class="small-btn view-btn"> View </button> <button
-                                                class="small-btn edit-btn"> Edit </button> </td>
-                                    </tr>
+
                                 </tbody>
                             </table>
                         </div>
@@ -296,14 +239,6 @@
                         <p> Please check the student number or name and try again. </p>
                     </div>
                 </section>
-
-                <!-- ========================= INFORMATION MESSAGE ========================= -->
-                <div class="dashboard-message"> <i class="bi bi-info-circle"></i>
-                    <div> <strong>Staff Information</strong>
-                        <p> Appointment and queue values shown above are temporary until the system is connected to the
-                            database. </p>
-                    </div>
-                </div>
             </div>
         </main>
     </div>
@@ -466,6 +401,395 @@
                     </button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- RESCHEDULE APPOINTMENT MODAL -->
+    <div class="modal fade" id="rescheduleAppointmentModal" tabindex="-1"
+        aria-labelledby="rescheduleAppointmentModalLabel" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content staff-modal">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title" id="rescheduleAppointmentModalLabel">
+                        Reschedule Appointment
+                    </h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <p>
+                        <strong>Student:</strong>
+                        <span id="rescheduleStudent"></span>
+                    </p>
+
+                    <p>
+                        <strong>Current Date:</strong>
+                        <span id="rescheduleDate"></span>
+                    </p>
+
+                    <p>
+                        <strong>Current Time:</strong>
+                        <span id="rescheduleTime"></span>
+                    </p>
+
+                    <hr>
+
+                    <label for="newAppointmentDate" class="form-label">
+                        Select new date
+                    </label>
+
+                    <input type="date" class="form-control mb-3" id="newAppointmentDate">
+
+                    <label for="newAppointmentTime" class="form-label">
+                        Select new time
+                    </label>
+
+                    <input type="time" class="form-control" id="newAppointmentTime">
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="secondary-button" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="button" class="primary-button" id="confirmRescheduleBtn">
+                        Reschedule
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CANCEL APPOINTMENT MODAL -->
+    <div class="modal fade" id="cancelAppointmentModal" tabindex="-1" aria-labelledby="cancelAppointmentModalLabel"
+        aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content staff-modal">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title" id="cancelAppointmentModalLabel">
+                        Cancel Appointment
+                    </h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <p>
+                        Are you sure you want to cancel the appointment
+                        for <strong id="cancelAppointmentStudent"></strong>?
+                    </p>
+
+                    <p>
+                        <strong>Date:</strong>
+                        <span id="cancelAppointmentDate"></span>
+                    </p>
+
+                    <p>
+                        <strong>Time:</strong>
+                        <span id="cancelAppointmentTime"></span>
+                    </p>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="secondary-button" data-bs-dismiss="modal">
+                        Keep Appointment
+                    </button>
+
+                    <button type="button" class="cancel-confirm-btn" id="confirmCancelAppointmentBtn">
+                        Cancel Appointment
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- EDIT APPOINTMENT MODAL -->
+    <div class="modal fade" id="editAppointmentModal" tabindex="-1" aria-labelledby="editAppointmentModalLabel"
+        aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content staff-modal">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title" id="editAppointmentModalLabel">
+                        Edit Appointment Slot
+                    </h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <p>
+                        <strong>Current Date:</strong>
+                        <span id="editAppointmentDate"></span>
+                    </p>
+
+                    <p>
+                        <strong>Current Time:</strong>
+                        <span id="editAppointmentTime"></span>
+                    </p>
+
+                    <hr>
+
+                    <label for="editAppointmentNewDate" class="form-label">
+                        New date
+                    </label>
+
+                    <input type="date" class="form-control mb-3" id="editAppointmentNewDate">
+
+                    <label for="editAppointmentNewTime" class="form-label">
+                        New time
+                    </label>
+
+                    <input type="time" class="form-control" id="editAppointmentNewTime">
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="secondary-button" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="button" class="primary-button" id="confirmEditAppointmentBtn">
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- REMOVE APPOINTMENT SLOT MODAL -->
+    <div class="modal fade" id="removeAppointmentModal" tabindex="-1" aria-labelledby="removeAppointmentModalLabel"
+        aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content staff-modal">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title" id="removeAppointmentModalLabel">
+                        Remove Appointment Slot
+                    </h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <p>
+                        Are you sure you want to remove this
+                        available appointment slot?
+                    </p>
+
+                    <p>
+                        <strong>Date:</strong>
+                        <span id="removeAppointmentDate"></span>
+                    </p>
+
+                    <p>
+                        <strong>Time:</strong>
+                        <span id="removeAppointmentTime"></span>
+                    </p>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="secondary-button" data-bs-dismiss="modal">
+                        Keep Slot
+                    </button>
+
+                    <button type="button" class="cancel-confirm-btn" id="confirmRemoveAppointmentBtn">
+                        Remove Slot
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ADD APPOINTMENT SLOT MODAL -->
+    <div class="modal fade" id="addAppointmentModal" tabindex="-1" aria-labelledby="addAppointmentModalLabel"
+        aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content staff-modal">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title" id="addAppointmentModalLabel">
+                        Add Appointment Slot
+                    </h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <p>
+                        Select the date and time for the new
+                        available appointment slot.
+                    </p>
+
+                    <div class="mb-3">
+
+                        <label for="newAppointmentSlotDate" class="form-label">
+                            Date
+                        </label>
+
+                        <input type="date" class="form-control" id="newAppointmentSlotDate">
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="newAppointmentSlotTime" class="form-label">
+                            Time
+                        </label>
+
+                        <input type="time" class="form-control" id="newAppointmentSlotTime">
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="secondary-button" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="button" class="primary-button" id="confirmAddAppointmentBtn">
+                        <i class="bi bi-calendar-plus"></i>
+                        Add Slot
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- EDIT STUDENT MODAL -->
+    <div class="modal fade" id="editStudentModal" tabindex="-1" aria-labelledby="editStudentModalLabel"
+        aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content staff-modal">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title" id="editStudentModalLabel">
+                        Edit Student Information
+                    </h5>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+
+                        <label for="editStudentNumber" class="form-label">
+                            Student Number
+                        </label>
+
+                        <input type="text" class="form-control" id="editStudentNumber">
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="editStudentName" class="form-label">
+                            Name
+                        </label>
+
+                        <input type="text" class="form-control" id="editStudentName">
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="editStudentEmail" class="form-label">
+                            Email
+                        </label>
+
+                        <input type="email" class="form-control" id="editStudentEmail">
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label for="editStudentContact" class="form-label">
+                            Contact
+                        </label>
+
+                        <input type="text" class="form-control" id="editStudentContact">
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="secondary-button" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="button" class="primary-button" id="saveStudentChangesBtn">
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </div>
+
         </div>
     </div>
 
