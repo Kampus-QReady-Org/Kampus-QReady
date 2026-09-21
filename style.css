@@ -1771,6 +1771,10 @@ body {
   background-color: #c0392b;
 }
 
+.legend-box.lunch {
+    background-color: #b8b8b8;
+}
+
 /* Time slots */
 
 .time-slot {
@@ -1823,6 +1827,20 @@ body {
   border: 3px solid #006b7b;
 
   box-shadow: 0 5px 15px rgba(0, 136, 156, 0.3);
+}
+
+/* Lunch / clinic unavailable slots */
+.unavailable-lunch {
+    background-color: #b8b8b8;
+    color: #ffffff;
+    cursor: not-allowed;
+    opacity: 0.9;
+}
+
+.unavailable-lunch:hover {
+    background-color: #b8b8b8;
+    transform: none;
+    box-shadow: none;
 }
 
 /* Selected appointment */
