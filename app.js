@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./src/routes/authRoutes');
 const queueRoutes = require('./src/routes/queueRoutes'); // Import the queue routes (line added by Jacques).
+const appointmentRoutes = require('./src/routes/appointmentRoutes'); // Import the appointment routes (line added by Jacques).
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/queue', queueRoutes); // Connect all queue-related API endpoints (line added by Jacques).
+app.use('/api/appointments', appointmentRoutes); // All appointment endpoints will begin with /api/appointments (line added by Jacques).
 
 // Root test route
 app.get('/', (req, res) => {
