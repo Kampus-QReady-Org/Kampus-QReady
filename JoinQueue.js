@@ -15,34 +15,49 @@ const myWaitTime = document.getElementById("myWaitTime");
 // =========================
 // JOIN QUEUE
 // =========================
+joinQueueButton.addEventListener("click", async function () {
+  const token = localStorage.getItem("token");
 
-joinQueueButton.addEventListener("click", function () {
-  // Temporary ticket number
-  // This will eventually come from the backend/database.
+  try {
+    const response = await fetch("http://localhost:3000/api/queue/join", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
 
-  ticketNumber.textContent = "Q024";
+    const data = await response.json();
 
-  myPosition.textContent = "7";
+    if (!response.ok) {
+      throw new Error(data.error || "Unable to join the queue.");
+    }
 
-  peopleAhead.textContent = "6";
+    const queue = data.queue;
 
-  myWaitTime.textContent = "35 min";
+    ticketNumber.textContent = queue.ticket;
+    myPosition.textContent = queue.position;
+    peopleAhead.textContent = queue.peopleAhead;
 
-  // Show ticket
+    // Show ticket
+    ticketCard.style.display = "block";
 
-  ticketCard.style.display = "block";
+    // Change button
+    joinQueueButton.innerHTML =
+      '<i class="bi bi-check-circle"></i> Joined Queue';
 
-  // Change button
+    joinQueueButton.disabled = true;
 
-  joinQueueButton.innerHTML = '<i class="bi bi-check-circle"></i> Joined Queue';
+    // Scroll to ticket
+    ticketCard.scrollIntoView({
+      behavior: "smooth",
+    });
 
-  joinQueueButton.disabled = true;
+    console.log("Successfully joined queue:", queue);
 
-  // Scroll to ticket
-
-  ticketCard.scrollIntoView({
-    behavior: "smooth",
-  });
+  } catch (error) {
+    console.error("Error joining queue:", error);
+    alert(error.message);
+  }
 });
 
 // =========================

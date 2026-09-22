@@ -12,7 +12,13 @@ async function loadQueue() {
 
     try {
 
-        const response = await fetch(`${API_BASE_URL}/api/staff/queue`);
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(`${API_BASE_URL}/api/staff/queue`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
 
         if (!response.ok) {
             throw new Error('Failed to load queue');
@@ -30,6 +36,9 @@ async function loadQueue() {
 
             const row = document.createElement('tr');
 
+            row.dataset.visitId = student.visitId;
+            row.dataset.studentNumber = student.studentNumber;
+
             row.innerHTML = `
                 <td>${student.ticket}</td>
                 <td>${student.firstName} ${student.lastName}</td>
@@ -39,6 +48,7 @@ async function loadQueue() {
                     <button class="view-btn">View</button>
                     <button class="call-btn">Call</button>
                     <button class="cancel-btn">Cancel</button>
+                    <button class="complete-btn">Complete</button>
                 </td>
             `;
 
@@ -63,8 +73,15 @@ async function loadAppointments() {
 
         const today = new Date().toISOString().split('T')[0];
 
+        const token = localStorage.getItem("token");
+
         const response = await fetch(
-            `${API_BASE_URL}/api/staff/appointments?date=${today}`
+            `${API_BASE_URL}/api/staff/appointments?date=${today}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
         );
 
         if (!response.ok) {
@@ -160,7 +177,8 @@ document.getElementById('queueTableBody').addEventListener('click', function (ev
 
         const row = event.target.closest('tr');
 
-        const studentNumber = 'Not available';
+       const studentNumber = row.dataset.studentNumber || 'Not available';
+
         const studentName = row.cells[1].textContent.trim();
 
         document.getElementById('viewStudentNumber').textContent =
@@ -226,8 +244,7 @@ document.getElementById('confirmCallBtn').addEventListener('click', function () 
             document.getElementById('callStudentModal');
 
         const modal =
-            bo
-        otstrap.Modal.getInstance(modalElement);
+            bootstrap.Modal.getInstance(modalElement);
 
         modal.hide();
     }
@@ -239,7 +256,7 @@ document.getElementById('confirmCallBtn').addEventListener('click', function () 
 
 let selectedCancelRow = null;
 
-document.getElementById('queueTableBody').addEventListener('click', function (event) {
+document.getElementById('queueTableBody').addEventListener('click', async function (event) {
 
     if (event.target.classList.contains('cancel-btn')) {
 
@@ -260,6 +277,42 @@ document.getElementById('queueTableBody').addEventListener('click', function (ev
 
         modal.show();
     }
+
+ if (event.target.classList.contains('complete-btn')) {
+
+    const selectedCompleteRow = event.target.closest('tr');
+
+    const visitId = selectedCompleteRow.dataset.visitId;
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/api/staff/queue/${visitId}/complete`,
+            {
+                method: 'PATCH',
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error || 'Failed to complete queue visit'
+            );
+        }
+
+        console.log('Queue visit completed:', data);
+
+        selectedCompleteRow.remove();
+
+    } catch (error) {
+        console.error('Error completing queue visit:', error);
+        alert('Unable to complete the queue visit.');
+    }
+ }
 });
 
 // Confirm Cancel
@@ -462,21 +515,71 @@ document.getElementById('appointmentTableBody')
 // ========================================
 
 document.getElementById('confirmCancelAppointmentBtn')
-    .addEventListener('click', function () {
+    .addEventListener('click', async function () {
 
         if (selectedAppointmentCancelRow) {
 
-            selectedAppointmentCancelRow.remove();
+            const visitId =
+                selectedAppointmentCancelRow.dataset.visitId;
 
-            const modalElement =
-                document.getElementById(
-                    'cancelAppointmentModal'
+            const token =
+                localStorage.getItem('token');
+
+            try {
+
+                const response = await fetch(
+                    `${API_BASE_URL}/api/staff/appointments/${visitId}/status`,
+                    {
+                        method: 'PATCH',
+
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+
+                        body: JSON.stringify({
+                            status: 'cancelled'
+                        })
+                    }
                 );
 
-            const modal =
-                bootstrap.Modal.getInstance(modalElement);
+                const data = await response.json();
 
-            modal.hide();
+                if (!response.ok) {
+                    throw new Error(
+                        data.error || 'Failed to cancel appointment'
+                    );
+                }
+
+                // Remove the appointment from the table
+                selectedAppointmentCancelRow.remove();
+
+                const modalElement =
+                    document.getElementById(
+                        'cancelAppointmentModal'
+                    );
+
+                const modal =
+                    bootstrap.Modal.getInstance(modalElement);
+
+                modal.hide();
+
+                console.log(
+                    'Appointment cancelled:',
+                    data
+                );
+
+            } catch (error) {
+
+                console.error(
+                    'Error cancelling appointment:',
+                    error
+                );
+
+                alert(
+                    'Unable to cancel the appointment.'
+                );
+            }
         }
     });
 
