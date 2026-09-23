@@ -94,7 +94,7 @@ async function getActiveQueue() {
     }));
 }
 
-/*
+/*Added by Mudau khuthadzo
  * Call a student in the active queue by setting
  * their Is_In_Queue status to FALSE.
  */
