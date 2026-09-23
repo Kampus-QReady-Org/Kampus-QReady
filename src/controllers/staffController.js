@@ -24,6 +24,49 @@ async function getActiveQueue(req, res) {
 }
 
 /*
+ * PATCH /api/staff/queue/:visitId/call
+ *
+ * Calls a specific active queue visit.
+ */
+async function callQueueVisit(req, res) {
+    const visitId = Number(req.params.visitId);
+
+    // Visit_ID must be a positive whole number.
+    if (!Number.isInteger(visitId) || visitId <= 0) {
+        return res.status(400).json({
+            error: 'Invalid queue visit ID.'
+        });
+    }
+
+    try {
+        const queueVisit = await staffService.callQueueVisit(visitId);
+
+        /*
+         * A null result means:
+         * - the visit does not exist;
+         * - it is not a queue visit; or
+         * - it has already ended.
+         */
+        if (!queueVisit) {
+            return res.status(404).json({
+                error: 'Active queue visit not found.'
+            });
+        }
+
+        return res.status(200).json({
+            message: 'Queue visit called successfully.',
+            queue: queueVisit
+        });
+    } catch (error) {
+        console.error('Error calling queue visit:', error);
+
+        return res.status(500).json({
+            error: 'Unable to call the queue visit.'
+        });
+    }
+}
+
+/*
  * PATCH /api/staff/queue/:visitId/complete
  *
  * Completes an active queue visit by setting
@@ -203,6 +246,7 @@ async function updateAppointmentStatus(req, res) {
 // can connect each endpoint to the correct function.
 module.exports = {
     getActiveQueue,
+    callQueueVisit,
     completeQueueVisit,
     getAppointmentsByDate,
     updateAppointmentStatus

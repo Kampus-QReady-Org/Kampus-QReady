@@ -46,7 +46,7 @@ function isValidDate(date) {
 /*
  * Return the current (i.e., today's) active clinic queue.
  *
- * Only queue visits that have not ended are returned.
+ * Only queue visits that have not ended and are still in the queue are returned.
  * Position is calculated dynamically from queue order.
  */
 async function getActiveQueue() {
@@ -75,6 +75,7 @@ async function getActiveQueue() {
             ON s."User_ID" = u."User_ID"
         WHERE cv."Visit_Type" = 'Q'
           AND cv."Visit_End_Time" IS NULL
+          AND q."Is_In_Queue" = TRUE
           AND q."Queue_Join_date" =
               (
                   CURRENT_TIMESTAMP AT TIME ZONE
@@ -91,6 +92,52 @@ async function getActiveQueue() {
         ...queueEntry,
         ticket: formatQueueTicket(queueEntry.queueNumber)
     }));
+}
+
+/*
+ * Call a student in the active queue by setting
+ * their Is_In_Queue status to FALSE.
+ */
+async function callQueueVisit(visitId) {
+    const query = `
+        UPDATE "QUEUE" q
+        SET "Is_In_Queue" = FALSE
+        FROM "CLINIC_VISIT" cv
+        WHERE cv."Visit_ID" = $1
+          AND q."Visit_ID" = cv."Visit_ID"
+          AND cv."Visit_Type" = 'Q'
+          AND cv."Visit_End_Time" IS NULL
+          AND q."Queue_Join_date" =
+              (
+                  CURRENT_TIMESTAMP AT TIME ZONE
+                  'Africa/Johannesburg'
+              )::date
+        RETURNING
+            cv."Visit_ID" AS "visitId",
+            q."Queue_Num" AS "queueNumber",
+            q."Is_In_Queue" AS "isInQueue",
+            TO_CHAR(
+                q."Queue_Join_date",
+                'YYYY-MM-DD'
+            ) AS "joinDate",
+            TO_CHAR(
+                q."Queue_Join_Time",
+                'HH24:MI'
+            ) AS "joinTime";
+    `;
+
+    const result = await pool.query(query, [visitId]);
+
+    if (result.rows.length === 0) {
+        return null;
+    }
+
+    const queueVisit = result.rows[0];
+
+    return {
+        ...queueVisit,
+        ticket: formatQueueTicket(queueVisit.queueNumber)
+    };
 }
 
 /*
@@ -300,6 +347,7 @@ async function updateAppointmentStatus(visitId, status) {
 // Export the service functions used by staffController.js.
 module.exports = {
     getActiveQueue,
+    callQueueVisit,
     completeQueueVisit,
     getAppointmentsByDate,
     updateAppointmentStatus

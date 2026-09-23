@@ -195,18 +195,29 @@ async function joinQueue(userId) {
 
         const queueNumber =
             numberResult.rows[0].nextQueueNumber;
-
-        /*
+/*
          * Create the clinic visit first.
          *
          * Visit_Type = 'Q' distinguishes a queue visit
          * from an appointment visit.
+         * 
+         * Visit_Start_Time is recorded using the clinic's
+         * local South African time.
          */
         const visitResult = await client.query(
             `
             INSERT INTO "CLINIC_VISIT"
-                ("User_ID", "Visit_Type")
-            VALUES ($1, 'Q')
+                (
+                    "User_ID",
+                    "Visit_Type",
+                    "Visit_Start_Time"
+                )
+            VALUES (
+                $1,
+                'Q',
+                (CURRENT_TIMESTAMP AT TIME ZONE
+                    'Africa/Johannesburg')
+            )
             RETURNING "Visit_ID";
             `,
             [userId]

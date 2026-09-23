@@ -37,6 +37,17 @@ router.get(
 );
 
 /*
+ * PATCH /api/staff/queue/:visitId/call
+ *
+ * Calls a specific active queue visit (updates 
+ * Is_In_Queue to false so staff can handle them).
+ */
+router.patch(
+    '/queue/:visitId/call',
+    staffController.callQueueVisit
+);
+
+/*
  * PATCH /api/staff/queue/:visitId/complete
  *
  * Marks an active queue visit as completed by
