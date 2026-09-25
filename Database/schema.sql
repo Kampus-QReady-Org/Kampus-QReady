@@ -47,7 +47,7 @@ CREATE TABLE public."APPOINTMENT" (
 CREATE TABLE public."CLINIC_VISIT" (
     "Visit_ID" integer NOT NULL,
     "User_ID" integer,
-    "Visit_Start_Time" timestamp with time zone[],
+    "Visit_Start_Time" timestamp with time zone,
     "Visit_End_Time" timestamp with time zone,
     "Visit_Type" character(1) NOT NULL,
     CONSTRAINT chk_visit_type CHECK (("Visit_Type" = ANY (ARRAY['A'::bpchar, 'Q'::bpchar])))
