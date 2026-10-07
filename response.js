@@ -61,38 +61,60 @@ if (password && confirmPassword) {
 // 1. DISPLAY LOGGED-IN PATIENT INFORMATION
 // -----------------------------------------------------
 
-// This function will display information belonging to
-// the patient who successfully logged into the system.
-//
-// The 'user' data will eventually come from the backend
-// after the patient's login credentials are authenticated.
-
 function displayPatientInfo(user) {
-  // Patient name displayed in the top-right account area
+
   const userName = document.getElementById("userName");
-
-  // Patient role displayed underneath the patient's name
   const userRole = document.getElementById("userRole");
-
-  // Patient name displayed in "Welcome back, Name"
   const welcomeName = document.getElementById("welcomeName");
 
-  // Display the patient's name in the account section
+  // Registered student/staff
+  const firstName = user.firstName || user.name || "";
+  const lastName = user.lastName || user.surname || "";
+
+  // Display full name in the profile area
   if (userName) {
-    userName.textContent = user.name;
+    if (firstName && lastName) {
+      userName.textContent = `${firstName} ${lastName}`;
+    } else if (firstName) {
+      userName.textContent = firstName;
+    } else {
+      userName.textContent = "Guest";
+    }
   }
 
-  // Display the patient's role
+  // Display role
   if (userRole) {
-    userRole.textContent = user.role;
+    if (user.staffNumber) {
+      userRole.textContent = "Staff";
+    } else if (user.studentNumber) {
+      userRole.textContent = "Student";
+    } else {
+      userRole.textContent = "Guest";
+    }
   }
 
-  // Display the patient's name in the welcome message
+  // Display first name in "Welcome back, ..."
   if (welcomeName) {
-    welcomeName.textContent = user.name;
+    welcomeName.textContent = firstName || "Guest";
   }
 }
+const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
+if (loggedInUser) {
+  displayPatientInfo(loggedInUser);
+}
+// Hide Appointments from guests
+const appointmentMenuItem =
+  document.getElementById("appointmentMenuItem");
+
+if (
+  appointmentMenuItem &&
+  loggedInUser &&
+  !loggedInUser.studentNumber &&
+  !loggedInUser.staffNumber
+) {
+  appointmentMenuItem.style.display = "none";
+}
 // -----------------------------------------------------
 // 2. MOBILE SIDEBAR
 // -----------------------------------------------------
@@ -349,7 +371,70 @@ if (contactModal && emergencyDetails) {
       }
     });
   }
+// =====================================================
+// GUEST LOGIN
+// =====================================================
 
+const guestLoginForm = document.querySelector(".login-form");
+
+if (
+    guestLoginForm &&
+    document.getElementById("guestName") &&
+    document.getElementById("guestSurname") &&
+    document.getElementById("guestId")
+) {
+
+    guestLoginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const name = document.getElementById("guestName").value.trim();
+        const surname = document.getElementById("guestSurname").value.trim();
+        const idNumber = document.getElementById("guestId").value.trim();
+
+        if (!name || !surname || !idNumber) {
+            alert("Please enter your name, surname, and ID number.");
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                "http://localhost:3000/api/auth/guest",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        surname: surname,
+                        idNumber: idNumber
+                    })
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                alert(result.error || "Guest login failed.");
+                return;
+            }
+
+            // Save guest login information
+            localStorage.setItem("token", result.token);
+            localStorage.setItem("user", JSON.stringify(result.user));
+
+            // Go to the guest/student queue page
+            window.location.href = "StudentDashboard.html";
+
+        } catch (error) {
+
+            console.error("Guest login error:", error);
+
+            alert("Unable to connect to the server.");
+        }
+    });
+}
   // =====================================================
 // REGISTRATION
 // =====================================================

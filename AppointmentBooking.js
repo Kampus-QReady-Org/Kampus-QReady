@@ -1,3 +1,35 @@
+// =====================================================
+// APPOINTMENT PAGE ACCESS CONTROL
+// =====================================================
+
+const loggedInUser = JSON.parse(localStorage.getItem("user"));
+
+if (
+    !loggedInUser ||
+    (!loggedInUser.studentNumber && !loggedInUser.staffNumber)
+) {
+    alert("Guests cannot access the appointment booking page.");
+    window.location.href = "StudentDashboard.html";
+}
+
+if (user) {
+    const userName = document.getElementById("userName");
+    const userRole = document.getElementById("userRole");
+
+    if (userName) {
+        userName.textContent = `${user.firstName} ${user.lastName}`;
+    }
+
+    if (userRole) {
+        if (user.staffNumber) {
+            userRole.textContent = "Staff";
+        } else if (user.studentNumber) {
+            userRole.textContent = "Student";
+        } else {
+            userRole.textContent = "Guest";
+        }
+    }
+}
 const timeSlots = document.querySelectorAll(".available-slot");
 
 const selectedTimeText =

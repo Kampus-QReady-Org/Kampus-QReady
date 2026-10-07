@@ -178,40 +178,45 @@ loadExistingQueue();
 // PATIENT DASHBOARD
 // =====================================================
 
-// -----------------------------------------------------
-// 1. DISPLAY LOGGED-IN PATIENT INFORMATION
-// -----------------------------------------------------
+// ========================================
+// DISPLAY LOGGED-IN USER
+// ========================================
 
-// This function will display information belonging to
-// the patient who successfully logged into the system.
-//
-// The 'user' data will eventually come from the backend
-// after the patient's login credentials are authenticated.
+const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
-function displayPatientInfo(user) {
-  // Patient name displayed in the top-right account area
-  const userName = document.getElementById("userName");
+if (loggedInUser) {
 
-  // Patient role displayed underneath the patient's name
-  const userRole = document.getElementById("userRole");
+    const userName = document.getElementById("userName");
+    const userRole = document.getElementById("userRole");
 
-  // Patient name displayed in "Welcome back, Name"
-  const welcomeName = document.getElementById("welcomeName");
+    if (userName) {
+    const firstName = loggedInUser.firstName || loggedInUser.name;
+    const lastName = loggedInUser.lastName || loggedInUser.surname;
 
-  // Display the patient's name in the account section
-  if (userName) {
-    userName.textContent = user.name;
-  }
+    userName.textContent =
+        `${firstName} ${lastName}`;
+}
+// Hide Appointments from guests
+const appointmentMenuItem =
+  document.getElementById("appointmentMenuItem");
 
-  // Display the patient's role
-  if (userRole) {
-    userRole.textContent = user.role;
-  }
-
-  // Display the patient's name in the welcome message
-  if (welcomeName) {
-    welcomeName.textContent = user.name;
-  }
+if (
+  appointmentMenuItem &&
+  loggedInUser &&
+  !loggedInUser.studentNumber &&
+  !loggedInUser.staffNumber
+) {
+  appointmentMenuItem.style.display = "none";
+}
+    if (userRole) {
+        if (loggedInUser.staffNumber) {
+            userRole.textContent = "Staff";
+        } else if (loggedInUser.studentNumber) {
+            userRole.textContent = "Student";
+        } else {
+            userRole.textContent = "Guest";
+        }
+    }
 }
 
 // -----------------------------------------------------
