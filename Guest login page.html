@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guest Login Page - Kampus Q-Ready</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <img src="media/images/Logo5 (1).png" alt="Logo" class="logo login-logo" />
+    <div class="system-branding">
+      <h1>Kampus <span>Q-Ready</span></h1>
+      <div class="brand-line"></div>
+      <p>Your Health. Our Priority.</p>
+    </div>
+    <form class="login-form">
+      <!--Login Form-->
+      <div class="login-container">
+        <!-- Name -->
+        <div class="mb-3">
+          <label for="guestName" class="form-label">Name</label>
+          <input
+            type="text"
+            class="form-control login-input"
+            id="guestName"
+            name="guestName"
+            placeholder="Enter name"
+            required
+            oninvalid="this.setCustomValidity('Please enter your name.')"
+            oninput="this.setCustomValidity('')"
+          />
+        </div>
+
+        <!-- Surname -->
+        <div class="mb-3">
+          <label for="guestSurname" class="form-label">Surname</label>
+          <input
+            type="text"
+            class="form-control login-input"
+            id="guestSurname"
+            name="guestSurname"
+            placeholder="Enter surname"
+            required
+            oninvalid="this.setCustomValidity('Please enter your surname.')"
+            oninput="this.setCustomValidity('')"
+          />
+        </div>
+
+        <!-- ID Number -->
+        <div class="mb-3">
+          <label for="guestId" class="form-label">ID Number</label>
+          <input
+            type="text"
+            class="form-control login-input"
+            id="guestId"
+            name="guestId"
+            placeholder="Enter ID number"
+            inputmode="numeric"
+            pattern="[0-9]{13}"
+            maxlength="13"
+            required
+            oninvalid="
+              this.setCustomValidity('Please enter a valid 13-digit ID number.')
+            "
+            oninput="this.setCustomValidity('')"
+          />
+        </div>
+      </div>
+
+      <!-- Guest Login Button -->
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn guest-login-btn">
+          Continue as Guest
+        </button>
+      </div>
+      <!-- Registration Link -->
+      <p class="account-option guest-login-option">
+        Already have an account?
+        <a href="index.html">Login here</a>
+      </p>
+    </form>
+    <script src="response.js"></script>
+  </body>
+</html>

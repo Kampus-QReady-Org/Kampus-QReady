@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page - Kampus Q-Ready</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- NWU Logo -->
+    <img src="media/images/Logo5 (1).png" alt="Logo" class="logo login-logo" />
+    <div class="system-branding">
+      <h1>Kampus <span>Q-Ready</span></h1>
+      <div class="brand-line"></div>
+      <p>Your Health. Our Priority.</p>
+    </div>
+    <form class="login-form">
+      <!--Login Form-->
+      <div class="login-container">
+        <div class="mb-3">
+          <label for="studentNumber" class="form-label">
+            Username / ID Number
+          </label>
+          <input
+            type="text"
+            class="form-control login-input"
+            id="studentNumber"
+            name="studentNumber"
+            placeholder="Enter student or staff number"
+            required
+            oninvalid="
+              this.setCustomValidity(
+                'Please enter your student or staff number.',
+              )
+            "
+            oninput="this.setCustomValidity('')"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label"> Password </label>
+          <input
+            type="password"
+            class="form-control login-input"
+            id="password"
+            name="password"
+            placeholder="Enter password"
+            required
+            oninvalid="
+              this.setCustomValidity('Please enter the correct password.')
+            "
+            oninput="this.setCustomValidity('')"
+          />
+          <!-- Forgot Password Link -->
+          <div class="forgot-password">
+            <a href="Forgot password.html">Forgot Password?</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Login Button -->
+      <div class="d-flex justify-content-center">
+        <button type="submit" class="btn login-btn">Login</button>
+      </div>
+
+      <!-- Registration Link -->
+      <p class="account-option">
+        Don't have an account?
+        <a href="Registration page.html">Register here</a>
+      </p>
+
+      <div class="or-divider">
+        <hr />
+        <span>OR</span>
+        <hr />
+      </div>
+
+      <!-- Guest Login Link -->
+      <p class="account-option">
+        <a href="Guest login page.html">Continue as Guest</a>
+      </p>
+    </form>
+    <script src="response.js"></script>
+  </body>
+</html>

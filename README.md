@@ -37,12 +37,14 @@ This project is an **expansion** of an existing smart appointment system, not a 
 ### Two ways to use the system
 
 **Appointment Booking**
+
 - Student logs in
 - Views available appointment slots (clearly distinguishable from booked slots)
 - Books an available slot
 - Can view and cancel the appointment afterwards
 
 **Live Walk-In Queue**
+
 - Student logs in from a phone without a prior appointment
 - Chooses the queue/ticket option
 - System generates a digital ticket number
@@ -51,16 +53,16 @@ This project is an **expansion** of an existing smart appointment system, not a 
 
 ### Functional Scope
 
-| Area | Core Requirement |
-|---|---|
-| Authentication | Student account/login |
-| Appointments | View and book available slots |
-| Appointment management | View and cancel bookings |
-| Walk-in queue | Generate a digital ticket |
-| Live queue | Display current ticket/position |
-| Queue updates | Reflect changes as the queue moves |
-| Staff-side management | Manage appointments/queue activity |
-| Access control | Restrict sensitive functionality |
+| Area                   | Core Requirement                   |
+| ---------------------- | ---------------------------------- |
+| Authentication         | Student account/login              |
+| Appointments           | View and book available slots      |
+| Appointment management | View and cancel bookings           |
+| Walk-in queue          | Generate a digital ticket          |
+| Live queue             | Display current ticket/position    |
+| Queue updates          | Reflect changes as the queue moves |
+| Staff-side management  | Manage appointments/queue activity |
+| Access control         | Restrict sensitive functionality   |
 
 ### Possible Additions
 
@@ -74,21 +76,21 @@ This project is an **expansion** of an existing smart appointment system, not a 
 
 Nothing here is locked in — these are proven, well-documented options, and whoever joins as a developer picks what they're strongest in.
 
-| Component | Options |
-|---|---|
-| Frontend | React.js or plain HTML/CSS/JavaScript |
-| Backend | Django (Python) or Node.js + Express |
-| Authentication | JWT |
-| Database | PostgreSQL or MongoDB |
-| Cloud | Google Cloud |
-| Notifications | SendGrid (email) |
-| Real-time mechanism | Real-time polling |
+| Component           | Options                               |
+| ------------------- | ------------------------------------- |
+| Frontend            | React.js or plain HTML/CSS/JavaScript |
+| Backend             | Django (Python) or Node.js + Express  |
+| Authentication      | JWT                                   |
+| Database            | PostgreSQL or MongoDB                 |
+| Cloud               | Google Cloud                          |
+| Notifications       | SendGrid (email)                      |
+| Real-time mechanism | Real-time polling                     |
 
 ## Team Roles
 
 - **Project Manager** — Tumie
 - **Group Leader** — Dante LeRoux
-- **Frontend** — Palesa, Manyati, Khubjane
+- **Frontend** — Palesane, Manyati, Khubjane
 - **Backend + Database** — LeRoux, Heyns, Seleka, Mudau, Brink
 - **Business Case & Feasibility Study** — Everyone
 
