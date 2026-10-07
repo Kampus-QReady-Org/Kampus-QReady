@@ -28,6 +28,15 @@ async function loadQueue() {
 
         console.log('Queue data:', data);
 
+        // Update dashboard summary cards
+        document.getElementById('studentsWaiting').textContent =
+            data.queue.length;
+
+        document.getElementById('nextTicket').textContent =
+            data.queue.length > 0
+                ? data.queue[0].ticket
+                : '—';
+
         const queueTableBody = document.getElementById('queueTableBody');
 
         queueTableBody.innerHTML = '';
@@ -37,13 +46,19 @@ async function loadQueue() {
             const row = document.createElement('tr');
 
             row.dataset.visitId = student.visitId;
-            row.dataset.studentNumber = student.studentNumber;
+            row.dataset.studentNumber = student.studentNumber || 'Not available';
+
+            const status = student.status || 'waiting';
 
             row.innerHTML = `
                 <td>${student.ticket}</td>
                 <td>${student.firstName} ${student.lastName}</td>
                 <td>${student.position}</td>
-                <td><span class="status waiting">Waiting</span></td>
+                <td>
+                    <span class="status ${status.toLowerCase()}">
+                        ${status}
+                    </span>
+                </td>
                 <td>
                     <button class="view-btn">View</button>
                     <button class="call-btn">Call</button>
@@ -61,6 +76,7 @@ async function loadQueue() {
 
     }
 }
+
 loadQueue();
 
 // ========================================
@@ -177,7 +193,7 @@ document.getElementById('queueTableBody').addEventListener('click', function (ev
 
         const row = event.target.closest('tr');
 
-       const studentNumber = row.dataset.studentNumber || 'Not available';
+        const studentNumber = row.dataset.studentNumber || 'Not available';
 
         const studentName = row.cells[1].textContent.trim();
 
@@ -231,25 +247,56 @@ document.getElementById('queueTableBody').addEventListener('click', function (ev
 });
 
 // Confirm Call
-document.getElementById('confirmCallBtn').addEventListener('click', function () {
+document.getElementById('confirmCallBtn').addEventListener('click', async function () {
 
     if (selectedCallRow) {
 
-        const statusCell = selectedCallRow.cells[3];
+        const visitId = selectedCallRow.dataset.visitId;
+        const token = localStorage.getItem('token');
 
-        statusCell.innerHTML =
-            '<span class="status called">Called</span>';
+        try {
 
-        const modalElement =
-            document.getElementById('callStudentModal');
+            const response = await fetch(
+                `${API_BASE_URL}/api/staff/queue/${visitId}/call`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
 
-        const modal =
-            bootstrap.Modal.getInstance(modalElement);
+            const data = await response.json();
 
-        modal.hide();
+            if (!response.ok) {
+                throw new Error(
+                    data.error || 'Failed to call student'
+                );
+            }
+
+            console.log('Student called:', data);
+
+            const statusCell = selectedCallRow.cells[3];
+
+            statusCell.innerHTML =
+                '<span class="status called">Called</span>';
+
+            const modalElement =
+                document.getElementById('callStudentModal');
+
+            const modal =
+                bootstrap.Modal.getInstance(modalElement);
+
+            modal.hide();
+
+        } catch (error) {
+
+            console.error('Error calling student:', error);
+
+            alert('Unable to call the student.');
+        }
     }
 });
-
 // ----------------------------------------
 // CANCEL STUDENT
 // ----------------------------------------
@@ -278,41 +325,41 @@ document.getElementById('queueTableBody').addEventListener('click', async functi
         modal.show();
     }
 
- if (event.target.classList.contains('complete-btn')) {
+    if (event.target.classList.contains('complete-btn')) {
 
-    const selectedCompleteRow = event.target.closest('tr');
+        const selectedCompleteRow = event.target.closest('tr');
 
-    const visitId = selectedCompleteRow.dataset.visitId;
-    const token = localStorage.getItem('token');
+        const visitId = selectedCompleteRow.dataset.visitId;
+        const token = localStorage.getItem('token');
 
-    try {
-        const response = await fetch(
-            `${API_BASE_URL}/api/staff/queue/${visitId}/complete`,
-            {
-                method: 'PATCH',
-                headers: {
-                    Authorization: `Bearer ${token}`
+        try {
+            const response = await fetch(
+                `${API_BASE_URL}/api/staff/queue/${visitId}/complete`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
                 }
-            }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(
-                data.error || 'Failed to complete queue visit'
             );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error || 'Failed to complete queue visit'
+                );
+            }
+
+            console.log('Queue visit completed:', data);
+
+            selectedCompleteRow.remove();
+
+        } catch (error) {
+            console.error('Error completing queue visit:', error);
+            alert('Unable to complete the queue visit.');
         }
-
-        console.log('Queue visit completed:', data);
-
-        selectedCompleteRow.remove();
-
-    } catch (error) {
-        console.error('Error completing queue visit:', error);
-        alert('Unable to complete the queue visit.');
     }
- }
 });
 
 // Confirm Cancel
@@ -351,7 +398,15 @@ callNextButton.addEventListener('click', function () {
         return;
     }
 
-    nextStudentRow = queueRows[0];
+    nextStudentRow = Array.from(queueRows).find(row => {
+        const status = row.cells[3].textContent.trim().toLowerCase();
+        return status === 'waiting';
+    });
+
+    if (!nextStudentRow) {
+        alert('There are no students waiting in the queue.');
+        return;
+    }
 
     const ticket =
         nextStudentRow.cells[0].textContent.trim();
@@ -374,25 +429,58 @@ callNextButton.addEventListener('click', function () {
 
 
 // Confirm Call Next
-document.getElementById('confirmCallNextBtn').addEventListener('click', function () {
+document.getElementById('confirmCallNextBtn').addEventListener('click', async function () {
 
     if (nextStudentRow) {
 
-        const statusCell =
-            nextStudentRow.cells[3];
+        const visitId = nextStudentRow.dataset.visitId;
+        const token = localStorage.getItem('token');
 
-        statusCell.innerHTML =
-            '<span class="status called">Called</span>';
+        try {
 
-        const modalElement =
-            document.getElementById('callNextModal');
+            const response = await fetch(
+                `${API_BASE_URL}/api/staff/queue/${visitId}/call`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
 
-        const modal =
-            bootstrap.Modal.getInstance(modalElement);
+            const data = await response.json();
 
-        modal.hide();
+            if (!response.ok) {
+                throw new Error(
+                    data.error || 'Failed to call next student'
+                );
+            }
+
+            console.log('Next student called:', data);
+
+            const statusCell =
+                nextStudentRow.cells[3];
+
+            statusCell.innerHTML =
+                '<span class="status called">Called</span>';
+
+            const modalElement =
+                document.getElementById('callNextModal');
+
+            const modal =
+                bootstrap.Modal.getInstance(modalElement);
+
+            modal.hide();
+
+        } catch (error) {
+
+            console.error('Error calling next student:', error);
+
+            alert('Unable to call the next student.');
+        }
     }
 });
+
 // ========================================
 // RESCHEDULE APPOINTMENT
 // ========================================
@@ -551,8 +639,11 @@ document.getElementById('confirmCancelAppointmentBtn')
                     );
                 }
 
-                // Remove the appointment from the table
-                selectedAppointmentCancelRow.remove();
+                // Update the appointment status in the table
+                const statusCell = selectedAppointmentCancelRow.cells[3];
+
+                statusCell.innerHTML =
+                    '<span class="status cancelled">cancelled</span>';
 
                 const modalElement =
                     document.getElementById(
@@ -576,9 +667,7 @@ document.getElementById('confirmCancelAppointmentBtn')
                     error
                 );
 
-                alert(
-                    'Unable to cancel the appointment.'
-                );
+                alert(error.message);
             }
         }
     });
@@ -727,6 +816,20 @@ addAppointmentButton.addEventListener('click', function () {
     modal.show();
 });
 
+// ========================================
+// PREVENT PAST APPOINTMENT SLOT DATES
+// ========================================
+
+const appointmentSlotDate =
+    document.getElementById('newAppointmentSlotDate');
+
+const currentDateSlot = new Date();
+
+const year = currentDateSlot.getFullYear();
+const month = String(currentDateSlot.getMonth() + 1).padStart(2, '0');
+const day = String(currentDateSlot.getDate()).padStart(2, '0');
+
+appointmentSlotDate.min = `${year}-${month}-${day}`;
 
 // ========================================
 // CONFIRM ADD APPOINTMENT SLOT
@@ -742,12 +845,39 @@ document.getElementById('confirmAddAppointmentBtn')
             document.getElementById('newAppointmentSlotTime').value;
 
         if (!newDate || !newTime) {
-            alert('Please select a date and time.');
-            return;
-        }
+    alert('Please select a date and time.');
+    return;
+}
 
-        const tableBody =
-            document.getElementById('appointmentTableBody');
+if (newTime < '08:00' || newTime > '16:30') {
+    alert('Appointments must be between 08:00 and 16:30.');
+    return;
+}
+
+if (newTime >= '12:00' && newTime < '13:00') {
+    alert('Appointments cannot be scheduled between 12:00 and 13:00 because of lunch.');
+    return;
+}
+
+// Prevent duplicate appointment slots
+const existingRows =
+    document.querySelectorAll('#appointmentTableBody tr');
+
+const duplicateSlot = Array.from(existingRows).some(row => {
+    const existingDate = row.cells[0].textContent.trim();
+    const existingTime = row.cells[1].textContent.trim();
+
+    return existingDate === newDate &&
+           existingTime === newTime;
+});
+
+if (duplicateSlot) {
+    alert('An appointment slot already exists for this date and time.');
+    return;
+}
+
+const tableBody =
+    document.getElementById('appointmentTableBody');
 
         const newRow =
             document.createElement('tr');
@@ -913,3 +1043,4 @@ document.getElementById('saveStudentChangesBtn')
             modal.hide();
         }
     });
+

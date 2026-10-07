@@ -64,17 +64,115 @@ joinQueueButton.addEventListener("click", async function () {
 // LEAVE QUEUE
 // =========================
 
-leaveQueueButton.addEventListener("click", function () {
+leaveQueueButton.addEventListener("click", async function () {
+
   const confirmLeave = confirm("Are you sure you want to leave the queue?");
 
-  if (confirmLeave) {
+  if (!confirmLeave) {
+    return;
+  }
+
+  const token = localStorage.getItem("token");
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:3000/api/queue/leave",
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Unable to leave the queue."
+      );
+    }
+
+    console.log("Successfully left queue:", data);
+
     ticketCard.style.display = "none";
 
-    joinQueueButton.innerHTML = '<i class="bi bi-plus-circle"></i> Join Queue';
+    joinQueueButton.innerHTML =
+      '<i class="bi bi-plus-circle"></i> Join Queue';
 
     joinQueueButton.disabled = false;
+
+  } catch (error) {
+
+    console.error("Error leaving queue:", error);
+
+    alert(error.message);
   }
 });
+
+// =========================
+// LOAD EXISTING QUEUE
+// =========================
+
+async function loadExistingQueue() {
+
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return;
+  }
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:3000/api/queue/status",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      return;
+    }
+
+    const data = await response.json();
+
+    console.log("Current queue status:", data);
+
+    const queue = data.queue;
+
+    if (!queue) {
+      return;
+    }
+
+    // Display existing queue information
+    ticketNumber.textContent = queue.ticket;
+    myPosition.textContent = queue.position;
+    peopleAhead.textContent = queue.peopleAhead;
+
+    // Show ticket
+    ticketCard.style.display = "block";
+
+    // Update Join Queue button
+    joinQueueButton.innerHTML =
+      '<i class="bi bi-check-circle"></i> Joined Queue';
+
+    joinQueueButton.disabled = true;
+
+  } catch (error) {
+
+    console.error(
+      "Error loading existing queue:",
+      error
+    );
+
+  }
+}
+
+loadExistingQueue();
 
 // =====================================================
 // PATIENT DASHBOARD

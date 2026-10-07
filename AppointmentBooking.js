@@ -78,15 +78,52 @@ function checkBooking() {
 
 }
 
-
 // Confirm booking
-confirmButton.addEventListener("click", function() {
+confirmButton.addEventListener("click", async function() {
 
-    alert(
-        "Appointment selected for " +
-        appointmentDate.value +
-        " at " +
-        selectedTime
-    );
+    const token = localStorage.getItem("token");
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:3000/api/appointments",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    date: appointmentDate.value,
+                    time: selectedTime
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error || "Unable to book appointment."
+            );
+        }
+
+        alert(
+            "Appointment booked successfully for " +
+            appointmentDate.value +
+            " at " +
+            selectedTime
+        );
+
+        console.log("Booked appointment:", data);
+
+        confirmButton.disabled = true;
+
+    } catch (error) {
+
+        console.error("Error booking appointment:", error);
+
+        alert(error.message);
+    }
 
 });
