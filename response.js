@@ -300,57 +300,57 @@ if (contactModal && emergencyDetails) {
   });
 }
 
-  // =====================================================
-  // LOGIN
-  // =====================================================
+// =====================================================
+// LOGIN
+// =====================================================
 
-  const loginForm = document.querySelector(".login-form");
+const loginForm = document.getElementById("loginForm");
 
-  if (loginForm) {
-    loginForm.addEventListener("submit", async function (event) {
-      event.preventDefault();
+if (loginForm) {
+  loginForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-      const username = document.getElementById("studentNumber").value.trim();
-      const passwordValue = document.getElementById("password").value;
+    const username = document.getElementById("studentNumber").value.trim();
+    const passwordValue = document.getElementById("password").value;
 
-      try {
-        const response = await fetch("http://localhost:3000/api/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: username,
-            password: passwordValue,
-          }),
-        });
+    try {
+      const response = await fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          password: passwordValue,
+        }),
+      });
 
-        const result = await response.json();
+      const result = await response.json();
 
-        if (!response.ok) {
-          alert(result.error || "Login failed.");
-          return;
-        }
-
-        // Save the login information
-        localStorage.setItem("token", result.data.token);
-        localStorage.setItem("user", JSON.stringify(result.data.user));
-
-        // Staff member → Staff Dashboard
-        if (result.data.user.staffNumber) {
-          window.location.href = "staff-dashboard.html";
-        } else {
-          // Student → Student Dashboard
-          window.location.href = "StudentDashboard.html";
-        }
-      } catch (error) {
-        console.error("Login error:", error);
-        alert("Unable to connect to the server.");
+      if (!response.ok) {
+        alert(result.error || "Login failed.");
+        return;
       }
-    });
-  }
 
-  // =====================================================
+      // Save the login information
+      localStorage.setItem("token", result.data.token);
+      localStorage.setItem("user", JSON.stringify(result.data.user));
+
+      // Staff member → Staff Dashboard
+      if (result.data.user.staffNumber) {
+        window.location.href = "staff-dashboard.html";
+      } else {
+        // Student → Student Dashboard
+        window.location.href = "StudentDashboard.html";
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Unable to connect to the server.");
+    }
+  });
+}
+
+// =====================================================
 // REGISTRATION
 // =====================================================
 
@@ -364,17 +364,15 @@ if (registrationForm) {
     const lastName = document.getElementById("surname").value.trim();
     const phone = document.getElementById("phoneNumber").value.trim();
     const email = document.getElementById("email").value.trim();
-    const studentOrStaffNumber =
-      document.getElementById("userNumber").value.trim();
+    const studentOrStaffNumber = document
+      .getElementById("userNumber")
+      .value.trim();
     const password = document.getElementById("password").value;
-    const confirmPassword =
-      document.getElementById("confirmPassword").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
 
-    const studentSelected =
-      document.getElementById("studentType").checked;
+    const studentSelected = document.getElementById("studentType").checked;
 
-    const staffSelected =
-      document.getElementById("staffType").checked;
+    const staffSelected = document.getElementById("staffType").checked;
 
     // Check that passwords match
     if (password !== confirmPassword) {
@@ -383,25 +381,22 @@ if (registrationForm) {
     }
 
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/auth/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            firstName: firstName,
-            lastName: lastName,
-            phone: phone,
-            email: email,
-            isStudent: studentSelected,
-            isStaff: staffSelected,
-            studentOrStaffNumber: studentOrStaffNumber,
-            password: password,
-          }),
-        }
-      );
+      const response = await fetch("http://localhost:3000/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: firstName,
+          lastName: lastName,
+          phone: phone,
+          email: email,
+          isStudent: studentSelected,
+          isStaff: staffSelected,
+          studentOrStaffNumber: studentOrStaffNumber,
+          password: password,
+        }),
+      });
 
       const result = await response.json();
 
@@ -413,9 +408,53 @@ if (registrationForm) {
       alert("Registration successful! You can now log in.");
 
       window.location.href = "index.html";
-
     } catch (error) {
       console.error("Registration error:", error);
+      alert("Unable to connect to the server.");
+    }
+  });
+}
+
+// =====================================================
+// GUEST LOGIN
+// =====================================================
+
+const guestForm = document.getElementById("guestForm");
+
+if (guestForm) {
+  guestForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const name = document.getElementById("guestName").value.trim();
+    const surname = document.getElementById("guestSurname").value.trim();
+    const idNumber = document.getElementById("guestId").value.trim();
+
+    try {
+      const response = await fetch("http://localhost:3000/api/auth/guest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name,
+          surname: surname,
+          idNumber: idNumber,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        alert(result.error || "Guest login failed.");
+        return;
+      }
+
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("user", JSON.stringify(result.user));
+
+      window.location.href = "StudentDashboard.html";
+    } catch (error) {
+      console.error("Guest login error:", error);
       alert("Unable to connect to the server.");
     }
   });
