@@ -1,35 +1,38 @@
-// =====================================================
+console.log("NEW APPOINTMENT JS FILE LOADED");// =====================================================
 // APPOINTMENT PAGE ACCESS CONTROL
 // =====================================================
+document.addEventListener("DOMContentLoaded", () => {
 
-const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
-if (
-    !loggedInUser ||
-    (!loggedInUser.studentNumber && !loggedInUser.staffNumber)
-) {
-    alert("Guests cannot access the appointment booking page.");
-    window.location.href = "StudentDashboard.html";
-}
+    if (
+        !loggedInUser ||
+        (!loggedInUser.studentNumber && !loggedInUser.staffNumber)
+    ) {
+        alert("Guests cannot access the appointment booking page.");
+        window.location.href = "StudentDashboard.html";
+        return;
+    }
 
-if (user) {
     const userName = document.getElementById("userName");
     const userRole = document.getElementById("userRole");
 
     if (userName) {
-        userName.textContent = `${user.firstName} ${user.lastName}`;
+        const firstName = loggedInUser.firstName || loggedInUser.name || "";
+        const lastName = loggedInUser.lastName || loggedInUser.surname || "";
+
+        userName.textContent = `${firstName} ${lastName}`.trim();
     }
 
     if (userRole) {
-        if (user.staffNumber) {
+        if (loggedInUser.staffNumber) {
             userRole.textContent = "Staff";
-        } else if (user.studentNumber) {
+        } else if (loggedInUser.studentNumber) {
             userRole.textContent = "Student";
-        } else {
-            userRole.textContent = "Guest";
         }
     }
-}
+
+});
 const timeSlots = document.querySelectorAll(".available-slot");
 
 const selectedTimeText =

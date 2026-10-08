@@ -59,11 +59,10 @@
 
           <!-- CURRENT PAGE -->
 
-          <a href="AppointmentBooking.html" class="active">
-            <i class="bi bi-calendar-event"></i>
-
-            <span>Appointments</span>
-          </a>
+         <a href="AppointmentBooking.html" class="active" id="appointmentMenuItem">
+               <i class="bi bi-calendar-event"></i>
+              <span>Appointments</span>
+            </a>
 
           <a href="JoinQueue.html">
             <i class="bi bi-people"></i>
@@ -125,18 +124,18 @@
         <header class="dashboard-topbar">
           <div class="topbar-spacer"></div>
 
-          <!-- Logged-in patient information -->
-
+ <!-- Logged-in patient information.
+     Name and role will be populated dynamically from the authenticated user's data by the backend. -->
           <div class="topbar-right">
-  <div class="profile-info">
-    <i class="bi bi-person-circle"></i>
+            <div class="profile-info">
+              <i class="bi bi-person-circle"></i>
 
-    <div>
-      <strong id="userName"></strong>
-      <span id="userRole"></span>
-    </div>
-  </div>
-</div>
+              <div>
+                <strong id="userName"></strong>
+                <span id="userRole"></span>
+              </div>
+            </div>
+          </div>
         </header>
 
         <!-- =========================

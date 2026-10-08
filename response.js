@@ -107,6 +107,9 @@ if (loggedInUser) {
 const appointmentMenuItem =
   document.getElementById("appointmentMenuItem");
 
+  console.log("Logged in user:", loggedInUser);
+console.log("Appointment menu:", appointmentMenuItem);
+
 if (
   appointmentMenuItem &&
   loggedInUser &&

@@ -196,18 +196,7 @@ if (loggedInUser) {
     userName.textContent =
         `${firstName} ${lastName}`;
 }
-// Hide Appointments from guests
-const appointmentMenuItem =
-  document.getElementById("appointmentMenuItem");
 
-if (
-  appointmentMenuItem &&
-  loggedInUser &&
-  !loggedInUser.studentNumber &&
-  !loggedInUser.staffNumber
-) {
-  appointmentMenuItem.style.display = "none";
-}
     if (userRole) {
         if (loggedInUser.staffNumber) {
             userRole.textContent = "Staff";
@@ -217,6 +206,22 @@ if (
             userRole.textContent = "Guest";
         }
     }
+}
+
+// Hide Appointments from guests
+const appointmentMenuItem =
+  document.getElementById("appointmentMenuItem");
+
+console.log("Logged in user:", loggedInUser);
+console.log("Appointment menu:", appointmentMenuItem);
+
+if (
+  appointmentMenuItem &&
+  loggedInUser &&
+  !loggedInUser.studentNumber &&
+  !loggedInUser.staffNumber
+) {
+  appointmentMenuItem.style.display = "none";
 }
 
 // -----------------------------------------------------
