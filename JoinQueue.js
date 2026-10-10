@@ -10,12 +10,14 @@ const myPosition = document.getElementById("myPosition");
 
 const peopleAhead = document.getElementById("peopleAhead");
 
-const myWaitTime = document.getElementById("myWaitTime");
+const queueStatus = document.getElementById("queueStatus");
 
 // =========================
 // JOIN QUEUE
 // =========================
 joinQueueButton.addEventListener("click", async function () {
+  
+  console.log("JOIN QUEUE BUTTON CLICKED");
   const token = localStorage.getItem("token");
 
   try {
@@ -37,6 +39,14 @@ joinQueueButton.addEventListener("click", async function () {
     ticketNumber.textContent = queue.ticket;
     myPosition.textContent = queue.position;
     peopleAhead.textContent = queue.peopleAhead;
+
+    const visualTicket = document.getElementById("visualQueueTicket");
+    const visualPosition = document.getElementById("visualQueuePosition");
+    const visualPeopleAhead = document.getElementById("visualQueuePeopleAhead");
+
+    if (visualTicket) visualTicket.textContent = queue.ticket ?? "—";
+    if (visualPosition) visualPosition.textContent = queue.position ?? "—";
+    if (visualPeopleAhead) visualPeopleAhead.textContent = queue.peopleAhead ?? "—";
 
     // Show ticket
     ticketCard.style.display = "block";
@@ -98,6 +108,14 @@ leaveQueueButton.addEventListener("click", async function () {
 
     ticketCard.style.display = "none";
 
+    const visualTicket = document.getElementById("visualQueueTicket");
+    const visualPosition = document.getElementById("visualQueuePosition");
+    const visualPeopleAhead = document.getElementById("visualQueuePeopleAhead");
+
+    if (visualTicket) visualTicket.textContent = "—";
+    if (visualPosition) visualPosition.textContent = "—";
+    if (visualPeopleAhead) visualPeopleAhead.textContent = "—";
+
     joinQueueButton.innerHTML =
       '<i class="bi bi-plus-circle"></i> Join Queue';
 
@@ -141,17 +159,38 @@ async function loadExistingQueue() {
     const data = await response.json();
 
     console.log("Current queue status:", data);
+const queue = data.queue;
 
-    const queue = data.queue;
+if (!queue) {
+  ticketCard.style.display = "none";
 
-    if (!queue) {
-      return;
-    }
+  if (visualTicket) visualTicket.textContent = "—";
+  if (visualPosition) visualPosition.textContent = "—";
+  if (visualPeopleAhead) visualPeopleAhead.textContent = "—";
+
+  joinQueueButton.innerHTML =
+    '<i class="bi bi-plus-circle"></i> Join Queue';
+
+  joinQueueButton.disabled = false;
+
+  return;
+}
 
     // Display existing queue information
     ticketNumber.textContent = queue.ticket;
     myPosition.textContent = queue.position;
     peopleAhead.textContent = queue.peopleAhead;
+
+    const visualTicket = document.getElementById("visualQueueTicket");
+    const visualPosition = document.getElementById("visualQueuePosition");
+    const visualPeopleAhead = document.getElementById("visualQueuePeopleAhead");
+
+    if (visualTicket) visualTicket.textContent = queue.ticket ?? "—";
+    if (visualPosition) visualPosition.textContent = queue.position ?? "—";
+    if (visualPeopleAhead) visualPeopleAhead.textContent = queue.peopleAhead ?? "—";
+
+    queueStatus.textContent = "Waiting";
+
 
     // Show ticket
     ticketCard.style.display = "block";
@@ -172,7 +211,11 @@ async function loadExistingQueue() {
   }
 }
 
+
 loadExistingQueue();
+
+
+setInterval(loadExistingQueue, 10000);
 
 // =====================================================
 // PATIENT DASHBOARD
@@ -294,3 +337,74 @@ if (contactModal && emergencyDetails) {
     emergencyCollapse.hide();
   });
 }
+
+
+/* =========================
+   CLINIC OPERATING STATUS
+   Monday-Friday, 08:00-16:30
+   South African time
+========================= */
+
+function updateClinicStatus() {
+  const statusText = document.getElementById("queueStatusText");
+  const liveDot = document.getElementById("queueLiveDot");
+  const liveBadge = document.getElementById("queueLiveBadge");
+
+  if (!statusText || !liveDot) {
+    return;
+  }
+
+  const parts = new Intl.DateTimeFormat("en-ZA", {
+    timeZone: "Africa/Johannesburg",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23"
+  }).formatToParts(new Date());
+
+  const values = {};
+  parts.forEach(part => {
+    values[part.type] = part.value;
+  });
+
+  const weekday = values.weekday;
+  const hour = Number(values.hour);
+  const minute = Number(values.minute);
+  const currentMinutes = hour * 60 + minute;
+
+  const isWeekday = [
+    "Mon", "Tue", "Wed", "Thu", "Fri"
+  ].includes(weekday);
+
+  const isWithinOperatingHours =
+    currentMinutes >= 8 * 60 &&
+    currentMinutes < 16 * 60 + 30;
+
+  const isOpen = isWeekday && isWithinOperatingHours;
+
+
+  if (isOpen) {
+    statusText.textContent = "Queue is currently open";
+    liveDot.style.backgroundColor = "#198754";
+
+    if (liveBadge) {
+      liveBadge.textContent = "Live";
+      liveBadge.style.backgroundColor = "#198754";
+      liveBadge.style.color = "#ffffff";
+    }
+  } else {
+    statusText.textContent = "Queue is currently closed";
+    liveDot.style.backgroundColor = "#6c757d";
+
+    if (liveBadge) {
+      liveBadge.textContent = "Closed";
+      liveBadge.style.backgroundColor = "#6c757d";
+      liveBadge.style.color = "#ffffff";
+    }
+  }
+}
+
+// Check immediately and refresh the status every minute.
+updateClinicStatus();
+setInterval(updateClinicStatus, 60000);
+

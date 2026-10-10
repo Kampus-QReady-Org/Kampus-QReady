@@ -108,6 +108,15 @@ async function loadAppointments() {
 
         console.log('Appointment data:', data);
 
+        // Update dashboard appointment summary cards
+        document.getElementById('appointmentsToday').textContent =
+            data.appointments.length;
+
+        document.getElementById('completedToday').textContent =
+            data.appointments.filter(
+                appointment => appointment.status.toLowerCase() === 'completed'
+            ).length;
+
         const appointmentTableBody =
             document.getElementById('appointmentTableBody');
 
@@ -167,17 +176,25 @@ const options = {
     day: 'numeric'
 };
 dateElement.textContent = today.toLocaleDateString('en-GB', options);
+
 // ========================================
-//LOGOUT
+// LOGOUT
 // ========================================
 
-//Redirect the staff member to the Login page when they log out
-const logoutButton = document.getElementById('logoutBtn');
+const logoutButton = document.getElementById("logoutBtn");
 
-logoutButton.addEventListener('click', function () {
-    window.location.href = 'index.html';
-});
+if (logoutButton) {
+    logoutButton.addEventListener("click", function (event) {
+        event.preventDefault();
 
+        // Clear the saved login information
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
+        // Redirect to the Login page
+        window.location.href = "index.html";
+    });
+}
 
 // ========================================
 // QUEUE BUTTONS
@@ -187,36 +204,69 @@ logoutButton.addEventListener('click', function () {
 // VIEW STUDENT
 // ----------------------------------------
 
-document.getElementById('queueTableBody').addEventListener('click', function (event) {
 
-    if (event.target.classList.contains('view-btn')) {
+function showStudentDetails(row) {
+    const studentNumber =
+        row.dataset.studentNumber ||
+        row.cells[0].textContent.trim();
 
-        const row = event.target.closest('tr');
+    const studentName =
+        row.dataset.studentName ||
+        row.cells[1].textContent.trim();
 
-        const studentNumber = row.dataset.studentNumber || 'Not available';
+    document.getElementById('viewStudentNumber').textContent =
+        studentNumber || 'Not available';
 
-        const studentName = row.cells[1].textContent.trim();
+    document.getElementById('viewStudentName').textContent =
+        studentName || 'Not available';
 
-        document.getElementById('viewStudentNumber').textContent =
-            studentNumber;
+    const queueNumber = row.dataset.queueNumber;
+    const ticket = row.dataset.ticket;
+    const position = row.dataset.position;
+    const joinTime = row.dataset.joinTime;
+    const appointmentTime = row.dataset.appointmentTime;
+    const appointmentStatus = row.dataset.appointmentStatus;
 
-        document.getElementById('viewStudentName').textContent =
-            studentName;
+    const detailsContainer = document.getElementById('viewStudentModal')
+        .querySelector('.modal-body');
 
-        // Temporary information
-        document.getElementById('viewStudentEmail').textContent =
-            'student@nwu.ac.za';
-
-        document.getElementById('viewStudentContact').textContent =
-            'Not available';
-
-        const modal = new bootstrap.Modal(
-            document.getElementById('viewStudentModal')
-        );
-
-        modal.show();
+    // Remove any old queue or appointment details.
+    const oldDetails = detailsContainer.querySelector('.student-extra-details');
+    if (oldDetails) {
+        oldDetails.remove();
     }
-});
+
+    const extraDetails = document.createElement('div');
+    extraDetails.className = 'student-extra-details';
+
+    function addDetail(label, value) {
+        if (!value) return;
+
+        const paragraph = document.createElement('p');
+        const strong = document.createElement('strong');
+        strong.textContent = `${label}: `;
+        paragraph.append(strong, document.createTextNode(value));
+        extraDetails.appendChild(paragraph);
+    }
+
+    if (queueNumber) {
+        addDetail('Queue Number', ticket || queueNumber);
+        addDetail('Queue Position', position);
+        addDetail('Joined Queue', joinTime);
+    } else {
+        addDetail('Appointment Time', appointmentTime);
+        addDetail('Appointment Status', appointmentStatus);
+    }
+
+    detailsContainer.appendChild(extraDetails);
+
+    const modal = bootstrap.Modal.getOrCreateInstance(
+        document.getElementById('viewStudentModal')
+    );
+
+    modal.show();
+}
+
 // ----------------------------------------
 // CALL SPECIFIC STUDENT
 // ----------------------------------------
@@ -355,6 +405,11 @@ document.getElementById('queueTableBody').addEventListener('click', async functi
 
             selectedCompleteRow.remove();
 
+            document.getElementById('studentsWaiting').textContent =
+                document.querySelectorAll('#queueTableBody tr').length;
+
+            document.getElementById('nextTicket').textContent =
+                document.querySelector('#queueTableBody tr td')?.textContent || '—';
         } catch (error) {
             console.error('Error completing queue visit:', error);
             alert('Unable to complete the queue visit.');
@@ -845,39 +900,39 @@ document.getElementById('confirmAddAppointmentBtn')
             document.getElementById('newAppointmentSlotTime').value;
 
         if (!newDate || !newTime) {
-    alert('Please select a date and time.');
-    return;
-}
+            alert('Please select a date and time.');
+            return;
+        }
 
-if (newTime < '08:00' || newTime > '16:30') {
-    alert('Appointments must be between 08:00 and 16:30.');
-    return;
-}
+        if (newTime < '08:00' || newTime > '16:30') {
+            alert('Appointments must be between 08:00 and 16:30.');
+            return;
+        }
 
-if (newTime >= '12:00' && newTime < '13:00') {
-    alert('Appointments cannot be scheduled between 12:00 and 13:00 because of lunch.');
-    return;
-}
+        if (newTime >= '12:00' && newTime < '13:00') {
+            alert('Appointments cannot be scheduled between 12:00 and 13:00 because of lunch.');
+            return;
+        }
 
-// Prevent duplicate appointment slots
-const existingRows =
-    document.querySelectorAll('#appointmentTableBody tr');
+        // Prevent duplicate appointment slots
+        const existingRows =
+            document.querySelectorAll('#appointmentTableBody tr');
 
-const duplicateSlot = Array.from(existingRows).some(row => {
-    const existingDate = row.cells[0].textContent.trim();
-    const existingTime = row.cells[1].textContent.trim();
+        const duplicateSlot = Array.from(existingRows).some(row => {
+            const existingDate = row.cells[0].textContent.trim();
+            const existingTime = row.cells[1].textContent.trim();
 
-    return existingDate === newDate &&
-           existingTime === newTime;
-});
+            return existingDate === newDate &&
+                existingTime === newTime;
+        });
 
-if (duplicateSlot) {
-    alert('An appointment slot already exists for this date and time.');
-    return;
-}
+        if (duplicateSlot) {
+            alert('An appointment slot already exists for this date and time.');
+            return;
+        }
 
-const tableBody =
-    document.getElementById('appointmentTableBody');
+        const tableBody =
+            document.getElementById('appointmentTableBody');
 
         const newRow =
             document.createElement('tr');
@@ -928,84 +983,206 @@ const studentResultsBody =
 const noStudentFound =
     document.getElementById('noStudentFound');
 
+let studentManagementList = [];
 
-searchStudentButton.addEventListener('click', function () {
+async function loadStudentManagement() {
+    const token = localStorage.getItem('token');
 
-    const searchValue =
-        studentSearchInput.value.trim().toLowerCase();
-
-    const studentRows =
-        studentResultsBody.querySelectorAll('tr');
-
-    let studentFound = false;
-
-    studentRows.forEach(function (row) {
-
-        const studentNumber =
-            row.cells[0].textContent.trim().toLowerCase();
-
-        const studentName =
-            row.cells[1].textContent.trim().toLowerCase();
-
-        if (
-            studentNumber.includes(searchValue) ||
-            studentName.includes(searchValue)
-        ) {
-            row.style.display = '';
-            studentFound = true;
-        } else {
-            row.style.display = 'none';
-        }
-    });
-
-
-    if (studentFound) {
-        noStudentFound.style.display = 'none';
-    } else {
-        noStudentFound.style.display = 'block';
+    if (!token) {
+        alert('Please log in before searching for students.');
+        return;
     }
 
+    try {
+        const currentDate = [
+            new Date().getFullYear(),
+            String(new Date().getMonth() + 1).padStart(2, '0'),
+            String(new Date().getDate()).padStart(2, '0')
+        ].join('-');
+
+        const headers = {
+            Authorization: `Bearer ${token}`
+        };
+
+        const [queueResponse, appointmentResponse] =
+            await Promise.all([
+                fetch(`${API_BASE_URL}/api/staff/queue`, {
+                    headers
+                }),
+                fetch(
+                    `${API_BASE_URL}/api/staff/appointments?date=${currentDate}`,
+                    { headers }
+                )
+            ]);
+
+        if (!queueResponse.ok || !appointmentResponse.ok) {
+            throw new Error(
+                'Could not load students. Check your login and backend.'
+            );
+        }
+
+        const queueData = await queueResponse.json();
+        const appointmentData = await appointmentResponse.json();
+
+        const queueStudents = (queueData.queue || []).map(student => ({
+            ...student,
+            studentNumber: student.studentNumber || '',
+            name: student.name ||
+                `${student.firstName || ''} ${student.lastName || ''}`.trim()
+        }));
+
+        const appointmentStudents =
+            (appointmentData.appointments || []).map(student => ({
+                ...student,
+                studentNumber: student.studentNumber || '',
+                name: student.name ||
+                    `${student.firstName || ''} ${student.lastName || ''}`.trim()
+            }));
+
+        // Combine students and remove duplicates.
+        const uniqueStudents = new Map();
+
+        [...queueStudents, ...appointmentStudents].forEach(student => {
+            const key = student.studentNumber
+                ? student.studentNumber.toLowerCase()
+                : student.name.toLowerCase();
+
+            if (key) {
+                uniqueStudents.set(key, student);
+            }
+        });
+
+        studentManagementList = [...uniqueStudents.values()];
+
+        // Show all students when the page loads.
+        displayStudentResults(studentManagementList);
+
+    } catch (error) {
+        console.error('Student Management error:', error);
+        alert(error.message || 'Unable to load students.');
+    }
+}
+
+function displayStudentResults(students) {
+    studentResultsBody.replaceChildren();
+
+    students.forEach(student => {
+        const row = document.createElement('tr');
+
+        const numberCell = document.createElement('td');
+        numberCell.textContent = student.studentNumber || 'Not available';
+
+        const nameCell = document.createElement('td');
+        nameCell.textContent = student.name || 'Not available';
+
+        const actionsCell = document.createElement('td');
+
+        const viewButton = document.createElement('button');
+        viewButton.type = 'button';
+        viewButton.textContent = 'View';
+        viewButton.className = 'view-btn';
+
+        const editButton = document.createElement('button');
+        editButton.type = 'button';
+        editButton.textContent = 'Edit';
+        editButton.className = 'edit-btn';
+
+        actionsCell.append(viewButton, ' ', editButton);
+        row.append(numberCell, nameCell, actionsCell);
+
+        // Keep the actual student record available for the next step.
+        row.dataset.studentNumber = student.studentNumber || '';
+        row.dataset.studentName = student.name || '';
+        row.dataset.firstName = student.firstName || '';
+        row.dataset.lastName = student.lastName || '';
+        row.dataset.queueNumber = student.queueNumber ?? '';
+        row.dataset.ticket = student.ticket || '';
+        row.dataset.position = student.position ?? '';
+        row.dataset.joinTime = student.joinTime || '';
+        row.dataset.appointmentTime = student.time || '';
+        row.dataset.appointmentStatus = student.status || '';
+
+        studentResultsBody.appendChild(row);
+    });
+
+    noStudentFound.style.display =
+        students.length === 0 ? 'block' : 'none';
+}
+
+// Live search: update results whenever the user types.
+studentSearchInput.addEventListener('input', function () {
+    const searchValue = studentSearchInput.value.trim().toLowerCase();
+
+    const filteredStudents = studentManagementList.filter(student =>
+        (student.studentNumber || '').toLowerCase().includes(searchValue) ||
+        (student.name || '').toLowerCase().includes(searchValue)
+    );
+
+    displayStudentResults(filteredStudents);
 });
+
+// Keep the Search button working too.
+searchStudentButton.addEventListener('click', function () {
+    studentSearchInput.dispatchEvent(new Event('input'));
+});
+
+// Populate the table when the page opens.
+loadStudentManagement();
+
+// View Student from Student Management.
+studentResultsBody.addEventListener('click', function (event) {
+    const button = event.target.closest('.view-btn');
+
+    if (button && studentResultsBody.contains(button)) {
+        showStudentDetails(button.closest('tr'));
+    }
+});
+
+// View Student from the Queue table.
+document.getElementById('queueTableBody').addEventListener(
+    'click', function (event) {
+        const button = event.target.closest('.view-btn');
+
+        if (button && event.currentTarget.contains(button)) {
+            showStudentDetails(button.closest('tr'));
+        }
+    }
+);
 
 // ========================================
 // EDIT STUDENT
 // ========================================
 
-const studentEditButtons =
-    document.querySelectorAll('#studentResultsBody .edit-btn');
-
 let selectedStudentEditRow = null;
 
-studentEditButtons.forEach(function (button) {
+studentResultsBody.addEventListener('click', function (event) {
 
-    button.addEventListener('click', function () {
 
-        selectedStudentEditRow = button.closest('tr');
+    const button = event.target.closest('.edit-btn');
 
-        const studentNumber =
-            selectedStudentEditRow.cells[0].textContent.trim();
+    if (!button || !studentResultsBody.contains(button)) {
+        return;
+    }
 
-        const studentName =
-            selectedStudentEditRow.cells[1].textContent.trim();
+    selectedStudentEditRow = button.closest('tr');
 
-        document.getElementById('editStudentNumber').value =
-            studentNumber;
+    const studentNumber =
+        selectedStudentEditRow.cells[0].textContent.trim();
 
-        document.getElementById('editStudentName').value =
-            studentName;
+    const studentName =
+        selectedStudentEditRow.cells[1].textContent.trim();
 
-        document.getElementById('editStudentEmail').value =
-            'student@nwu.ac.za';
+    document.getElementById('editStudentNumber').value =
+        studentNumber === 'Not available' ? '' : studentNumber;
 
-        document.getElementById('editStudentContact').value =
-            'Not available';
+    document.getElementById('editStudentName').value =
+        studentName === 'Not available' ? '' : studentName;
 
-        const modal = new bootstrap.Modal(
-            document.getElementById('editStudentModal')
-        );
+    const modal = new bootstrap.Modal(
+        document.getElementById('editStudentModal')
+    );
 
-        modal.show();
-    });
+    modal.show();
 });
 
 // ========================================
