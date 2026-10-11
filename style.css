@@ -61,12 +61,10 @@ body {
   height: 1px;
   margin: 0;
 
-  background-image: linear-gradient(
-    to right,
-    rgba(0, 136, 156, 0),
-    rgba(0, 136, 156, 0.75),
-    rgba(0, 136, 156, 0)
-  );
+  background-image: linear-gradient(to right,
+      rgba(0, 136, 156, 0),
+      rgba(0, 136, 156, 0.75),
+      rgba(0, 136, 156, 0));
 }
 
 .or-divider span {
@@ -174,12 +172,15 @@ body {
   font-size: 10px;
   letter-spacing: 0.7px;
 }
+
 /* =========================
    LOGIN PAGE STYLING
    ========================= */
 .login-logo {
-  margin-top: 30px; /* moves the image 50 pixels down */
+  margin-top: 30px;
+  /* moves the image 50 pixels down */
 }
+
 .login-container {
   width: 500px;
   margin: 20px auto 0;
@@ -279,6 +280,7 @@ body {
 
 /* Tablets and smaller laptops */
 @media (max-width: 992px) {
+
   .registration-form,
   .login-form,
   .guest-form {
@@ -381,11 +383,9 @@ body {
   display: grid;
   grid-template-columns: 220px 1fr;
 
-  background: linear-gradient(
-    135deg,
-    rgba(238, 224, 250, 0.97),
-    rgba(217, 194, 239, 0.94)
-  );
+  background: linear-gradient(135deg,
+      rgba(238, 224, 250, 0.97),
+      rgba(217, 194, 239, 0.94));
 
   border-radius: 28px;
 
@@ -408,11 +408,9 @@ body {
 .dashboard-sidebar {
   padding: 28px 20px;
 
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.78),
-    rgba(244, 235, 252, 0.72)
-  );
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.78),
+      rgba(244, 235, 252, 0.72));
 
   border-right: 1px solid rgba(255, 255, 255, 0.7);
 
@@ -468,20 +466,20 @@ body {
 
 .sidebar-nav a:hover,
 .sidebar-nav a.active {
-  background: linear-gradient(
-    135deg,
-    rgba(122, 64, 174, 0.18),
-    rgba(178, 122, 222, 0.16)
-  );
+  background: linear-gradient(135deg,
+      rgba(122, 64, 174, 0.18),
+      rgba(178, 122, 222, 0.16));
 
   color: #6c3d91;
 
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8);
 }
+
 .sidebar-nav a.queue-active {
   color: #00889c;
   background: rgba(0, 136, 156, 0.1);
 }
+
 .sidebar-contact {
   margin-top: auto;
   padding: 18px 15px;
@@ -557,6 +555,7 @@ body {
   outline: 2px solid rgba(0, 136, 156, 0.4);
   outline-offset: 2px;
 }
+
 /* =========================
    MAIN AREA
    ========================= */
@@ -564,11 +563,9 @@ body {
 .dashboard-main {
   min-width: 0;
 
-  background: linear-gradient(
-    135deg,
-    rgba(244, 235, 252, 0.68),
-    rgba(228, 211, 244, 0.68)
-  );
+  background: linear-gradient(135deg,
+      rgba(244, 235, 252, 0.68),
+      rgba(228, 211, 244, 0.68));
 }
 
 /* =========================
@@ -604,7 +601,7 @@ body {
   gap: 10px;
 }
 
-.profile-info > i {
+.profile-info>i {
   font-size: 34px;
   color: #7444a0;
 }
@@ -666,11 +663,9 @@ body {
 
   border-radius: 18px;
 
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.75),
-    rgba(239, 225, 250, 0.72)
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.75),
+      rgba(239, 225, 250, 0.72));
 
   border: 1px solid rgba(255, 255, 255, 0.8);
 
@@ -734,9 +729,7 @@ body {
   display: grid;
 
   grid-template-columns:
-    minmax(0, 1fr)
-    minmax(0, 1.25fr)
-    minmax(0, 1fr);
+    minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr);
 
   gap: 18px;
 }
@@ -746,11 +739,9 @@ body {
 
   border-radius: 18px;
 
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.79),
-    rgba(244, 235, 252, 0.72)
-  );
+  background: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.79),
+      rgba(244, 235, 252, 0.72));
 
   border: 1px solid rgba(255, 255, 255, 0.8);
 
@@ -833,9 +824,11 @@ body {
 .queue-card {
   border-top: 4px solid #00889c;
 }
+
 .queue-action .action-icon {
   background: #00889c;
 }
+
 .queue-action .action-arrow {
   background: rgba(0, 136, 156, 0.12);
   color: #00889c;
@@ -924,6 +917,7 @@ body {
 
   background: transparent;
 }
+
 .appointment-card {
   border-top: 4px solid #7b3fa1;
 }
@@ -931,6 +925,7 @@ body {
 .appointment-card .card-heading i {
   color: #7b3fa1;
 }
+
 /* =========================
    CALENDAR
    ========================= */
@@ -979,22 +974,6 @@ body {
   font-size: 11px;
 }
 
-.calendar-days span {
-  min-height: 32px;
-
-  display: grid;
-  place-items: center;
-
-  border-radius: 50%;
-
-  font-size: 12px;
-}
-
-.calendar-days .appointment-day {
-  background: linear-gradient(135deg, #6c3d91, #9758c1);
-
-  color: white;
-}
 
 /* =========================
    BOTTOM MESSAGE
@@ -1012,16 +991,14 @@ body {
 
   border-radius: 17px;
 
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.65),
-    rgba(226, 204, 245, 0.65)
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.65),
+      rgba(226, 204, 245, 0.65));
 
   border: 1px solid rgba(255, 255, 255, 0.75);
 }
 
-.dashboard-message > i {
+.dashboard-message>i {
   font-size: 28px;
 
   color: #6c3d91;
@@ -1271,7 +1248,7 @@ body {
   box-shadow: 0 8px 20px rgba(73, 36, 98, 0.08);
 }
 
-.queue-status-card > div {
+.queue-status-card>div {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1319,11 +1296,9 @@ body {
 
   border-radius: 18px;
 
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.79),
-    rgba(244, 235, 252, 0.72)
-  );
+  background: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.79),
+      rgba(244, 235, 252, 0.72));
 
   border: 1px solid rgba(255, 255, 255, 0.8);
 
@@ -1428,7 +1403,7 @@ body {
   font-size: 14px;
 }
 
-.queue-position > span {
+.queue-position>span {
   color: #7d688b;
 
   font-size: 12px;
@@ -1444,7 +1419,7 @@ body {
   box-shadow: 0 6px 15px rgba(0, 136, 156, 0.25);
 }
 
-.serving-position > span {
+.serving-position>span {
   color: #00889c;
 
   font-weight: 700;
@@ -1473,11 +1448,9 @@ body {
 
   border-radius: 18px;
 
-  background: linear-gradient(
-    135deg,
-    rgba(0, 136, 156, 0.12),
-    rgba(255, 255, 255, 0.65)
-  );
+  background: linear-gradient(135deg,
+      rgba(0, 136, 156, 0.12),
+      rgba(255, 255, 255, 0.65));
 
   border: 1px solid rgba(0, 136, 156, 0.2);
 
@@ -1700,6 +1673,7 @@ body {
     grid-column: auto;
   }
 }
+
 /* ==========================================================
    BOOK APPOINTMENT PAGE
    ========================================================== */
@@ -1775,7 +1749,7 @@ body {
 }
 
 .legend-box.lunch {
-    background-color: #b8b8b8;
+  background-color: #b8b8b8;
 }
 
 /* Time slots */
@@ -1834,16 +1808,16 @@ body {
 
 /* Lunch / clinic unavailable slots */
 .unavailable-lunch {
-    background-color: #b8b8b8;
-    color: #ffffff;
-    cursor: not-allowed;
-    opacity: 0.9;
+  background-color: #b8b8b8;
+  color: #ffffff;
+  cursor: not-allowed;
+  opacity: 0.9;
 }
 
 .unavailable-lunch:hover {
-    background-color: #b8b8b8;
-    transform: none;
-    box-shadow: none;
+  background-color: #b8b8b8;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Selected appointment */
@@ -1929,6 +1903,7 @@ body {
     min-height: 55px;
   }
 }
+
 /*body {
     background: red !important;
 }*/
@@ -2076,7 +2051,7 @@ body {
 }
 
 /* Warning icon */
-.emergency-heading > i {
+.emergency-heading>i {
   width: 36px;
   height: 36px;
 
@@ -2122,7 +2097,7 @@ body {
 }
 
 /* Emergency service icon */
-.emergency-detail > i {
+.emergency-detail>i {
   width: 36px;
   height: 36px;
 
@@ -2333,7 +2308,7 @@ body {
   min-width: 0;
 }
 
-.emergency-service-info > strong {
+.emergency-service-info>strong {
   display: block;
 
   margin-bottom: 2px;
@@ -2342,7 +2317,7 @@ body {
   font-size: 13px;
 }
 
-.emergency-service-info > span {
+.emergency-service-info>span {
   display: block;
 
   margin-bottom: 5px;
@@ -2431,11 +2406,9 @@ body {
   border-radius: 20px;
   overflow: hidden;
 
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.96),
-    rgba(244, 235, 252, 0.96)
-  );
+  background: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.96),
+      rgba(244, 235, 252, 0.96));
 
   box-shadow: 0 20px 50px rgba(73, 36, 98, 0.25);
 }
@@ -2488,7 +2461,7 @@ body {
 }
 
 /* Turquoise contact icons */
-.contact-detail > i {
+.contact-detail>i {
   width: 36px;
   height: 36px;
 
@@ -2570,6 +2543,7 @@ body {
    ========================= */
 
 @media (max-width: 576px) {
+
   .contact-modal .modal-header,
   .contact-modal .modal-body,
   .contact-modal .modal-footer {
@@ -2580,4 +2554,46 @@ body {
   .contact-detail {
     padding: 12px;
   }
+}
+
+/* Highlight today's date on the calendar */
+.calendar-days .today {
+  background-color: #eadcf5;
+  color: #713b91;
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+/* Staff Dashboard Logout */
+.sidebar-logout {
+  padding: 0 15px;
+}
+
+.sidebar-logout button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 15px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: #624080;
+  font-family: inherit;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.sidebar-logout button:hover {
+  background-color: #eadcf5;
+}
+
+.sidebar-logout button i {
+  font-size: 18px;
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
 }
