@@ -61,38 +61,63 @@ if (password && confirmPassword) {
 // 1. DISPLAY LOGGED-IN PATIENT INFORMATION
 // -----------------------------------------------------
 
-// This function will display information belonging to
-// the patient who successfully logged into the system.
-//
-// The 'user' data will eventually come from the backend
-// after the patient's login credentials are authenticated.
-
 function displayPatientInfo(user) {
-  // Patient name displayed in the top-right account area
+
   const userName = document.getElementById("userName");
-
-  // Patient role displayed underneath the patient's name
   const userRole = document.getElementById("userRole");
-
-  // Patient name displayed in "Welcome back, Name"
   const welcomeName = document.getElementById("welcomeName");
 
-  // Display the patient's name in the account section
+  // Registered student/staff
+  const firstName = user.firstName || user.name || "";
+  const lastName = user.lastName || user.surname || "";
+
+  // Display full name in the profile area
   if (userName) {
-    userName.textContent = user.name;
+    if (firstName && lastName) {
+      userName.textContent = `${firstName} ${lastName}`;
+    } else if (firstName) {
+      userName.textContent = firstName;
+    } else {
+      userName.textContent = "Guest";
+    }
   }
 
-  // Display the patient's role
+  // Display role
   if (userRole) {
-    userRole.textContent = user.role;
+    if (user.staffNumber) {
+      userRole.textContent = "Staff";
+    } else if (user.studentNumber) {
+      userRole.textContent = "Student";
+    } else {
+      userRole.textContent = "Guest";
+    }
   }
 
-  // Display the patient's name in the welcome message
+  // Display first name in "Welcome back, ..."
   if (welcomeName) {
-    welcomeName.textContent = user.name;
+    welcomeName.textContent = firstName || "Guest";
   }
 }
+const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
+if (loggedInUser) {
+  displayPatientInfo(loggedInUser);
+}
+// Hide Appointments from guests
+const appointmentMenuItem =
+  document.getElementById("appointmentMenuItem");
+
+  console.log("Logged in user:", loggedInUser);
+console.log("Appointment menu:", appointmentMenuItem);
+
+if (
+  appointmentMenuItem &&
+  loggedInUser &&
+  !loggedInUser.studentNumber &&
+  !loggedInUser.staffNumber
+) {
+  appointmentMenuItem.style.display = "none";
+}
 // -----------------------------------------------------
 // 2. MOBILE SIDEBAR
 // -----------------------------------------------------
@@ -217,24 +242,28 @@ if (calendarMonth && calendarDays && previousMonth && nextMonth) {
 
       dateElement.textContent = day;
 
-      // Create the date in YYYY-MM-DD format
-      // so that it can be compared with appointment dates.
       const monthNumber = String(displayedMonth + 1).padStart(2, "0");
-
       const dayNumber = String(day).padStart(2, "0");
-
       const dateString = `${displayedYear}-${monthNumber}-${dayNumber}`;
 
-      // Highlight the date if the patient has an appointment
+      // Highlight today's date
+      if (
+        displayedYear === today.getFullYear() &&
+        displayedMonth === today.getMonth() &&
+        day === today.getDate()
+      ) {
+        dateElement.classList.add("today");
+      }
+
+      // Highlight appointment dates
       if (appointmentDates.includes(dateString)) {
         dateElement.classList.add("appointment-day");
       }
 
-      // Add the date to the calendar
+      //add each date to the calendar
       calendarDays.appendChild(dateElement);
     }
   }
-
   // -----------------------------------------------------
   // PREVIOUS MONTH BUTTON
   // -----------------------------------------------------
@@ -273,32 +302,32 @@ if (calendarMonth && calendarDays && previousMonth && nextMonth) {
   displayCalendar();
 }
 
-// =====================================================
-// RESET EMERGENCY SECTION WHEN CONTACT MODAL OPENS
-// =====================================================
+  // =====================================================
+  // RESET EMERGENCY SECTION WHEN CONTACT MODAL OPENS
+  // =====================================================
 
-// Get the Contact & Location modal
-const contactModal = document.getElementById("contactModal");
+  // Get the Contact & Location modal
+  const contactModal = document.getElementById("contactModal");
 
-// Get the Emergency Assistance collapsible section
-const emergencyDetails = document.getElementById("emergencyDetails");
+  // Get the Emergency Assistance collapsible section
+  const emergencyDetails = document.getElementById("emergencyDetails");
 
-// Only run if both elements exist
-if (contactModal && emergencyDetails) {
-  // Runs every time the Contact & Location modal opens
-  contactModal.addEventListener("show.bs.modal", function () {
-    // Get the Bootstrap collapse instance
-    const emergencyCollapse = bootstrap.Collapse.getOrCreateInstance(
-      emergencyDetails,
-      {
-        toggle: false,
-      },
-    );
+  // Only run if both elements exist
+  if (contactModal && emergencyDetails) {
+    // Runs every time the Contact & Location modal opens
+    contactModal.addEventListener("show.bs.modal", function () {
+      // Get the Bootstrap collapse instance
+      const emergencyCollapse = bootstrap.Collapse.getOrCreateInstance(
+        emergencyDetails,
+        {
+          toggle: false,
+        },
+      );
 
-    // Make sure Emergency Assistance starts collapsed
-    emergencyCollapse.hide();
-  });
-}
+      // Make sure Emergency Assistance starts collapsed
+      emergencyCollapse.hide();
+    });
+  }
 
   // =====================================================
   // LOGIN
@@ -349,74 +378,430 @@ if (contactModal && emergencyDetails) {
       }
     });
   }
-
-  // =====================================================
-// REGISTRATION
+// =====================================================
+// GUEST LOGIN
 // =====================================================
 
-const registrationForm = document.getElementById("registrationForm");
+const guestLoginForm = document.querySelector(".login-form");
 
-if (registrationForm) {
-  registrationForm.addEventListener("submit", async function (event) {
-    event.preventDefault();
+if (
+    guestLoginForm &&
+    document.getElementById("guestName") &&
+    document.getElementById("guestSurname") &&
+    document.getElementById("guestId")
+) {
 
-    const firstName = document.getElementById("name").value.trim();
-    const lastName = document.getElementById("surname").value.trim();
-    const phone = document.getElementById("phoneNumber").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const studentOrStaffNumber =
-      document.getElementById("userNumber").value.trim();
-    const password = document.getElementById("password").value;
-    const confirmPassword =
-      document.getElementById("confirmPassword").value;
+    guestLoginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-    const studentSelected =
-      document.getElementById("studentType").checked;
+        const name = document.getElementById("guestName").value.trim();
+        const surname = document.getElementById("guestSurname").value.trim();
+        const idNumber = document.getElementById("guestId").value.trim();
 
-    const staffSelected =
-      document.getElementById("staffType").checked;
+        if (!name || !surname || !idNumber) {
+            alert("Please enter your name, surname, and ID number.");
+            return;
+        }
 
-    // Check that passwords match
-    if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+        try {
+
+            const response = await fetch(
+                "http://localhost:3000/api/auth/guest",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        surname: surname,
+                        idNumber: idNumber
+                    })
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                alert(result.error || "Guest login failed.");
+                return;
+            }
+
+            // Save guest login information
+            localStorage.setItem("token", result.token);
+            localStorage.setItem("user", JSON.stringify(result.user));
+
+            // Go to the guest/student queue page
+            window.location.href = "StudentDashboard.html";
+
+        } catch (error) {
+
+            console.error("Guest login error:", error);
+
+            alert("Unable to connect to the server.");
+        }
+    });
+}
+  // =====================================================
+  // REGISTRATION
+  // =====================================================
+
+  const registrationForm = document.getElementById("registrationForm");
+
+  if (registrationForm) {
+    registrationForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const firstName = document.getElementById("name").value.trim();
+      const lastName = document.getElementById("surname").value.trim();
+      const phone = document.getElementById("phoneNumber").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const studentOrStaffNumber =
+        document.getElementById("userNumber").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+      const studentSelected =
+        document.getElementById("studentType").checked;
+
+      const staffSelected =
+        document.getElementById("staffType").checked;
+
+      // Check that passwords match
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/auth/register",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              firstName: firstName,
+              lastName: lastName,
+              phone: phone,
+              email: email,
+              isStudent: studentSelected,
+              isStaff: staffSelected,
+              studentOrStaffNumber: studentOrStaffNumber,
+              password: password,
+            }),
+          }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          alert(result.error || "Registration failed.");
+          return;
+        }
+
+        alert("Registration successful! You can now log in.");
+
+        window.location.href = "index.html";
+
+      } catch (error) {
+        console.error("Registration error:", error);
+        alert("Unable to connect to the server.");
+      }
+    });
+  }
+
+  // =========================
+  // STUDENT DASHBOARD QUEUE
+  // =========================
+
+  async function loadDashboardQueue() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
       return;
     }
 
     try {
       const response = await fetch(
-        "http://localhost:3000/api/auth/register",
+        "http://localhost:3000/api/queue/status",
         {
-          method: "POST",
           headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            firstName: firstName,
-            lastName: lastName,
-            phone: phone,
-            email: email,
-            isStudent: studentSelected,
-            isStaff: staffSelected,
-            studentOrStaffNumber: studentOrStaffNumber,
-            password: password,
-          }),
+            Authorization: `Bearer ${token}`
+          }
         }
       );
 
-      const result = await response.json();
+      if (response.status === 404) {
+        const ticket = document.getElementById("dashboardTicket");
+        const position = document.getElementById("dashboardPosition");
+        const peopleAhead = document.getElementById("dashboardPeopleAhead");
+        const status = document.getElementById("dashboardQueueStatus");
 
-      if (!response.ok) {
-        alert(result.error || "Registration failed.");
+        if (ticket) ticket.textContent = "—";
+        if (position) position.textContent = "—";
+        if (peopleAhead) peopleAhead.textContent = "—";
+        if (status) status.textContent = "Not in queue";
+
         return;
       }
 
-      alert("Registration successful! You can now log in.");
+      if (!response.ok) {
+        return;
+      }
 
-      window.location.href = "index.html";
+      const data = await response.json();
+      const queue = data.queue;
+
+      const ticket = document.getElementById("dashboardTicket");
+      const position = document.getElementById("dashboardPosition");
+      const peopleAhead = document.getElementById("dashboardPeopleAhead");
+      const status = document.getElementById("dashboardQueueStatus");
+
+      if (!queue) {
+        if (ticket) ticket.textContent = "—";
+        if (position) position.textContent = "—";
+        if (peopleAhead) peopleAhead.textContent = "—";
+        if (status) status.textContent = "Not in queue";
+        return;
+      }
+
+      if (ticket) ticket.textContent = queue.ticket ?? "—";
+      if (position) position.textContent = queue.position ?? "—";
+      if (peopleAhead) peopleAhead.textContent = queue.peopleAhead ?? "—";
+      if (status) status.textContent = "Waiting";
 
     } catch (error) {
-      console.error("Registration error:", error);
-      alert("Unable to connect to the server.");
+      console.error("Error loading dashboard queue:", error);
     }
-  });
+  }
+
+  loadDashboardQueue();
+  setInterval(loadDashboardQueue, 10000);
+
+
+  // =========================
+  // STUDENT DASHBOARD APPOINTMENT
+  // =========================
+
+
+  let dashboardAppointment = null;
+
+  function getLocalAppointmentDate(dateValue) {
+  const dateString = String(dateValue).slice(0, 10);
+  const [year, month, day] = dateString.split("-").map(Number);
+
+  // The API's UTC date is one day behind the intended SA date.
+  return new Date(year, month - 1, day + 1);
 }
+
+  async function loadDashboardAppointment() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/appointments/my",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Unable to load appointments:", response.status);
+        return;
+      }
+
+
+      const data = await response.json();
+      console.log("Student appointments:", data.appointments);
+
+      
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+
+
+
+
+      const appointment = (data.appointments || [])
+        .filter(item => {
+          return (
+            item.status === "scheduled" &&
+            getLocalAppointmentDate(item.date) >= today
+          );
+        })
+        .sort((a, b) => {
+          return (
+            getLocalAppointmentDate(a.date) -
+            getLocalAppointmentDate(b.date)
+          );
+        })[0];
+
+      dashboardAppointment = appointment || null;
+      const dayElement = document.getElementById("appointmentDay");
+      const monthElement = document.getElementById("appointmentMonth");
+      const yearElement = document.getElementById("appointmentYear");
+      const typeElement = document.getElementById("appointmentType");
+      const timeElement = document.getElementById("appointmentTime");
+      const viewButton = document.getElementById("viewAppointmentButton");
+      const cancelButton = document.getElementById("cancelAppointmentButton");
+
+      if (!appointment) {
+        if (dayElement) dayElement.textContent = "—";
+        if (monthElement) monthElement.textContent = "—";
+        if (yearElement) yearElement.textContent = "—";
+        if (typeElement) typeElement.textContent = "No upcoming appointment";
+        if (timeElement) timeElement.textContent = "—";
+        if (viewButton) viewButton.disabled = true;
+        if (cancelButton) cancelButton.disabled = true;
+
+        const appointmentButtons = document.querySelector(".appointment-buttons");
+        if (appointmentButtons) appointmentButtons.style.display = "none";
+
+        return;
+      }
+
+      
+        const appointmentDate = getLocalAppointmentDate(appointment.date);
+        console.log("API date:", appointment.date);
+        console.log("Displayed date:", appointmentDate.toDateString());
+
+        if (dayElement) {
+          dayElement.textContent = appointmentDate.getDate();
+        }
+
+        if (monthElement) {
+          monthElement.textContent = appointmentDate
+            .toLocaleString("en-ZA", {
+              month: "short"
+            })
+            .toUpperCase();
+        }
+
+        if (yearElement) {
+          yearElement.textContent = appointmentDate.getFullYear();
+        }
+
+
+      if (typeElement) {
+        typeElement.textContent = "General Consultation";
+      }
+
+      if (timeElement) {
+        timeElement.textContent = appointment.time;
+      }
+
+      if (viewButton) viewButton.disabled = false;
+      if (cancelButton) cancelButton.disabled = false;
+
+      const appointmentButtons = document.querySelector(".appointment-buttons");
+      if (appointmentButtons) appointmentButtons.style.display = "flex";
+
+    } catch (error) {
+      console.error("Error loading dashboard appointment:", error);
+    }
+  }
+
+
+  document
+    .getElementById("cancelAppointmentButton")
+    ?.addEventListener("click", async () => {
+      if (!dashboardAppointment) return;
+
+      const confirmed = confirm(
+        "Are you sure you want to cancel this appointment?"
+      );
+
+      if (!confirmed) return;
+
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Please log in again.");
+        return;
+      }
+
+      // Support common appointment ID property names.
+      const visitId =
+        dashboardAppointment.visitId ??
+        dashboardAppointment.Visit_ID ??
+        dashboardAppointment.visit_id;
+
+      if (!visitId) {
+        console.error("Appointment data:", dashboardAppointment);
+        alert("Unable to identify this appointment.");
+        return;
+      }
+
+      const button = document.getElementById(
+        "cancelAppointmentButton"
+      );
+
+      try {
+        button.disabled = true;
+
+        const response = await fetch(
+          `http://localhost:3000/api/appointments/${visitId}/cancel`,
+          {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            result.error || "Unable to cancel appointment."
+          );
+        }
+
+        alert(result.message || "Appointment cancelled successfully.");
+
+        dashboardAppointment = null;
+        await loadDashboardAppointment();
+
+      } catch (error) {
+        console.error("Cancellation error:", error);
+        alert(error.message || "Something went wrong.");
+
+      } finally {
+        // Restore the correct button state after the request.
+        if (button) {
+          button.disabled = !dashboardAppointment;
+        }
+      }
+    });
+
+  document
+    .getElementById("viewAppointmentButton")
+    ?.addEventListener("click", () => {
+      if (!dashboardAppointment) {
+        alert("No upcoming appointment found.");
+        return;
+      }
+
+      const appointmentDate = getLocalAppointmentDate(
+        dashboardAppointment.date
+      );
+
+      alert(
+        `Appointment Details\n\n` +
+        `Type: General Consultation\n` +
+        `Date: ${appointmentDate.toLocaleDateString("en-ZA")}\n` +
+        `Time: ${dashboardAppointment.time}\n` +
+        `Status: ${dashboardAppointment.status}`
+      );
+    });
+
+  loadDashboardAppointment();

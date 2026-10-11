@@ -1,407 +1,373 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Dashboard Kampus Q-Ready</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body class="dashboard-page">
-    <!-- Main Dashboard Container -->
-    <div class="dashboard-shell">
-      <!-- =========================
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard Kampus Q-Ready</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="dashboard-page">
+  <!-- Main Dashboard Container -->
+  <div class="dashboard-shell">
+    <!-- =========================
            DESKTOP SIDEBAR
            ========================= -->
-      <aside class="dashboard-sidebar">
-        <div class="sidebar-brand">
-          <img
-            src="media/images/nwu log2.png"
-            alt="NWU Logo"
-            class="sidebar-logo"
-          />
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-brand">
+        <img src="media/images/nwu log2.png" alt="NWU Logo" class="sidebar-logo" />
 
-          <div class="sidebar-system-branding">
-            <h2>Kampus <span>Q-Ready</span></h2>
-            <div class="sidebar-brand-line"></div>
-            <p>Your Health. Our Priority.</p>
-          </div>
+        <div class="sidebar-system-branding">
+          <h2>Kampus <span>Q-Ready</span></h2>
+          <div class="sidebar-brand-line"></div>
+          <p>Your Health. Our Priority.</p>
         </div>
+      </div>
 
-        <nav class="sidebar-nav">
-          <a href="#" class="active">
-            <i class="bi bi-house-door"></i>
-            <span>Dashboard</span>
-          </a>
+      <nav class="sidebar-nav">
+        <a href="#" class="active">
+          <i class="bi bi-house-door"></i>
+          <span>Dashboard</span>
+        </a>
 
-          <a href="AppointmentBooking.html">
-            <i class="bi bi-calendar-event"></i>
-            <span>Appointments</span>
-          </a>
+        <a href="AppointmentBooking.html" id="appointmentMenuItem">
+          <i class="bi bi-calendar-event"></i>
+          <span>Appointments</span>
+        </a>
 
-          <a href="JoinQueue.html">
-            <i class="bi bi-people"></i>
-            <span>Queue</span>
-          </a>
+        <a href="JoinQueue.html">
+          <i class="bi bi-people"></i>
+          <span>Queue</span>
+        </a>
 
-          <a href="Profile.html">
-            <i class="bi bi-person"></i>
-            <span>Profile</span>
-          </a>
+        <a href="Profile.html">
+          <i class="bi bi-person"></i>
+          <span>Profile</span>
+        </a>
 
-          <a href="index.html">
-            <i class="bi bi-box-arrow-right"></i>
-            <span>Logout</span>
-          </a>
-          <!-- Healthcare Centre contact information -->
-          <div class="sidebar-contact">
-            <p>Healthcare Centre</p>
+        <a href="index.html">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
+        </a>
+        <!-- Healthcare Centre contact information -->
+        <div class="sidebar-contact">
+          <p>Healthcare Centre</p>
 
-            <!-- Opens Healthcare Centre contact information popup -->
-            <button
-              type="button"
-              class="contact-link"
-              data-bs-toggle="modal"
-              data-bs-target="#contactModal"
-            >
-              <i class="bi bi-geo-alt"></i>
-              <span>Contact & Location</span>
-            </button>
-          </div>
-        </nav>
-      </aside>
+          <!-- Opens Healthcare Centre contact information popup -->
+          <button type="button" class="contact-link" data-bs-toggle="modal" data-bs-target="#contactModal">
+            <i class="bi bi-geo-alt"></i>
+            <span>Contact & Location</span>
+          </button>
+        </div>
+      </nav>
+    </aside>
 
-      <!-- =========================
+    <!-- =========================
            MAIN CONTENT AREA
            ========================= -->
-      <div class="dashboard-main">
-        <!-- Mobile Header -->
+    <div class="dashboard-main">
+      <!-- Mobile Header -->
 
-        <header class="mobile-header">
-          <div class="mobile-brand">
-            <img src="media/nwu-logo.png" alt="NWU Logo" />
-            <span>Kampus Q-Ready</span>
-          </div>
+      <header class="mobile-header">
+        <div class="mobile-brand">
+          <img src="media/nwu-logo.png" alt="NWU Logo" />
+          <span>Kampus Q-Ready</span>
+        </div>
 
-          <button class="menu-button" id="menuButton">
-            <i class="bi bi-list"></i>
-          </button>
-        </header>
+        <button class="menu-button" id="menuButton">
+          <i class="bi bi-list"></i>
+        </button>
+      </header>
 
-        <!-- Desktop Top Bar -->
-        <header class="dashboard-topbar">
-          <div class="topbar-spacer"></div>
+      <!-- Desktop Top Bar -->
+      <header class="dashboard-topbar">
+        <div class="topbar-spacer"></div>
 
-          <!-- Logged-in patient information.
+        <!-- Logged-in patient information.
      Name and role will be populated dynamically from the authenticated user's data by the backend. -->
-          <div class="topbar-right">
-            <div class="profile-info">
-              <i class="bi bi-person-circle"></i>
-
-              <div>
-                <strong id="userName">Patient's Name</strong>
-                <span id="userRole">Patient</span>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <!-- Dashboard Content -->
-        <main class="dashboard-content">
-          <!-- Welcome -->
-          <section class="welcome-section">
-            <h2>Welcome back <span id="welcomeName">Patient's Name</span></h2>
-            <p>Manage your clinic visits and appointments with ease.</p>
-          </section>
-
-          <!-- Queue + Appointment + Calendar -->
-          <section class="dashboard-grid">
-            <!-- Current Queue -->
-
-            <article class="dashboard-card queue-card">
-              <div class="card-heading">
-                <h3>
-                  <i class="bi bi-people"></i>
-                  Current Queue
-                </h3>
-              </div>
-
-              <div class="queue-information">
-                <div class="queue-item">
-                  <span>Ticket</span>
-                  <strong>Q023</strong>
-                </div>
-
-                <div class="queue-item">
-                  <span>Position</span>
-                  <strong>5</strong>
-                </div>
-
-                <div class="queue-item">
-                  <span>People Ahead</span>
-                  <strong>4</strong>
-                </div>
-
-                <div class="queue-item">
-                  <span>Status</span>
-                  <strong class="queue-status">Waiting</strong>
-                </div>
-              </div>
-            </article>
-
-            <!-- Upcoming Appointment -->
-            <article class="dashboard-card appointment-card">
-              <div class="card-heading">
-                <h3>
-                  <i class="bi bi-calendar-check"></i>
-                  Upcoming Appointment
-                </h3>
-              </div>
-
-              <div class="appointment-content">
-                <div class="appointment-date">
-                  <strong>15</strong>
-                  <span>SEP</span>
-                  <small>2026</small>
-                </div>
-
-                <div class="appointment-details">
-                  <h4>General Consultation</h4>
-
-                  <p>
-                    <i class="bi bi-clock"></i>
-                    10:30
-                  </p>
-
-                  <p>
-                    <i class="bi bi-geo-alt"></i>
-                    NWU Healthcare Centre
-                  </p>
-                </div>
-              </div>
-
-              <div class="appointment-buttons">
-                <button class="primary-button">View Details</button>
-
-                <button class="secondary-button">Cancel</button>
-              </div>
-            </article>
-
-            <!-- Calendar -->
-            <article class="dashboard-card calendar-card">
-              <div class="calendar-header">
-                <!-- JavaScript will insert the month and year here -->
-                <h3 id="calendarMonth"></h3>
-
-                <div>
-                  <button
-                    id="previousMonth"
-                    type="button"
-                    aria-label="Previous month"
-                  >
-                    <i class="bi bi-chevron-left"></i>
-                  </button>
-
-                  <button id="nextMonth" type="button" aria-label="Next month">
-                    <i class="bi bi-chevron-right"></i>
-                  </button>
-                </div>
-              </div>
-
-              <div class="calendar-weekdays">
-                <span>Mon</span>
-                <span>Tue</span>
-                <span>Wed</span>
-                <span>Thu</span>
-                <span>Fri</span>
-                <span>Sat</span>
-                <span>Sun</span>
-              </div>
-
-              <!-- JavaScript will insert the dates here -->
-              <div class="calendar-days" id="calendarDays"></div>
-            </article>
-          </section>
-
-          <!-- Bottom Message -->
-          <section class="dashboard-message">
-            <i class="bi bi-heart-pulse"></i>
+        <div class="topbar-right">
+          <div class="profile-info">
+            <i class="bi bi-person-circle"></i>
 
             <div>
-              <strong>Small steps today, a healthier you tomorrow.</strong>
-              <p>Kampus Q-Ready</p>
+              <strong id="userName">Patient's Name</strong>
+              <span id="userRole">Patient</span>
             </div>
-          </section>
-        </main>
-      </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard Content -->
+      <main class="dashboard-content">
+        <!-- Welcome -->
+        <section class="welcome-section">
+          <h2>Welcome back <span id="welcomeName">Patient's Name</span></h2>
+          <p>Manage your clinic visits and appointments with ease.</p>
+        </section>
+
+        <!-- Queue + Appointment + Calendar -->
+        <section class="dashboard-grid">
+          <!-- Current Queue -->
+
+          <article class="dashboard-card queue-card">
+            <div class="card-heading">
+              <h3>
+                <i class="bi bi-people"></i>
+                Current Queue
+              </h3>
+            </div>
+
+            <div class="queue-information">
+              <div class="queue-item">
+                <span>Ticket</span>
+                <strong id="dashboardTicket">—</strong>
+              </div>
+
+              <div class="queue-item">
+                <span>Position</span>
+                <strong id="dashboardPosition">—</strong>
+              </div>
+
+              <div class="queue-item">
+                <span>People Ahead</span>
+                <strong id="dashboardPeopleAhead">—</strong>
+              </div>
+
+              <div class="queue-item">
+                <span>Status</span>
+                <strong class="queue-status" id="dashboardQueueStatus">—</strong>
+              </div>
+            </div>
+          </article>
+
+          <!-- Upcoming Appointment -->
+          <article class="dashboard-card appointment-card">
+            <div class="card-heading">
+              <h3>
+                <i class="bi bi-calendar-check"></i>
+                Upcoming Appointment
+              </h3>
+            </div>
+
+            <div class="appointment-content">
+              <div class="appointment-date">
+                <strong id="appointmentDay">—</strong>
+                <span id="appointmentMonth">—</span>
+                <small id="appointmentYear">—</small>
+              </div>
+
+              <div class="appointment-details">
+                <h4 id="appointmentType">No upcoming appointment</h4>
+
+                <p>
+                  <i class="bi bi-clock"></i>
+                  <span id="appointmentTime">—</span>
+                </p>
+
+                <p>
+                  <i class="bi bi-geo-alt"></i>
+                  NWU Healthcare Centre
+                </p>
+              </div>
+            </div>
+
+            <div class="appointment-buttons">
+              <button class="primary-button" id="viewAppointmentButton" disabled>
+                View Details
+              </button>
+
+              <button class="secondary-button" id="cancelAppointmentButton" disabled>
+                Cancel
+              </button>
+            </div>
+          </article>
+
+          <!-- Calendar -->
+          <article class="dashboard-card calendar-card">
+            <div class="calendar-header">
+              <!-- JavaScript will insert the month and year here -->
+              <h3 id="calendarMonth"></h3>
+
+              <div>
+                <button id="previousMonth" type="button" aria-label="Previous month">
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+
+                <button id="nextMonth" type="button" aria-label="Next month">
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="calendar-weekdays">
+              <span>Mon</span>
+              <span>Tue</span>
+              <span>Wed</span>
+              <span>Thu</span>
+              <span>Fri</span>
+              <span>Sat</span>
+              <span>Sun</span>
+            </div>
+
+            <!-- JavaScript will insert the dates here -->
+            <div class="calendar-days" id="calendarDays"></div>
+          </article>
+        </section>
+
+        <!-- Bottom Message -->
+        <section class="dashboard-message">
+          <i class="bi bi-heart-pulse"></i>
+
+          <div>
+            <strong>Small steps today, a healthier you tomorrow.</strong>
+            <p>Kampus Q-Ready</p>
+          </div>
+        </section>
+      </main>
     </div>
-    <!-- ==========================================
+  </div>
+  <!-- ==========================================
      HEALTHCARE CENTRE CONTACT & LOCATION MODAL
      ========================================== -->
 
-    <div
-      class="modal fade"
-      id="contactModal"
-      tabindex="-1"
-      aria-labelledby="contactModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content contact-modal">
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <div>
-              <h5 class="modal-title" id="contactModalLabel">
-                NWU Healthcare Centre
-              </h5>
+  <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content contact-modal">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div>
+            <h5 class="modal-title" id="contactModalLabel">
+              NWU Healthcare Centre
+            </h5>
 
-              <small>Contact & Location</small>
-            </div>
-
-            <!-- Close X button -->
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+            <small>Contact & Location</small>
           </div>
 
-          <!-- Modal Body -->
-          <div class="modal-body">
-            <!-- Address -->
-            <div class="contact-detail">
-              <i class="bi bi-geo-alt"></i>
+          <!-- Close X button -->
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
 
-              <div>
-                <strong>Address</strong>
-                <p>Building E16, Jooste Street, Main Campus</p>
-              </div>
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <!-- Address -->
+          <div class="contact-detail">
+            <i class="bi bi-geo-alt"></i>
+
+            <div>
+              <strong>Address</strong>
+              <p>Building E16, Jooste Street, Main Campus</p>
             </div>
+          </div>
 
-            <!-- Telephone -->
-            <div class="contact-detail">
-              <i class="bi bi-telephone"></i>
+          <!-- Telephone -->
+          <div class="contact-detail">
+            <i class="bi bi-telephone"></i>
 
-              <div>
-                <strong>Telephone</strong>
-                <p>018 299 4345</p>
-                <p>018 299 4372</p>
-              </div>
+            <div>
+              <strong>Telephone</strong>
+              <p>018 299 4345</p>
+              <p>018 299 4372</p>
             </div>
+          </div>
 
-            <!-- Consultation Hours -->
-            <div class="contact-detail">
-              <i class="bi bi-calendar2-week"></i>
+          <!-- Consultation Hours -->
+          <div class="contact-detail">
+            <i class="bi bi-calendar2-week"></i>
 
-              <div>
-                <strong>Consultation Hours</strong>
-                <p>Monday to Thursday: 08:30-16:00</p>
-                <p>Friday: 08:30-13:00</p>
-              </div>
+            <div>
+              <strong>Consultation Hours</strong>
+              <p>Monday to Thursday: 08:30-16:00</p>
+              <p>Friday: 08:30-13:00</p>
             </div>
+          </div>
 
-            <!-- Operating Hours -->
-            <div class="contact-detail">
-              <i class="bi bi-clock"></i>
+          <!-- Operating Hours -->
+          <div class="contact-detail">
+            <i class="bi bi-clock"></i>
 
-              <div>
-                <strong>Operating Hours</strong>
-                <p>Monday to Thursday: 08:30-16:15</p>
-                <p>Friday: 08:30-13:00</p>
-              </div>
+            <div>
+              <strong>Operating Hours</strong>
+              <p>Monday to Thursday: 08:30-16:15</p>
+              <p>Friday: 08:30-13:00</p>
             </div>
-            <!-- Emergency Information -->
-            <div class="emergency-info">
-              <i class="bi bi-exclamation-triangle"></i>
+          </div>
+          <!-- Emergency Information -->
+          <div class="emergency-info">
+            <i class="bi bi-exclamation-triangle"></i>
 
-              <!-- ==========================================
+            <!-- ==========================================
      EMERGENCY ASSISTANCE
      ========================================== -->
 
-              <div class="emergency-section">
-                <!-- Emergency section toggle -->
-                <button
-                  class="emergency-toggle"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#emergencyDetails"
-                  aria-expanded="false"
-                  aria-controls="emergencyDetails"
-                >
-                  <div class="emergency-toggle-title">
-                    <div class="emergency-warning-icon">
-                      <i class="bi bi-exclamation-triangle"></i>
+            <div class="emergency-section">
+              <!-- Emergency section toggle -->
+              <button class="emergency-toggle" type="button" data-bs-toggle="collapse"
+                data-bs-target="#emergencyDetails" aria-expanded="false" aria-controls="emergencyDetails">
+                <div class="emergency-toggle-title">
+                  <div class="emergency-warning-icon">
+                    <i class="bi bi-exclamation-triangle"></i>
+                  </div>
+
+                  <div>
+                    <strong>Emergency Assistance</strong>
+                    <span>For emergencies, do not join the walk-in queue.</span>
+                  </div>
+                </div>
+
+                <!-- Arrow rotates when section opens -->
+                <i class="bi bi-chevron-down emergency-chevron"></i>
+              </button>
+
+              <!-- Collapsible emergency information -->
+              <div class="collapse" id="emergencyDetails">
+                <div class="emergency-content">
+                  <!-- Medical, Fire & Rescue -->
+                  <div class="emergency-detail">
+                    <div class="emergency-service-icon">
+                      <i class="bi bi-hospital"></i>
                     </div>
 
-                    <div>
-                      <strong>Emergency Assistance</strong>
-                      <span
-                        >For emergencies, do not join the walk-in queue.</span
-                      >
+                    <div class="emergency-service-info">
+                      <strong>Medical, Fire & Rescue</strong>
+
+                      <span>24-hour Control Room</span>
+
+                      <div class="emergency-numbers">
+                        <a href="tel:0182992211"> 018 299 2211 </a>
+
+                        <span>•</span>
+
+                        <a href="tel:0182992215"> 018 299 2215 </a>
+
+                        <span>•</span>
+
+                        <a href="tel:0182991110"> 018 299 1110 </a>
+                      </div>
+
+                      <small>
+                        Landline disruptions:
+                        <a href="tel:0818975671"> 081 897 5671 </a>
+                      </small>
                     </div>
                   </div>
 
-                  <!-- Arrow rotates when section opens -->
-                  <i class="bi bi-chevron-down emergency-chevron"></i>
-                </button>
-
-                <!-- Collapsible emergency information -->
-                <div class="collapse" id="emergencyDetails">
-                  <div class="emergency-content">
-                    <!-- Medical, Fire & Rescue -->
-                    <div class="emergency-detail">
-                      <div class="emergency-service-icon">
-                        <i class="bi bi-hospital"></i>
-                      </div>
-
-                      <div class="emergency-service-info">
-                        <strong>Medical, Fire & Rescue</strong>
-
-                        <span>24-hour Control Room</span>
-
-                        <div class="emergency-numbers">
-                          <a href="tel:0182992211"> 018 299 2211 </a>
-
-                          <span>•</span>
-
-                          <a href="tel:0182992215"> 018 299 2215 </a>
-
-                          <span>•</span>
-
-                          <a href="tel:0182991110"> 018 299 1110 </a>
-                        </div>
-
-                        <small>
-                          Landline disruptions:
-                          <a href="tel:0818975671"> 081 897 5671 </a>
-                        </small>
-                      </div>
+                  <!-- Psychological Crisis Line -->
+                  <div class="emergency-detail">
+                    <div class="emergency-service-icon">
+                      <i class="bi bi-heart-pulse"></i>
                     </div>
 
-                    <!-- Psychological Crisis Line -->
-                    <div class="emergency-detail">
-                      <div class="emergency-service-icon">
-                        <i class="bi bi-heart-pulse"></i>
-                      </div>
+                    <div class="emergency-service-info">
+                      <strong>Psychological Crisis Line</strong>
 
-                      <div class="emergency-service-info">
-                        <strong>Psychological Crisis Line</strong>
+                      <span> Thuso (InGryp) — 24-hour Crisis Line </span>
 
-                        <span> Thuso (InGryp) — 24-hour Crisis Line </span>
-
-                        <div class="emergency-numbers">
-                          <a href="tel:0182991777"> 018 299 1777 </a>
-                        </div>
+                      <div class="emergency-numbers">
+                        <a href="tel:0182991777"> 018 299 1777 </a>
                       </div>
                     </div>
                   </div>
@@ -409,21 +375,19 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Modal Footer -->
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="secondary-button"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button type="button" class="secondary-button" data-bs-dismiss="modal">
+            Close
+          </button>
         </div>
       </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="response.js"></script>
-  </body>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="response.js"></script>
+</body>
+
 </html>

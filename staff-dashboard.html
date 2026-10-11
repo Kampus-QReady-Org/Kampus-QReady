@@ -67,7 +67,6 @@
 
             </nav>
 
-
             <!-- Logout -->
             <div class="sidebar-logout">
                 <button id="logoutBtn">
@@ -93,7 +92,7 @@
 
             <!-- ========================= MOBILE HEADER ========================= -->
             <div class="mobile-header">
-                <div class="mobile-brand"> <img src="media/images/logo.png" alt="Kampus Q-Ready Logo"> <span>Kampus
+                <div class="mobile-brand"> <img src="media/images/Logo5 (1).png" alt="Kampus Q-Ready Logo"> <span>Kampus
                         Q-Ready</span> </div> <button class="menu-button" id="menuButton" aria-label="Open menu"> <i
                         class="bi bi-list"></i> </button>
             </div>
@@ -120,14 +119,14 @@
                         </div>
                     </div>
 
-                    <!-- Current Ticket -->
+                    <!-- Appointments Today -->
                     <div class="dashboard-card queue-card">
                         <div class="card-heading">
-                            <h3> <i class="bi bi-person-check"></i> Current Ticket </h3>
+                            <h3> <i class="bi bi-person-check"></i>Appointments Today</h3>
                         </div>
                         <div class="queue-item">
                             <!-- Temporary value -->
-                            <strong id="currentTicket"></strong>
+                            <strong id="appointmentsToday"></strong>
                         </div>
                     </div>
 
@@ -142,14 +141,14 @@
                         </div>
                     </div>
 
-                    <!-- Open Slots -->
+                    <!-- Completed Today -->
                     <div class="dashboard-card appointment-card">
                         <div class="card-heading">
-                            <h3> <i class="bi bi-calendar-plus"></i> Open Slots </h3>
+                            <h3> <i class="bi bi-calendar-plus"></i>Completed Today</h3>
                         </div>
                         <div class="queue-item">
                             <!-- Temporary value -->
-                            <strong id="openSlots"></strong>
+                            <strong id="completedToday"></strong>
                         </div>
                     </div>
                 </section>
@@ -268,15 +267,7 @@
                         <span id="viewStudentName"></span>
                     </p>
 
-                    <p>
-                        <strong>Email:</strong>
-                        <span id="viewStudentEmail"></span>
-                    </p>
-
-                    <p>
-                        <strong>Contact:</strong>
-                        <span id="viewStudentContact"></span>
-                    </p>
+                    
 
                 </div>
 
@@ -790,26 +781,6 @@
                         </label>
 
                         <input type="text" class="form-control" id="editStudentName">
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label for="editStudentEmail" class="form-label">
-                            Email
-                        </label>
-
-                        <input type="email" class="form-control" id="editStudentEmail">
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label for="editStudentContact" class="form-label">
-                            Contact
-                        </label>
-
-                        <input type="text" class="form-control" id="editStudentContact">
 
                     </div>
 

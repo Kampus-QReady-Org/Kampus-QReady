@@ -142,10 +142,60 @@ router.post('/guest', async (req, res) => {
 
 // GET: Protected Profile route handler that uses the verifyToken middleware to grant access and return authenticated user details
 router.get('/profile', verifyToken, async (req, res) => {
-    res.status(200).json({ 
-        message: 'Access granted to protected route', 
-        user: req.user 
-    });
+    try {
+        const userId = req.user.userId;
+
+        const query = `
+            SELECT 
+                u."User_ID",
+                u."U_Email",
+                u."U_FName",
+                u."U_LName",
+                u."U_Phone_Num",
+                u."User_Is_Student",
+                u."User_Is_Staff",
+                s."Student_No",
+                st."Staff_Number"
+            FROM "USER" u
+            LEFT JOIN "STUDENT" s
+                ON u."User_ID" = s."User_ID"
+            LEFT JOIN "STAFF" st
+                ON u."User_ID" = st."User_ID"
+            WHERE u."User_ID" = $1
+        `;
+
+        const result = await pool.query(query, [userId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                error: "User profile not found."
+            });
+        }
+
+        const user = result.rows[0];
+
+        res.status(200).json({
+            message: "Profile loaded successfully",
+            user: {
+                id: user.User_ID,
+                email: user.U_Email,
+                firstName: user.U_FName,
+                lastName: user.U_LName,
+                phone: user.U_Phone_Num,
+                studentNumber: user.Student_No || null,
+                staffNumber: user.Staff_Number || null,
+                isStudent: user.User_Is_Student,
+                isStaff: user.User_Is_Staff
+            }
+        });
+
+    } catch (error) {
+        console.error("Profile error:", error);
+
+        res.status(500).json({
+            error: "Unable to load profile."
+        });
+    }
 });
 
 // Export the configured express router module for use in the main application server configuration

@@ -10,12 +10,14 @@ const myPosition = document.getElementById("myPosition");
 
 const peopleAhead = document.getElementById("peopleAhead");
 
-const myWaitTime = document.getElementById("myWaitTime");
+const queueStatus = document.getElementById("queueStatus");
 
 // =========================
 // JOIN QUEUE
 // =========================
 joinQueueButton.addEventListener("click", async function () {
+  
+  console.log("JOIN QUEUE BUTTON CLICKED");
   const token = localStorage.getItem("token");
 
   try {
@@ -37,6 +39,14 @@ joinQueueButton.addEventListener("click", async function () {
     ticketNumber.textContent = queue.ticket;
     myPosition.textContent = queue.position;
     peopleAhead.textContent = queue.peopleAhead;
+
+    const visualTicket = document.getElementById("visualQueueTicket");
+    const visualPosition = document.getElementById("visualQueuePosition");
+    const visualPeopleAhead = document.getElementById("visualQueuePeopleAhead");
+
+    if (visualTicket) visualTicket.textContent = queue.ticket ?? "—";
+    if (visualPosition) visualPosition.textContent = queue.position ?? "—";
+    if (visualPeopleAhead) visualPeopleAhead.textContent = queue.peopleAhead ?? "—";
 
     // Show ticket
     ticketCard.style.display = "block";
@@ -98,6 +108,14 @@ leaveQueueButton.addEventListener("click", async function () {
 
     ticketCard.style.display = "none";
 
+    const visualTicket = document.getElementById("visualQueueTicket");
+    const visualPosition = document.getElementById("visualQueuePosition");
+    const visualPeopleAhead = document.getElementById("visualQueuePeopleAhead");
+
+    if (visualTicket) visualTicket.textContent = "—";
+    if (visualPosition) visualPosition.textContent = "—";
+    if (visualPeopleAhead) visualPeopleAhead.textContent = "—";
+
     joinQueueButton.innerHTML =
       '<i class="bi bi-plus-circle"></i> Join Queue';
 
@@ -141,17 +159,38 @@ async function loadExistingQueue() {
     const data = await response.json();
 
     console.log("Current queue status:", data);
+const queue = data.queue;
 
-    const queue = data.queue;
+if (!queue) {
+  ticketCard.style.display = "none";
 
-    if (!queue) {
-      return;
-    }
+  if (visualTicket) visualTicket.textContent = "—";
+  if (visualPosition) visualPosition.textContent = "—";
+  if (visualPeopleAhead) visualPeopleAhead.textContent = "—";
+
+  joinQueueButton.innerHTML =
+    '<i class="bi bi-plus-circle"></i> Join Queue';
+
+  joinQueueButton.disabled = false;
+
+  return;
+}
 
     // Display existing queue information
     ticketNumber.textContent = queue.ticket;
     myPosition.textContent = queue.position;
     peopleAhead.textContent = queue.peopleAhead;
+
+    const visualTicket = document.getElementById("visualQueueTicket");
+    const visualPosition = document.getElementById("visualQueuePosition");
+    const visualPeopleAhead = document.getElementById("visualQueuePeopleAhead");
+
+    if (visualTicket) visualTicket.textContent = queue.ticket ?? "—";
+    if (visualPosition) visualPosition.textContent = queue.position ?? "—";
+    if (visualPeopleAhead) visualPeopleAhead.textContent = queue.peopleAhead ?? "—";
+
+    queueStatus.textContent = "Waiting";
+
 
     // Show ticket
     ticketCard.style.display = "block";
@@ -172,46 +211,60 @@ async function loadExistingQueue() {
   }
 }
 
+
 loadExistingQueue();
+
+
+setInterval(loadExistingQueue, 10000);
 
 // =====================================================
 // PATIENT DASHBOARD
 // =====================================================
 
-// -----------------------------------------------------
-// 1. DISPLAY LOGGED-IN PATIENT INFORMATION
-// -----------------------------------------------------
+// ========================================
+// DISPLAY LOGGED-IN USER
+// ========================================
 
-// This function will display information belonging to
-// the patient who successfully logged into the system.
-//
-// The 'user' data will eventually come from the backend
-// after the patient's login credentials are authenticated.
+const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
-function displayPatientInfo(user) {
-  // Patient name displayed in the top-right account area
-  const userName = document.getElementById("userName");
+if (loggedInUser) {
 
-  // Patient role displayed underneath the patient's name
-  const userRole = document.getElementById("userRole");
+    const userName = document.getElementById("userName");
+    const userRole = document.getElementById("userRole");
 
-  // Patient name displayed in "Welcome back, Name"
-  const welcomeName = document.getElementById("welcomeName");
+    if (userName) {
+    const firstName = loggedInUser.firstName || loggedInUser.name;
+    const lastName = loggedInUser.lastName || loggedInUser.surname;
 
-  // Display the patient's name in the account section
-  if (userName) {
-    userName.textContent = user.name;
-  }
+    userName.textContent =
+        `${firstName} ${lastName}`;
+}
 
-  // Display the patient's role
-  if (userRole) {
-    userRole.textContent = user.role;
-  }
+    if (userRole) {
+        if (loggedInUser.staffNumber) {
+            userRole.textContent = "Staff";
+        } else if (loggedInUser.studentNumber) {
+            userRole.textContent = "Student";
+        } else {
+            userRole.textContent = "Guest";
+        }
+    }
+}
 
-  // Display the patient's name in the welcome message
-  if (welcomeName) {
-    welcomeName.textContent = user.name;
-  }
+// Hide Appointments from guests
+const appointmentMenuItem =
+  document.getElementById("appointmentMenuItem");
+
+console.log("Logged in user:", loggedInUser);
+console.log("Appointment menu:", appointmentMenuItem);
+
+if (
+  appointmentMenuItem &&
+  loggedInUser &&
+  !loggedInUser.studentNumber &&
+  !loggedInUser.staffNumber
+) {
+  appointmentMenuItem.style.display = "none";
 }
 
 // -----------------------------------------------------
@@ -284,3 +337,74 @@ if (contactModal && emergencyDetails) {
     emergencyCollapse.hide();
   });
 }
+
+
+/* =========================
+   CLINIC OPERATING STATUS
+   Monday-Friday, 08:00-16:30
+   South African time
+========================= */
+
+function updateClinicStatus() {
+  const statusText = document.getElementById("queueStatusText");
+  const liveDot = document.getElementById("queueLiveDot");
+  const liveBadge = document.getElementById("queueLiveBadge");
+
+  if (!statusText || !liveDot) {
+    return;
+  }
+
+  const parts = new Intl.DateTimeFormat("en-ZA", {
+    timeZone: "Africa/Johannesburg",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23"
+  }).formatToParts(new Date());
+
+  const values = {};
+  parts.forEach(part => {
+    values[part.type] = part.value;
+  });
+
+  const weekday = values.weekday;
+  const hour = Number(values.hour);
+  const minute = Number(values.minute);
+  const currentMinutes = hour * 60 + minute;
+
+  const isWeekday = [
+    "Mon", "Tue", "Wed", "Thu", "Fri"
+  ].includes(weekday);
+
+  const isWithinOperatingHours =
+    currentMinutes >= 8 * 60 &&
+    currentMinutes < 16 * 60 + 30;
+
+  const isOpen = isWeekday && isWithinOperatingHours;
+
+
+  if (isOpen) {
+    statusText.textContent = "Queue is currently open";
+    liveDot.style.backgroundColor = "#198754";
+
+    if (liveBadge) {
+      liveBadge.textContent = "Live";
+      liveBadge.style.backgroundColor = "#198754";
+      liveBadge.style.color = "#ffffff";
+    }
+  } else {
+    statusText.textContent = "Queue is currently closed";
+    liveDot.style.backgroundColor = "#6c757d";
+
+    if (liveBadge) {
+      liveBadge.textContent = "Closed";
+      liveBadge.style.backgroundColor = "#6c757d";
+      liveBadge.style.color = "#ffffff";
+    }
+  }
+}
+
+// Check immediately and refresh the status every minute.
+updateClinicStatus();
+setInterval(updateClinicStatus, 60000);
+
