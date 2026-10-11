@@ -1903,6 +1903,48 @@ body {
     min-height: 55px;
   }
 }
+/* ==========================================================
+   FLATPICKR APPOINTMENT CALENDAR
+   ========================================================== */
+
+/* Date input styling */
+.booking-date input#appointmentDate {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 12px;
+    border: 1px solid rgba(108, 61, 145, 0.3);
+    border-radius: 10px;
+    background-color: #ffffff;
+    color: #28123d;
+    cursor: pointer;
+}
+
+/* Highlight today's date */
+.flatpickr-calendar .flatpickr-day.today {
+    border-color: #00889c;
+}
+
+/* Selected date */
+.flatpickr-calendar .flatpickr-day.selected {
+    background: #6c3d91;
+    border-color: #6c3d91;
+}
+
+/* Hover over selectable dates */
+.flatpickr-calendar .flatpickr-day:hover {
+    background: #e9dcf4;
+    border-color: #e9dcf4;
+    color: #28123d;
+}
+
+/* Disable weekends and other unavailable dates visually */
+.flatpickr-calendar .flatpickr-day.flatpickr-disabled,
+.flatpickr-calendar .flatpickr-day.flatpickr-disabled:hover {
+    color: #c5c0ca;
+    background: #f3f1f5;
+    border-color: transparent;
+    cursor: not-allowed;
+}
 
 /*body {
     background: red !important;

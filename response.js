@@ -589,6 +589,14 @@ if (
 
   let dashboardAppointment = null;
 
+  function getLocalAppointmentDate(dateValue) {
+  const dateString = String(dateValue).slice(0, 10);
+  const [year, month, day] = dateString.split("-").map(Number);
+
+  // The API's UTC date is one day behind the intended SA date.
+  return new Date(year, month - 1, day + 1);
+}
+
   async function loadDashboardAppointment() {
     const token = localStorage.getItem("token");
 
@@ -615,15 +623,27 @@ if (
       const data = await response.json();
       console.log("Student appointments:", data.appointments);
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+
+
+
 
       const appointment = (data.appointments || [])
-        .filter(item =>
-          item.status === "scheduled" &&
-          new Date(item.date) >= today
-        )
-        .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
+        .filter(item => {
+          return (
+            item.status === "scheduled" &&
+            getLocalAppointmentDate(item.date) >= today
+          );
+        })
+        .sort((a, b) => {
+          return (
+            getLocalAppointmentDate(a.date) -
+            getLocalAppointmentDate(b.date)
+          );
+        })[0];
 
       dashboardAppointment = appointment || null;
       const dayElement = document.getElementById("appointmentDay");
@@ -649,24 +669,27 @@ if (
         return;
       }
 
-      const appointmentDate = new Date(appointment.date);
+      
+        const appointmentDate = getLocalAppointmentDate(appointment.date);
+        console.log("API date:", appointment.date);
+        console.log("Displayed date:", appointmentDate.toDateString());
 
-      if (dayElement) {
-        dayElement.textContent = appointmentDate.getUTCDate();
-      }
+        if (dayElement) {
+          dayElement.textContent = appointmentDate.getDate();
+        }
 
-      if (monthElement) {
-        monthElement.textContent = appointmentDate
-          .toLocaleString("en-ZA", {
-            month: "short",
-            timeZone: "UTC"
-          })
-          .toUpperCase();
-      }
+        if (monthElement) {
+          monthElement.textContent = appointmentDate
+            .toLocaleString("en-ZA", {
+              month: "short"
+            })
+            .toUpperCase();
+        }
 
-      if (yearElement) {
-        yearElement.textContent = appointmentDate.getUTCFullYear();
-      }
+        if (yearElement) {
+          yearElement.textContent = appointmentDate.getFullYear();
+        }
+
 
       if (typeElement) {
         typeElement.textContent = "General Consultation";
@@ -768,14 +791,14 @@ if (
         return;
       }
 
-      const appointmentDate = new Date(dashboardAppointment.date);
+      const appointmentDate = getLocalAppointmentDate(
+        dashboardAppointment.date
+      );
 
       alert(
         `Appointment Details\n\n` +
         `Type: General Consultation\n` +
-        `Date: ${appointmentDate.toLocaleDateString("en-ZA", {
-          timeZone: "UTC"
-        })}\n` +
+        `Date: ${appointmentDate.toLocaleDateString("en-ZA")}\n` +
         `Time: ${dashboardAppointment.time}\n` +
         `Status: ${dashboardAppointment.status}`
       );
