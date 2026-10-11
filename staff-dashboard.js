@@ -3,16 +3,27 @@
 // ========================================
 
 const API_BASE_URL = 'http://localhost:3000';
-
 // ========================================
 // LOAD QUEUE FROM BACKEND
 // ========================================
 
+let queueLoading = false;
+
 async function loadQueue() {
+    if (queueLoading) return;
+
+    queueLoading = true;
+
+    const queueTableBody = document.getElementById('queueTableBody');
+    const studentsWaitingElement = document.getElementById('studentsWaiting');
+    const nextTicketElement = document.getElementById('nextTicket');
 
     try {
+        const token = localStorage.getItem('token');
 
-        const token = localStorage.getItem("token");
+        if (!token) {
+            throw new Error('Your session has expired. Please log in again.');
+        }
 
         const response = await fetch(`${API_BASE_URL}/api/staff/queue`, {
             headers: {
@@ -20,65 +31,107 @@ async function loadQueue() {
             }
         });
 
-        if (!response.ok) {
-            throw new Error('Failed to load queue');
-        }
-
         const data = await response.json();
 
-        console.log('Queue data:', data);
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to load queue.');
+        }
 
-        // Update dashboard summary cards
-        document.getElementById('studentsWaiting').textContent =
-            data.queue.length;
+        if (!Array.isArray(data.queue)) {
+            throw new Error('The server returned an unexpected queue response.');
+        }
 
-        document.getElementById('nextTicket').textContent =
-            data.queue.length > 0
-                ? data.queue[0].ticket
-                : '—';
-
-        const queueTableBody = document.getElementById('queueTableBody');
-
-        queueTableBody.innerHTML = '';
+        queueTableBody.replaceChildren();
 
         data.queue.forEach(student => {
-
             const row = document.createElement('tr');
 
-            row.dataset.visitId = student.visitId;
-            row.dataset.studentNumber = student.studentNumber || 'Not available';
+            row.dataset.visitId = student.visitId ?? '';
+            row.dataset.studentNumber = student.studentNumber || '';
+            row.dataset.studentName =
+                `${student.firstName || ''} ${student.lastName || ''}`.trim();
+            row.dataset.queueNumber = student.queueNumber ?? '';
+            row.dataset.ticket = student.ticket || '';
+            row.dataset.position = student.position ?? '';
+            row.dataset.joinTime = student.joinTime || '';
 
-            const status = student.status || 'waiting';
+            const ticketCell = document.createElement('td');
+            ticketCell.textContent = student.ticket || '—';
 
-            row.innerHTML = `
-                <td>${student.ticket}</td>
-                <td>${student.firstName} ${student.lastName}</td>
-                <td>${student.position}</td>
-                <td>
-                    <span class="status ${status.toLowerCase()}">
-                        ${status}
-                    </span>
-                </td>
-                <td>
-                    <button class="view-btn">View</button>
-                    <button class="call-btn">Call</button>
-                    <button class="cancel-btn">Cancel</button>
-                    <button class="complete-btn">Complete</button>
-                </td>
-            `;
+            const nameCell = document.createElement('td');
+            nameCell.textContent = row.dataset.studentName || 'Not available';
+
+            const positionCell = document.createElement('td');
+            positionCell.textContent = student.position ?? '—';
+
+            const statusCell = document.createElement('td');
+            const statusLabel = document.createElement('span');
+            statusLabel.className = 'status waiting';
+            statusLabel.textContent = 'Waiting';
+            statusCell.appendChild(statusLabel);
+
+            const actionsCell = document.createElement('td');
+
+            [
+                ['view-btn', 'View'],
+                ['call-btn', 'Call'],
+                ['complete-btn', 'Complete']
+            ].forEach(([className, label]) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = className;
+                button.textContent = label;
+                actionsCell.appendChild(button);
+                actionsCell.appendChild(document.createTextNode(' '));
+            });
+
+            row.append(
+                ticketCell,
+                nameCell,
+                positionCell,
+                statusCell,
+                actionsCell
+            );
 
             queueTableBody.appendChild(row);
         });
 
-    } catch (error) {
+        studentsWaitingElement.textContent = data.queue.length;
+        nextTicketElement.textContent = data.queue[0]?.ticket || '—';
 
+        const errorElement = document.getElementById('queueLoadError');
+        if (errorElement) errorElement.remove();
+
+    } catch (error) {
         console.error('Error loading queue:', error);
 
+        let errorElement = document.getElementById('queueLoadError');
+
+        if (!errorElement) {
+            errorElement = document.createElement('p');
+            errorElement.id = 'queueLoadError';
+            errorElement.setAttribute('role', 'alert');
+            errorElement.style.color = 'red';
+            queueTableBody.parentElement.before(errorElement);
+        }
+
+        errorElement.replaceChildren();
+        errorElement.appendChild(
+            document.createTextNode(`${error.message} `)
+        );
+
+        const retryButton = document.createElement('button');
+        retryButton.type = 'button';
+        retryButton.textContent = 'Retry';
+        retryButton.addEventListener('click', loadQueue);
+        errorElement.appendChild(retryButton);
+
+    } finally {
+        queueLoading = false;
     }
 }
 
 loadQueue();
-
 // ========================================
 // LOAD APPOINTMENTS FROM BACKEND
 // ========================================
@@ -86,8 +139,12 @@ loadQueue();
 async function loadAppointments() {
 
     try {
-
-        const today = new Date().toISOString().split('T')[0];
+        const now = new Date();
+        const today = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, '0'),
+            String(now.getDate()).padStart(2, '0')
+        ].join('-');
 
         const token = localStorage.getItem("token");
 
@@ -129,7 +186,6 @@ async function loadAppointments() {
             row.dataset.visitId = appointment.visitId;
 
             row.innerHTML = `
-
                 <td>${today}</td>
                 <td>${appointment.time}</td>
                 <td>${appointment.firstName} ${appointment.lastName}</td>
@@ -138,24 +194,24 @@ async function loadAppointments() {
                         ${appointment.status}
                     </span>
                 </td>
-                 <td>
-                    <button class="small-btn appointment-reschedule-btn">
-                        Reschedule
-                    </button>
+                <td>
 
-                    <button class="small-btn appointment-cancel-btn">
-                        Cancel
-                    </button>
+                    ${appointment.status.toLowerCase() === 'scheduled' ? `
+                        <button class="small-btn appointment-no-show-btn">
+                            Mark No-Show
+                        </button>
+
+                        <button class="small-btn appointment-cancel-btn">
+                            Cancel
+                        </button>
+                    ` : '—'}
                 </td>
             `;
 
             appointmentTableBody.appendChild(row);
         });
-
     } catch (error) {
-
         console.error('Error loading appointments:', error);
-
     }
 }
 
@@ -204,15 +260,14 @@ if (logoutButton) {
 // VIEW STUDENT
 // ----------------------------------------
 
-
 function showStudentDetails(row) {
     const studentNumber =
         row.dataset.studentNumber ||
-        row.cells[0].textContent.trim();
+        row.cells[0]?.textContent.trim();
 
     const studentName =
         row.dataset.studentName ||
-        row.cells[1].textContent.trim();
+        row.cells[1]?.textContent.trim();
 
     document.getElementById('viewStudentNumber').textContent =
         studentNumber || 'Not available';
@@ -220,44 +275,78 @@ function showStudentDetails(row) {
     document.getElementById('viewStudentName').textContent =
         studentName || 'Not available';
 
-    const queueNumber = row.dataset.queueNumber;
-    const ticket = row.dataset.ticket;
-    const position = row.dataset.position;
-    const joinTime = row.dataset.joinTime;
-    const appointmentTime = row.dataset.appointmentTime;
-    const appointmentStatus = row.dataset.appointmentStatus;
-
     const detailsContainer = document.getElementById('viewStudentModal')
         .querySelector('.modal-body');
 
-    // Remove any old queue or appointment details.
-    const oldDetails = detailsContainer.querySelector('.student-extra-details');
-    if (oldDetails) {
-        oldDetails.remove();
-    }
+    // Clear details from the previous student.
+    const oldDetails =
+        detailsContainer.querySelector('.student-extra-details');
+
+    if (oldDetails) oldDetails.remove();
 
     const extraDetails = document.createElement('div');
     extraDetails.className = 'student-extra-details';
 
     function addDetail(label, value) {
-        if (!value) return;
+        if (value === undefined || value === null || value === '') return;
 
         const paragraph = document.createElement('p');
         const strong = document.createElement('strong');
+
         strong.textContent = `${label}: `;
-        paragraph.append(strong, document.createTextNode(value));
+        paragraph.append(strong, document.createTextNode(String(value)));
         extraDetails.appendChild(paragraph);
     }
 
-    if (queueNumber) {
-        addDetail('Queue Number', ticket || queueNumber);
+    // Queue activity, when available.
+    const queueNumber = row.dataset.queueNumber;
+    const ticket = row.dataset.ticket;
+    const position = row.dataset.position;
+    const joinTime = row.dataset.joinTime;
+
+    if (queueNumber || ticket || position || joinTime) {
+        addDetail('Queue Ticket', ticket || queueNumber);
         addDetail('Queue Position', position);
         addDetail('Joined Queue', joinTime);
     } else {
-        addDetail('Appointment Time', appointmentTime);
-        addDetail('Appointment Status', appointmentStatus);
+        addDetail('Queue Activity', 'No current queue details available');
     }
 
+    // Appointment activity, when available.
+    const appointmentTime = row.dataset.appointmentTime;
+    const appointmentStatus = row.dataset.appointmentStatus;
+    const appointmentVisitId = row.dataset.appointmentVisitId;
+
+
+    if (appointmentTime || appointmentStatus) {
+        addDetail('Appointment Time', appointmentTime);
+        addDetail('Appointment Status', appointmentStatus);
+
+        if (
+            appointmentStatus.toLowerCase() === 'scheduled' &&
+            appointmentVisitId
+        ) {
+            const appointmentActions = document.createElement('div');
+            appointmentActions.className = 'student-appointment-actions';
+            appointmentActions.dataset.appointmentVisitId = appointmentVisitId;
+            appointmentActions.dataset.appointmentTime = appointmentTime || '';
+
+            const noShowButton = document.createElement('button');
+            noShowButton.type = 'button';
+            noShowButton.className = 'small-btn appointment-no-show-btn';
+            noShowButton.textContent = 'Mark No-Show';
+
+            const cancelButton = document.createElement('button');
+            cancelButton.type = 'button';
+            cancelButton.className = 'small-btn appointment-cancel-btn';
+            cancelButton.textContent = 'Cancel Appointment';
+
+            appointmentActions.append(noShowButton, ' ', cancelButton);
+            extraDetails.appendChild(appointmentActions);
+        }
+    } else {
+        addDetail('Appointment Activity', 'No appointment details available');
+    }
     detailsContainer.appendChild(extraDetails);
 
     const modal = bootstrap.Modal.getOrCreateInstance(
@@ -266,6 +355,7 @@ function showStudentDetails(row) {
 
     modal.show();
 }
+
 
 // ----------------------------------------
 // CALL SPECIFIC STUDENT
@@ -296,91 +386,79 @@ document.getElementById('queueTableBody').addEventListener('click', function (ev
     }
 });
 
+
 // Confirm Call
 document.getElementById('confirmCallBtn').addEventListener('click', async function () {
+    if (!selectedCallRow) return;
 
-    if (selectedCallRow) {
+    const visitId = selectedCallRow.dataset.visitId;
+    const token = localStorage.getItem('token');
+    const confirmButton = this;
 
-        const visitId = selectedCallRow.dataset.visitId;
-        const token = localStorage.getItem('token');
+    if (!visitId || !token) {
+        alert('Unable to call the student. Please check your session and try again.');
+        return;
+    }
 
-        try {
+    confirmButton.disabled = true;
 
-            const response = await fetch(
-                `${API_BASE_URL}/api/staff/queue/${visitId}/call`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/api/staff/queue/${visitId}/call`,
+            {
+                method: 'PATCH',
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    data.error || 'Failed to call student'
-                );
             }
+        );
 
-            console.log('Student called:', data);
+        const data = await response.json();
 
-            const statusCell = selectedCallRow.cells[3];
-
-            statusCell.innerHTML =
-                '<span class="status called">Called</span>';
-
-            const modalElement =
-                document.getElementById('callStudentModal');
-
-            const modal =
-                bootstrap.Modal.getInstance(modalElement);
-
-            modal.hide();
-
-        } catch (error) {
-
-            console.error('Error calling student:', error);
-
-            alert('Unable to call the student.');
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to call student.');
         }
+
+        console.log('Student called:', data);
+
+        const modalElement = document.getElementById('callStudentModal');
+        const modal = bootstrap.Modal.getInstance(modalElement);
+
+        if (modal) modal.hide();
+
+        selectedCallRow = null;
+
+        // Reload the queue to reflect the backend's current state.
+        await loadQueue();
+
+    } catch (error) {
+        console.error('Error calling student:', error);
+        alert(error.message || 'Unable to call the student.');
+    } finally {
+        confirmButton.disabled = false;
     }
 });
-// ----------------------------------------
-// CANCEL STUDENT
-// ----------------------------------------
 
-let selectedCancelRow = null;
+// ----------------------------------------
+// COMPLETE QUEUE VISIT
+// ----------------------------------------
 
 document.getElementById('queueTableBody').addEventListener('click', async function (event) {
 
-    if (event.target.classList.contains('cancel-btn')) {
-
-        selectedCancelRow = event.target.closest('tr');
-
-        const ticket = selectedCancelRow.cells[0].textContent.trim();
-        const studentName = selectedCancelRow.cells[1].textContent.trim();
-
-        document.getElementById('cancelStudentTicket').textContent =
-            ticket;
-
-        document.getElementById('cancelStudentName').textContent =
-            studentName;
-
-        const modal = new bootstrap.Modal(
-            document.getElementById('cancelStudentModal')
-        );
-
-        modal.show();
-    }
-
     if (event.target.classList.contains('complete-btn')) {
-
         const selectedCompleteRow = event.target.closest('tr');
+        if (!selectedCompleteRow) return;
 
         const visitId = selectedCompleteRow.dataset.visitId;
         const token = localStorage.getItem('token');
+
+        if (!visitId || !token) {
+            alert('Unable to complete the visit. Please check your session and try again.');
+            return;
+        }
+
+        const completeButton = event.target;
+        completeButton.disabled = true;
 
         try {
             const response = await fetch(
@@ -397,42 +475,25 @@ document.getElementById('queueTableBody').addEventListener('click', async functi
 
             if (!response.ok) {
                 throw new Error(
-                    data.error || 'Failed to complete queue visit'
+                    data.error || 'Failed to complete queue visit.'
                 );
             }
 
             console.log('Queue visit completed:', data);
 
-            selectedCompleteRow.remove();
+            // Reload the queue and summary cards from the backend.
+            await loadQueue();
 
-            document.getElementById('studentsWaiting').textContent =
-                document.querySelectorAll('#queueTableBody tr').length;
-
-            document.getElementById('nextTicket').textContent =
-                document.querySelector('#queueTableBody tr td')?.textContent || '—';
         } catch (error) {
             console.error('Error completing queue visit:', error);
-            alert('Unable to complete the queue visit.');
+            alert(error.message || 'Unable to complete the queue visit.');
+        } finally {
+            completeButton.disabled = false;
         }
     }
+
 });
 
-// Confirm Cancel
-document.getElementById('confirmCancelBtn').addEventListener('click', function () {
-
-    if (selectedCancelRow) {
-
-        selectedCancelRow.remove();
-
-        const modalElement =
-            document.getElementById('cancelStudentModal');
-
-        const modal =
-            bootstrap.Modal.getInstance(modalElement);
-
-        modal.hide();
-    }
-});
 
 // ----------------------------------------
 // CALL NEXT STUDENT
@@ -482,59 +543,58 @@ callNextButton.addEventListener('click', function () {
     modal.show();
 });
 
-
 // Confirm Call Next
 document.getElementById('confirmCallNextBtn').addEventListener('click', async function () {
+    if (!nextStudentRow) return;
 
-    if (nextStudentRow) {
+    const visitId = nextStudentRow.dataset.visitId;
+    const token = localStorage.getItem('token');
+    const confirmButton = this;
 
-        const visitId = nextStudentRow.dataset.visitId;
-        const token = localStorage.getItem('token');
+    if (!visitId || !token) {
+        alert('Unable to call the next student. Please check your session and try again.');
+        return;
+    }
 
-        try {
+    confirmButton.disabled = true;
 
-            const response = await fetch(
-                `${API_BASE_URL}/api/staff/queue/${visitId}/call`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/api/staff/queue/${visitId}/call`,
+            {
+                method: 'PATCH',
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    data.error || 'Failed to call next student'
-                );
             }
+        );
 
-            console.log('Next student called:', data);
+        const data = await response.json();
 
-            const statusCell =
-                nextStudentRow.cells[3];
-
-            statusCell.innerHTML =
-                '<span class="status called">Called</span>';
-
-            const modalElement =
-                document.getElementById('callNextModal');
-
-            const modal =
-                bootstrap.Modal.getInstance(modalElement);
-
-            modal.hide();
-
-        } catch (error) {
-
-            console.error('Error calling next student:', error);
-
-            alert('Unable to call the next student.');
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to call next student.');
         }
+
+        console.log('Next student called:', data);
+
+        const modalElement = document.getElementById('callNextModal');
+        const modal = bootstrap.Modal.getInstance(modalElement);
+
+        if (modal) modal.hide();
+
+        nextStudentRow = null;
+
+        // Reload the queue to reflect the backend's current state.
+        await loadQueue();
+
+    } catch (error) {
+        console.error('Error calling next student:', error);
+        alert(error.message || 'Unable to call the next student.');
+    } finally {
+        confirmButton.disabled = false;
     }
 });
+
 
 // ========================================
 // RESCHEDULE APPOINTMENT
@@ -576,82 +636,55 @@ document.getElementById('appointmentTableBody')
     });
 
 // ========================================
-// CONFIRM RESCHEDULE
-// ========================================
-
-document.getElementById('confirmRescheduleBtn')
-    .addEventListener('click', function () {
-
-        if (selectedRescheduleRow) {
-
-            const newDate =
-                document.getElementById('newAppointmentDate').value;
-
-            const newTime =
-                document.getElementById('newAppointmentTime').value;
-
-            if (!newDate || !newTime) {
-                alert('Please select a new date and time.');
-                return;
-            }
-
-            selectedRescheduleRow.cells[0].textContent =
-                newDate;
-
-            selectedRescheduleRow.cells[1].textContent =
-                newTime;
-
-            const modalElement =
-                document.getElementById(
-                    'rescheduleAppointmentModal'
-                );
-
-            const modal =
-                bootstrap.Modal.getInstance(modalElement);
-
-            modal.hide();
-        }
-    });
-
-
-/// ========================================
 // CANCEL APPOINTMENT
 // ========================================
 
 let selectedAppointmentCancelRow = null;
+let selectedAppointmentCancelVisitId = null;
 
-document.getElementById('appointmentTableBody')
-    .addEventListener('click', function (event) {
+document.addEventListener('click', function (event) {
+    const button = event.target.closest('.appointment-cancel-btn');
 
-        if (event.target.classList.contains('appointment-cancel-btn')) {
+    if (!button) return;
 
-            selectedAppointmentCancelRow = event.target.closest('tr');
+    const activityDetails = button.closest('.student-extra-details');
+    const row = button.closest('#appointmentTableBody tr');
 
-            const date =
-                selectedAppointmentCancelRow.cells[0].textContent.trim();
+    if (activityDetails) {
+        selectedAppointmentCancelRow = null;
+        selectedAppointmentCancelVisitId =
+            activityDetails.dataset.appointmentVisitId;
 
-            const time =
-                selectedAppointmentCancelRow.cells[1].textContent.trim();
+        const modal = document.getElementById('viewStudentModal');
 
-            const student =
-                selectedAppointmentCancelRow.cells[2].textContent.trim();
+        document.getElementById('cancelAppointmentStudent').textContent =
+            modal.querySelector('#viewStudentName').textContent;
 
-            document.getElementById('cancelAppointmentStudent').textContent =
-                student;
+        document.getElementById('cancelAppointmentDate').textContent =
+            new Date().toLocaleDateString();
 
-            document.getElementById('cancelAppointmentDate').textContent =
-                date;
+        document.getElementById('cancelAppointmentTime').textContent =
+            activityDetails.dataset.appointmentTime || 'Not available';
+    } else if (row) {
+        selectedAppointmentCancelRow = row;
+        selectedAppointmentCancelVisitId = row.dataset.visitId;
 
-            document.getElementById('cancelAppointmentTime').textContent =
-                time;
+        document.getElementById('cancelAppointmentStudent').textContent =
+            row.cells[2].textContent.trim();
 
-            const modal = new bootstrap.Modal(
-                document.getElementById('cancelAppointmentModal')
-            );
+        document.getElementById('cancelAppointmentDate').textContent =
+            row.cells[0].textContent.trim();
 
-            modal.show();
-        }
-    });
+        document.getElementById('cancelAppointmentTime').textContent =
+            row.cells[1].textContent.trim();
+    } else {
+        return;
+    }
+
+    bootstrap.Modal.getOrCreateInstance(
+        document.getElementById('cancelAppointmentModal')
+    ).show();
+});
 
 // ========================================
 // CONFIRM CANCEL APPOINTMENT
@@ -659,73 +692,127 @@ document.getElementById('appointmentTableBody')
 
 document.getElementById('confirmCancelAppointmentBtn')
     .addEventListener('click', async function () {
+        const visitId = selectedAppointmentCancelVisitId;
+        const token = localStorage.getItem('token');
+        const confirmButton = this;
 
-        if (selectedAppointmentCancelRow) {
+        if (!visitId || !token) {
+            alert('Unable to cancel the appointment. Please check your session and try again.');
+            return;
+        }
 
-            const visitId =
-                selectedAppointmentCancelRow.dataset.visitId;
+        confirmButton.disabled = true;
 
-            const token =
-                localStorage.getItem('token');
-
-            try {
-
-                const response = await fetch(
-                    `${API_BASE_URL}/api/staff/appointments/${visitId}/status`,
-                    {
-                        method: 'PATCH',
-
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-
-                        body: JSON.stringify({
-                            status: 'cancelled'
-                        })
-                    }
-                );
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(
-                        data.error || 'Failed to cancel appointment'
-                    );
+        try {
+            const response = await fetch(
+                `${API_BASE_URL}/api/staff/appointments/${visitId}/status`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        status: 'cancelled'
+                    })
                 }
+            );
 
-                // Update the appointment status in the table
-                const statusCell = selectedAppointmentCancelRow.cells[3];
+            const data = await response.json();
 
-                statusCell.innerHTML =
-                    '<span class="status cancelled">cancelled</span>';
-
-                const modalElement =
-                    document.getElementById(
-                        'cancelAppointmentModal'
-                    );
-
-                const modal =
-                    bootstrap.Modal.getInstance(modalElement);
-
-                modal.hide();
-
-                console.log(
-                    'Appointment cancelled:',
-                    data
+            if (!response.ok) {
+                throw new Error(
+                    data.error || 'Failed to cancel appointment.'
                 );
-
-            } catch (error) {
-
-                console.error(
-                    'Error cancelling appointment:',
-                    error
-                );
-
-                alert(error.message);
             }
+
+            console.log('Appointment cancelled:', data);
+
+            const modalElement =
+                document.getElementById('cancelAppointmentModal');
+
+            bootstrap.Modal.getOrCreateInstance(modalElement).hide();
+
+            selectedAppointmentCancelRow = null;
+            selectedAppointmentCancelVisitId = null;
+
+            // Refresh the backend data.
+            await loadAppointments();
+            await loadStudentManagement();
+
+        } catch (error) {
+            console.error('Error cancelling appointment:', error);
+            alert(error.message || 'Unable to cancel the appointment.');
+        } finally {
+            confirmButton.disabled = false;
         }
     });
+
+// ========================================
+// MARK APPOINTMENT AS NO-SHOW
+// ========================================
+
+document.addEventListener('click', async function (event) {
+    const button = event.target.closest?.('.appointment-no-show-btn');
+
+    if (!button) return;
+
+    const activityDetails = button.closest('.student-extra-details');
+    const row = button.closest('#appointmentTableBody tr');
+
+    const visitId = activityDetails
+        ? activityDetails.dataset.appointmentVisitId
+        : row?.dataset.visitId;
+
+    const token = localStorage.getItem('token');
+
+    if (!visitId || !token) {
+        alert('Unable to update the appointment. Please check your session and try again.');
+        return;
+    }
+
+    if (!confirm('Mark this appointment as a no-show?')) return;
+
+    button.disabled = true;
+
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/api/staff/appointments/${visitId}/status`,
+            {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({ status: 'no_show' })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error || 'Failed to update appointment status.'
+            );
+        }
+
+        console.log('Appointment marked as no-show:', data);
+
+        await loadAppointments();
+        await loadStudentManagement();
+
+        if (activityDetails) {
+            const modal = document.getElementById('viewStudentModal');
+            const modalInstance = bootstrap.Modal.getOrCreateInstance(modal);
+            modalInstance.hide();
+        }
+    } catch (error) {
+        console.error('Error marking appointment as no-show:', error);
+        alert(error.message || 'Unable to update the appointment.');
+    } finally {
+        button.disabled = false;
+    }
+});
 
 // ========================================
 // EDIT APPOINTMENT SLOT
@@ -760,7 +847,6 @@ document.getElementById('appointmentTableBody')
             modal.show();
         }
     });
-
 
 // ========================================
 // CONFIRM EDIT APPOINTMENT
@@ -831,7 +917,6 @@ document.getElementById('appointmentTableBody')
             modal.show();
         }
     });
-
 
 // ========================================
 // CONFIRM REMOVE APPOINTMENT SLOT
@@ -1039,18 +1124,51 @@ async function loadStudentManagement() {
                     `${student.firstName || ''} ${student.lastName || ''}`.trim()
             }));
 
-        // Combine students and remove duplicates.
+        // Combine students while preserving queue and appointment activity.
         const uniqueStudents = new Map();
 
-        [...queueStudents, ...appointmentStudents].forEach(student => {
+        queueStudents.forEach(student => {
             const key = student.studentNumber
                 ? student.studentNumber.toLowerCase()
                 : student.name.toLowerCase();
 
             if (key) {
-                uniqueStudents.set(key, student);
+                uniqueStudents.set(key, {
+                    ...student,
+                    hasQueueActivity: true,
+                    hasAppointmentActivity: false
+                });
             }
         });
+
+        appointmentStudents.forEach(student => {
+            const key = student.studentNumber
+                ? student.studentNumber.toLowerCase()
+                : student.name.toLowerCase();
+
+            if (!key) return;
+
+            const existingStudent = uniqueStudents.get(key);
+
+            if (existingStudent) {
+                uniqueStudents.set(key, {
+                    ...existingStudent,
+                    hasAppointmentActivity: true,
+                    appointmentVisitId: student.visitId ?? student.visit_id ?? '',
+                    appointmentTime: student.time || '',
+                    appointmentStatus: student.status || ''
+                });
+            } else {
+                uniqueStudents.set(key, {
+                    ...student,
+                    appointmentVisitId: student.visitId ?? student.visit_id ?? '',
+                    hasQueueActivity: false,
+                    hasAppointmentActivity: true
+                });
+            }
+        });
+
+        studentManagementList = [...uniqueStudents.values()];
 
         studentManagementList = [...uniqueStudents.values()];
 
@@ -1079,15 +1197,10 @@ function displayStudentResults(students) {
 
         const viewButton = document.createElement('button');
         viewButton.type = 'button';
-        viewButton.textContent = 'View';
-        viewButton.className = 'view-btn';
+        viewButton.textContent = 'View Activity';
+        viewButton.className = 'view-activity-btn';
 
-        const editButton = document.createElement('button');
-        editButton.type = 'button';
-        editButton.textContent = 'Edit';
-        editButton.className = 'edit-btn';
-
-        actionsCell.append(viewButton, ' ', editButton);
+        actionsCell.append(viewButton);
         row.append(numberCell, nameCell, actionsCell);
 
         // Keep the actual student record available for the next step.
@@ -1099,8 +1212,14 @@ function displayStudentResults(students) {
         row.dataset.ticket = student.ticket || '';
         row.dataset.position = student.position ?? '';
         row.dataset.joinTime = student.joinTime || '';
-        row.dataset.appointmentTime = student.time || '';
-        row.dataset.appointmentStatus = student.status || '';
+        row.dataset.appointmentTime =
+            student.appointmentTime || student.time || '';
+
+        row.dataset.appointmentStatus =
+            student.appointmentStatus || student.status || '';
+
+        row.dataset.appointmentVisitId =
+            student.appointmentVisitId || student.visitId || '';
 
         studentResultsBody.appendChild(row);
     });
@@ -1129,9 +1248,9 @@ searchStudentButton.addEventListener('click', function () {
 // Populate the table when the page opens.
 loadStudentManagement();
 
-// View Student from Student Management.
+/// View Student Activity from Student Management.
 studentResultsBody.addEventListener('click', function (event) {
-    const button = event.target.closest('.view-btn');
+    const button = event.target.closest('.view-activity-btn');
 
     if (button && studentResultsBody.contains(button)) {
         showStudentDetails(button.closest('tr'));
@@ -1148,76 +1267,3 @@ document.getElementById('queueTableBody').addEventListener(
         }
     }
 );
-
-// ========================================
-// EDIT STUDENT
-// ========================================
-
-let selectedStudentEditRow = null;
-
-studentResultsBody.addEventListener('click', function (event) {
-
-
-    const button = event.target.closest('.edit-btn');
-
-    if (!button || !studentResultsBody.contains(button)) {
-        return;
-    }
-
-    selectedStudentEditRow = button.closest('tr');
-
-    const studentNumber =
-        selectedStudentEditRow.cells[0].textContent.trim();
-
-    const studentName =
-        selectedStudentEditRow.cells[1].textContent.trim();
-
-    document.getElementById('editStudentNumber').value =
-        studentNumber === 'Not available' ? '' : studentNumber;
-
-    document.getElementById('editStudentName').value =
-        studentName === 'Not available' ? '' : studentName;
-
-    const modal = new bootstrap.Modal(
-        document.getElementById('editStudentModal')
-    );
-
-    modal.show();
-});
-
-// ========================================
-// SAVE STUDENT CHANGES
-// ========================================
-
-document.getElementById('saveStudentChangesBtn')
-    .addEventListener('click', function () {
-
-        if (selectedStudentEditRow) {
-
-            const newStudentNumber =
-                document.getElementById('editStudentNumber').value.trim();
-
-            const newStudentName =
-                document.getElementById('editStudentName').value.trim();
-
-            if (!newStudentNumber || !newStudentName) {
-                alert('Please enter the student number and name.');
-                return;
-            }
-
-            selectedStudentEditRow.cells[0].textContent =
-                newStudentNumber;
-
-            selectedStudentEditRow.cells[1].textContent =
-                newStudentName;
-
-            const modalElement =
-                document.getElementById('editStudentModal');
-
-            const modal =
-                bootstrap.Modal.getInstance(modalElement);
-
-            modal.hide();
-        }
-    });
-
