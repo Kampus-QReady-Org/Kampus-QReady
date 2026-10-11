@@ -566,7 +566,7 @@ setInterval(loadDashboardQueue, 10000);
 // STUDENT DASHBOARD APPOINTMENT
 // =========================
 
-let dashboardAppointment = null;
+let dashboardAppointments = [];
 
 function getLocalAppointmentDate(dateValue) {
   const dateString = String(dateValue).slice(0, 10);
@@ -583,6 +583,12 @@ async function loadDashboardAppointment() {
     return;
   }
 
+  const container = document.getElementById("upcomingAppointments");
+
+  if (!container) {
+    return;
+  }
+
   try {
     const response = await fetch("http://localhost:3000/api/appointments/my", {
       headers: {
@@ -596,12 +602,13 @@ async function loadDashboardAppointment() {
     }
 
     const data = await response.json();
+
     console.log("Student appointments:", data.appointments);
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const appointment = (data.appointments || [])
+    dashboardAppointments = (data.appointments || [])
       .filter((item) => {
         return (
           item.status === "scheduled" &&
@@ -612,153 +619,201 @@ async function loadDashboardAppointment() {
         return (
           getLocalAppointmentDate(a.date) - getLocalAppointmentDate(b.date)
         );
-      })[0];
+      })
+      .slice(0, 2);
 
-    dashboardAppointment = appointment || null;
-    const dayElement = document.getElementById("appointmentDay");
-    const monthElement = document.getElementById("appointmentMonth");
-    const yearElement = document.getElementById("appointmentYear");
-    const typeElement = document.getElementById("appointmentType");
-    const timeElement = document.getElementById("appointmentTime");
-    const viewButton = document.getElementById("viewAppointmentButton");
-    const cancelButton = document.getElementById("cancelAppointmentButton");
+    if (dashboardAppointments.length === 0) {
+      container.innerHTML = `
+        <div class="appointment-item">
+          <div class="appointment-content">
 
-    if (!appointment) {
-      if (dayElement) dayElement.textContent = "—";
-      if (monthElement) monthElement.textContent = "—";
-      if (yearElement) yearElement.textContent = "—";
-      if (typeElement) typeElement.textContent = "No upcoming appointment";
-      if (timeElement) timeElement.textContent = "—";
-      if (viewButton) viewButton.disabled = true;
-      if (cancelButton) cancelButton.disabled = true;
+            <div class="appointment-date">
+              <strong>—</strong>
+              <span>—</span>
+              <small>—</small>
+            </div>
 
-      const appointmentButtons = document.querySelector(".appointment-buttons");
-      if (appointmentButtons) appointmentButtons.style.display = "none";
+            <div class="appointment-details">
+              <h4>No upcoming appointment</h4>
+
+              <p>
+                <i class="bi bi-clock"></i>
+                <span>—</span>
+              </p>
+
+              <p>
+                <i class="bi bi-geo-alt"></i>
+                NWU Healthcare Centre
+              </p>
+            </div>
+
+          </div>
+        </div>
+      `;
 
       return;
     }
 
-    const appointmentDate = getLocalAppointmentDate(appointment.date);
-    console.log("API date:", appointment.date);
-    console.log("Displayed date:", appointmentDate.toDateString());
+    container.innerHTML = "";
 
-    if (dayElement) {
-      dayElement.textContent = appointmentDate.getDate();
-    }
+    dashboardAppointments.forEach((appointment, index) => {
+      const appointmentDate = getLocalAppointmentDate(appointment.date);
 
-    if (monthElement) {
-      monthElement.textContent = appointmentDate
+      const day = appointmentDate.getDate();
+
+      const month = appointmentDate
         .toLocaleString("en-ZA", {
           month: "short",
         })
         .toUpperCase();
-    }
 
-    if (yearElement) {
-      yearElement.textContent = appointmentDate.getFullYear();
-    }
+      const year = appointmentDate.getFullYear();
 
-    if (typeElement) {
-      typeElement.textContent = "General Consultation";
-    }
+      const appointmentHTML = `
+        <div class="appointment-item">
 
-    if (timeElement) {
-      timeElement.textContent = appointment.time;
-    }
+          <div class="appointment-content">
 
-    if (viewButton) viewButton.disabled = false;
-    if (cancelButton) cancelButton.disabled = false;
+            <div class="appointment-date">
+              <strong>${day}</strong>
+              <span>${month}</span>
+              <small>${year}</small>
+            </div>
 
-    const appointmentButtons = document.querySelector(".appointment-buttons");
-    if (appointmentButtons) appointmentButtons.style.display = "flex";
+            <div class="appointment-details">
+              <h4>General Consultation</h4>
+
+              <p>
+                <i class="bi bi-clock"></i>
+                <span>${appointment.time}</span>
+              </p>
+
+              <p>
+                <i class="bi bi-geo-alt"></i>
+                NWU Healthcare Centre
+              </p>
+            </div>
+
+          </div>
+
+          <div class="appointment-buttons">
+
+            <button
+              class="primary-button view-appointment-button"
+              data-index="${index}"
+            >
+              View Details
+            </button>
+
+            <button
+              class="secondary-button cancel-appointment-button"
+              data-index="${index}"
+            >
+              Cancel
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+      container.insertAdjacentHTML("beforeend", appointmentHTML);
+    });
   } catch (error) {
     console.error("Error loading dashboard appointment:", error);
   }
 }
 
 document
-  .getElementById("cancelAppointmentButton")
-  ?.addEventListener("click", async () => {
-    if (!dashboardAppointment) return;
+  .getElementById("upcomingAppointments")
+  ?.addEventListener("click", async function (event) {
+    const viewButton = event.target.closest(".view-appointment-button");
 
-    const confirmed = confirm(
-      "Are you sure you want to cancel this appointment?",
-    );
+    if (viewButton) {
+      const index = Number(viewButton.dataset.index);
+      const appointment = dashboardAppointments[index];
 
-    if (!confirmed) return;
+      if (!appointment) {
+        return;
+      }
 
-    const token = localStorage.getItem("token");
+      const appointmentDate = getLocalAppointmentDate(appointment.date);
 
-    if (!token) {
-      alert("Please log in again.");
-      return;
-    }
-
-    // Support common appointment ID property names.
-    const visitId =
-      dashboardAppointment.visitId ??
-      dashboardAppointment.Visit_ID ??
-      dashboardAppointment.visit_id;
-
-    if (!visitId) {
-      console.error("Appointment data:", dashboardAppointment);
-      alert("Unable to identify this appointment.");
-      return;
-    }
-
-    const button = document.getElementById("cancelAppointmentButton");
-
-    try {
-      button.disabled = true;
-
-      const response = await fetch(
-        `http://localhost:3000/api/appointments/${visitId}/cancel`,
-        {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+      alert(
+        `Appointment Details\n\n` +
+          `Type: General Consultation\n` +
+          `Date: ${appointmentDate.toLocaleDateString("en-ZA")}\n` +
+          `Time: ${appointment.time}\n` +
+          `Status: ${appointment.status}`,
       );
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || "Unable to cancel appointment.");
-      }
-
-      alert(result.message || "Appointment cancelled successfully.");
-
-      dashboardAppointment = null;
-      await loadDashboardAppointment();
-    } catch (error) {
-      console.error("Cancellation error:", error);
-      alert(error.message || "Something went wrong.");
-    } finally {
-      // Restore the correct button state after the request.
-      if (button) {
-        button.disabled = !dashboardAppointment;
-      }
-    }
-  });
-
-document
-  .getElementById("viewAppointmentButton")
-  ?.addEventListener("click", () => {
-    if (!dashboardAppointment) {
-      alert("No upcoming appointment found.");
       return;
     }
 
-    const appointmentDate = getLocalAppointmentDate(dashboardAppointment.date);
+    const cancelButton = event.target.closest(".cancel-appointment-button");
 
-    alert(
-      `Appointment Details\n\n` +
-        `Type: General Consultation\n` +
-        `Date: ${appointmentDate.toLocaleDateString("en-ZA")}\n` +
-        `Time: ${dashboardAppointment.time}\n` +
-        `Status: ${dashboardAppointment.status}`,
-    );
+    if (cancelButton) {
+      const index = Number(cancelButton.dataset.index);
+      const appointment = dashboardAppointments[index];
+
+      if (!appointment) {
+        return;
+      }
+
+      const confirmed = confirm(
+        "Are you sure you want to cancel this appointment?",
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Please log in again.");
+        return;
+      }
+
+      const visitId =
+        appointment.visitId ?? appointment.Visit_ID ?? appointment.visit_id;
+
+      if (!visitId) {
+        console.error("Appointment data:", appointment);
+        alert("Unable to identify this appointment.");
+        return;
+      }
+
+      try {
+        cancelButton.disabled = true;
+
+        const response = await fetch(
+          `http://localhost:3000/api/appointments/${visitId}/cancel`,
+          {
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Unable to cancel appointment.");
+        }
+
+        alert(result.message || "Appointment cancelled successfully.");
+
+        await loadDashboardAppointment();
+      } catch (error) {
+        console.error("Cancellation error:", error);
+
+        alert(error.message || "Something went wrong.");
+
+        cancelButton.disabled = false;
+      }
+    }
   });
 
 loadDashboardAppointment();
