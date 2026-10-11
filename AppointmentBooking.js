@@ -61,10 +61,54 @@ let selectedTime = null;
 // SET MINIMUM DATE TO TODAY
 // =====================================================
 
-const today =
-    new Date().toISOString().split("T")[0];
 
-appointmentDate.min = today;
+function getLocalDateString(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+appointmentDate.min = getLocalDateString();
+
+
+function getLocalDateString(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+flatpickr(appointmentDate, {
+    minDate: getLocalDateString(),
+    dateFormat: "Y-m-d",
+
+    disable: [
+        function (date) {
+            // Disable Sundays and Saturdays.
+            return date.getDay() === 0 || date.getDay() === 6;
+        }
+    ],
+
+    onChange: function (selectedDates, dateString) {
+        selectedDateText.textContent = dateString || "Not selected";
+
+        // Reset the previously selected time.
+        selectedTime = null;
+        selectedTimeText.textContent = "Not selected";
+        confirmButton.disabled = true;
+
+        // Clear slots from the previously selected date.
+        timeSlotsContainer.innerHTML = "";
+
+        // Load availability for the newly selected date.
+        if (dateString) {
+            loadTimeSlots(dateString);
+        }
+    }
+});
 
 
 // =====================================================
@@ -243,7 +287,7 @@ slots.forEach(function(slot) {
 // WHEN DATE CHANGES
 // =====================================================
 
-appointmentDate.addEventListener(
+/*appointmentDate.addEventListener(
     "change",
     function() {
 
@@ -255,7 +299,7 @@ appointmentDate.addEventListener(
         );
 
     }
-);
+)*/
 
 
 // =====================================================
