@@ -527,11 +527,145 @@ async function loadDashboardQueue() {
       if (peopleAhead) peopleAhead.textContent = "—";
       if (status) status.textContent = "Not in queue";
 
+      if (ticket) ticket.textContent = queue.ticket ?? "—";
+      if (position) position.textContent = queue.position ?? "—";
+      if (peopleAhead) peopleAhead.textContent = queue.peopleAhead ?? "—";
+      if (status) status.textContent = "Waiting";
+
+    } catch (error) {
+      console.error("Error loading dashboard queue:", error);
+    }
+  }
+
+  loadDashboardQueue();
+  setInterval(loadDashboardQueue, 10000);
+
+
+  // =========================
+  // STUDENT DASHBOARD APPOINTMENT
+  // =========================
+
+
+  let dashboardAppointment = null;
+
+  function getLocalAppointmentDate(dateValue) {
+  const dateString = String(dateValue).slice(0, 10);
+  const [year, month, day] = dateString.split("-").map(Number);
+
+  // The API's UTC date is one day behind the intended SA date.
+  return new Date(year, month - 1, day + 1);
+}
+
+  async function loadDashboardAppointment() {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
       return;
     }
 
-    if (!response.ok) {
-      return;
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/appointments/my",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        console.error("Unable to load appointments:", response.status);
+        return;
+      }
+
+
+      const data = await response.json();
+      console.log("Student appointments:", data.appointments);
+
+      
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+
+
+
+
+      const appointment = (data.appointments || [])
+        .filter(item => {
+          return (
+            item.status === "scheduled" &&
+            getLocalAppointmentDate(item.date) >= today
+          );
+        })
+        .sort((a, b) => {
+          return (
+            getLocalAppointmentDate(a.date) -
+            getLocalAppointmentDate(b.date)
+          );
+        })[0];
+
+      dashboardAppointment = appointment || null;
+      const dayElement = document.getElementById("appointmentDay");
+      const monthElement = document.getElementById("appointmentMonth");
+      const yearElement = document.getElementById("appointmentYear");
+      const typeElement = document.getElementById("appointmentType");
+      const timeElement = document.getElementById("appointmentTime");
+      const viewButton = document.getElementById("viewAppointmentButton");
+      const cancelButton = document.getElementById("cancelAppointmentButton");
+
+      if (!appointment) {
+        if (dayElement) dayElement.textContent = "—";
+        if (monthElement) monthElement.textContent = "—";
+        if (yearElement) yearElement.textContent = "—";
+        if (typeElement) typeElement.textContent = "No upcoming appointment";
+        if (timeElement) timeElement.textContent = "—";
+        if (viewButton) viewButton.disabled = true;
+        if (cancelButton) cancelButton.disabled = true;
+
+        const appointmentButtons = document.querySelector(".appointment-buttons");
+        if (appointmentButtons) appointmentButtons.style.display = "none";
+
+        return;
+      }
+
+      
+        const appointmentDate = getLocalAppointmentDate(appointment.date);
+        console.log("API date:", appointment.date);
+        console.log("Displayed date:", appointmentDate.toDateString());
+
+        if (dayElement) {
+          dayElement.textContent = appointmentDate.getDate();
+        }
+
+        if (monthElement) {
+          monthElement.textContent = appointmentDate
+            .toLocaleString("en-ZA", {
+              month: "short"
+            })
+            .toUpperCase();
+        }
+
+        if (yearElement) {
+          yearElement.textContent = appointmentDate.getFullYear();
+        }
+
+
+      if (typeElement) {
+        typeElement.textContent = "General Consultation";
+      }
+
+      if (timeElement) {
+        timeElement.textContent = appointment.time;
+      }
+
+      if (viewButton) viewButton.disabled = false;
+      if (cancelButton) cancelButton.disabled = false;
+
+      const appointmentButtons = document.querySelector(".appointment-buttons");
+      if (appointmentButtons) appointmentButtons.style.display = "flex";
+
+    } catch (error) {
+      console.error("Error loading dashboard appointment:", error);
     }
 
     const data = await response.json();
@@ -711,7 +845,9 @@ document
         throw new Error(result.error || "Unable to cancel appointment.");
       }
 
-      alert(result.message || "Appointment cancelled successfully.");
+      const appointmentDate = getLocalAppointmentDate(
+        dashboardAppointment.date
+      );
 
       dashboardAppointment = null;
       await loadDashboardAppointment();
@@ -739,9 +875,7 @@ document
     alert(
       `Appointment Details\n\n` +
         `Type: General Consultation\n` +
-        `Date: ${appointmentDate.toLocaleDateString("en-ZA", {
-          timeZone: "UTC",
-        })}\n` +
+        `Date: ${appointmentDate.toLocaleDateString("en-ZA")}\n` +
         `Time: ${dashboardAppointment.time}\n` +
         `Status: ${dashboardAppointment.status}`,
     );
