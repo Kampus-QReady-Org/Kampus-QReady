@@ -24,9 +24,9 @@
     <link rel="stylesheet" href="style.css" />
 
     <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"/>
-
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
   </head>
 
   <body class="dashboard-page">
@@ -64,10 +64,14 @@
 
           <!-- CURRENT PAGE -->
 
-         <a href="AppointmentBooking.html" class="active" id="appointmentMenuItem">
-               <i class="bi bi-calendar-event"></i>
-              <span>Appointments</span>
-            </a>
+          <a
+            href="AppointmentBooking.html"
+            class="active"
+            id="appointmentMenuItem"
+          >
+            <i class="bi bi-calendar-event"></i>
+            <span>Appointments</span>
+          </a>
 
           <a href="JoinQueue.html">
             <i class="bi bi-people"></i>
@@ -129,7 +133,7 @@
         <header class="dashboard-topbar">
           <div class="topbar-spacer"></div>
 
- <!-- Logged-in patient information.
+          <!-- Logged-in patient information.
      Name and role will be populated dynamically from the authenticated user's data by the backend. -->
           <div class="topbar-right">
             <div class="profile-info">
@@ -171,13 +175,13 @@
 
             <label for="appointmentDate"> Appointment Date </label>
 
-           <input
-                type="text"
-                id="appointmentDate"
-                placeholder="Select an appointment date"
-                autocomplete="off"
-                readonly/>
-                
+            <input
+              type="text"
+              id="appointmentDate"
+              placeholder="Select an appointment date"
+              autocomplete="off"
+              readonly
+            />
           </section>
 
           <!-- =========================
@@ -217,10 +221,9 @@
               </span>
 
               <span class="legend-item">
-                <span class="legend-box lunch">
-                </span>
+                <span class="legend-box lunch"> </span>
                 Clinic Unavailable
-                </span>
+              </span>
             </div>
 
             <!-- =========================
@@ -228,7 +231,6 @@
                ========================= -->
 
             <div class="row g-3" id="timeSlots"></div>
-            
           </section>
 
           <!-- =========================
@@ -460,9 +462,10 @@
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Appointment Booking JavaScript -->
-     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
+    <!-- Appointment Booking JavaScript -->
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="AppointmentBooking.js"></script>
   </body>
 </html>

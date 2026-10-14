@@ -56,11 +56,11 @@
 
             <span>Dashboard</span>
           </a>
-          
-         <a href="AppointmentBooking.html" id="appointmentMenuItem">
-    <i class="bi bi-calendar-event"></i>
-    <span>Appointments</span>
-</a>
+
+          <a href="AppointmentBooking.html" id="appointmentMenuItem">
+            <i class="bi bi-calendar-event"></i>
+            <span>Appointments</span>
+          </a>
           <a href="JoinQueue.html">
             <i class="bi bi-people"></i>
 
@@ -217,51 +217,48 @@
               </div>
             </div>
           </section>
-          
 
-<!-- =========================
+          <!-- =========================
      ACCOUNT INFORMATION
      ========================= -->
 
-<section class="dashboard-card profile-information-card">
-    <div class="card-heading">
-        <h3>
-            <i class="bi bi-shield-check"></i>
-            Account Information
-        </h3>
-    </div>
+          <section class="dashboard-card profile-information-card">
+            <div class="card-heading">
+              <h3>
+                <i class="bi bi-shield-check"></i>
+                Account Information
+              </h3>
+            </div>
 
-    <div class="profile-grid">
+            <div class="profile-grid">
+              <!-- Account Status -->
 
-        <!-- Account Status -->
+              <div class="profile-field">
+                <span class="profile-label">Account Status</span>
+                <strong class="profile-status">Active</strong>
+              </div>
 
-        <div class="profile-field">
-            <span class="profile-label">Account Status</span>
-            <strong class="profile-status">Active</strong>
-        </div>
+              <!-- Account Type -->
 
-        <!-- Account Type -->
+              <div class="profile-field">
+                <span class="profile-label">Account Type</span>
+                <strong id="accountType">Student</strong>
+              </div>
 
-        <div class="profile-field">
-            <span class="profile-label">Account Type</span>
-            <strong id="accountType">Student</strong>
-        </div>
+              <!-- Registered With -->
 
-        <!-- Registered With -->
-
-        <div class="profile-field">
-            <span class="profile-label">Registered With</span>
-            <strong>Kampus Q-Ready</strong>
-        </div>
-
-    </div>
-</section>
+              <div class="profile-field">
+                <span class="profile-label">Registered With</span>
+                <strong>Kampus Q-Ready</strong>
+              </div>
+            </div>
+          </section>
 
           <!-- =========================
              ACTIONS
              ========================= -->
 
-         <!---- <section class="profile-actions">
+          <!---- <section class="profile-actions">
             <button type="button" class="primary-button" id="editProfileButton">
               <i class="bi bi-pencil"></i>
 
@@ -463,7 +460,9 @@
         </div>
       </div>
     </div>
+
     <!-- Profile JavaScript -->
+    <script src="config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="Profile.js"></script>
   </body>

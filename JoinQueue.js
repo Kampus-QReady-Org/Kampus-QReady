@@ -16,16 +16,15 @@ const queueStatus = document.getElementById("queueStatus");
 // JOIN QUEUE
 // =========================
 joinQueueButton.addEventListener("click", async function () {
-  
   console.log("JOIN QUEUE BUTTON CLICKED");
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch("http://localhost:3000/api/queue/join", {
+    const response = await fetch(`${API_BASE_URL}/api/queue/join`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     const data = await response.json();
@@ -46,7 +45,8 @@ joinQueueButton.addEventListener("click", async function () {
 
     if (visualTicket) visualTicket.textContent = queue.ticket ?? "—";
     if (visualPosition) visualPosition.textContent = queue.position ?? "—";
-    if (visualPeopleAhead) visualPeopleAhead.textContent = queue.peopleAhead ?? "—";
+    if (visualPeopleAhead)
+      visualPeopleAhead.textContent = queue.peopleAhead ?? "—";
 
     // Show ticket
     ticketCard.style.display = "block";
@@ -63,7 +63,6 @@ joinQueueButton.addEventListener("click", async function () {
     });
 
     console.log("Successfully joined queue:", queue);
-
   } catch (error) {
     console.error("Error joining queue:", error);
     alert(error.message);
@@ -75,7 +74,6 @@ joinQueueButton.addEventListener("click", async function () {
 // =========================
 
 leaveQueueButton.addEventListener("click", async function () {
-
   const confirmLeave = confirm("Are you sure you want to leave the queue?");
 
   if (!confirmLeave) {
@@ -85,23 +83,17 @@ leaveQueueButton.addEventListener("click", async function () {
   const token = localStorage.getItem("token");
 
   try {
-
-    const response = await fetch(
-      "http://localhost:3000/api/queue/leave",
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/api/queue/leave`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(
-        data.error || "Unable to leave the queue."
-      );
+      throw new Error(data.error || "Unable to leave the queue.");
     }
 
     console.log("Successfully left queue:", data);
@@ -116,13 +108,10 @@ leaveQueueButton.addEventListener("click", async function () {
     if (visualPosition) visualPosition.textContent = "—";
     if (visualPeopleAhead) visualPeopleAhead.textContent = "—";
 
-    joinQueueButton.innerHTML =
-      '<i class="bi bi-plus-circle"></i> Join Queue';
+    joinQueueButton.innerHTML = '<i class="bi bi-plus-circle"></i> Join Queue';
 
     joinQueueButton.disabled = false;
-
   } catch (error) {
-
     console.error("Error leaving queue:", error);
 
     alert(error.message);
@@ -134,7 +123,6 @@ leaveQueueButton.addEventListener("click", async function () {
 // =========================
 
 async function loadExistingQueue() {
-
   const token = localStorage.getItem("token");
 
   if (!token) {
@@ -142,15 +130,11 @@ async function loadExistingQueue() {
   }
 
   try {
-
-    const response = await fetch(
-      "http://localhost:3000/api/queue/status",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/api/queue/status`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (!response.ok) {
       return;
@@ -159,22 +143,22 @@ async function loadExistingQueue() {
     const data = await response.json();
 
     console.log("Current queue status:", data);
-const queue = data.queue;
+    const queue = data.queue;
 
-if (!queue) {
-  ticketCard.style.display = "none";
+    if (!queue) {
+      ticketCard.style.display = "none";
 
-  if (visualTicket) visualTicket.textContent = "—";
-  if (visualPosition) visualPosition.textContent = "—";
-  if (visualPeopleAhead) visualPeopleAhead.textContent = "—";
+      if (visualTicket) visualTicket.textContent = "—";
+      if (visualPosition) visualPosition.textContent = "—";
+      if (visualPeopleAhead) visualPeopleAhead.textContent = "—";
 
-  joinQueueButton.innerHTML =
-    '<i class="bi bi-plus-circle"></i> Join Queue';
+      joinQueueButton.innerHTML =
+        '<i class="bi bi-plus-circle"></i> Join Queue';
 
-  joinQueueButton.disabled = false;
+      joinQueueButton.disabled = false;
 
-  return;
-}
+      return;
+    }
 
     // Display existing queue information
     ticketNumber.textContent = queue.ticket;
@@ -187,10 +171,10 @@ if (!queue) {
 
     if (visualTicket) visualTicket.textContent = queue.ticket ?? "—";
     if (visualPosition) visualPosition.textContent = queue.position ?? "—";
-    if (visualPeopleAhead) visualPeopleAhead.textContent = queue.peopleAhead ?? "—";
+    if (visualPeopleAhead)
+      visualPeopleAhead.textContent = queue.peopleAhead ?? "—";
 
     queueStatus.textContent = "Waiting";
-
 
     // Show ticket
     ticketCard.style.display = "block";
@@ -200,20 +184,12 @@ if (!queue) {
       '<i class="bi bi-check-circle"></i> Joined Queue';
 
     joinQueueButton.disabled = true;
-
   } catch (error) {
-
-    console.error(
-      "Error loading existing queue:",
-      error
-    );
-
+    console.error("Error loading existing queue:", error);
   }
 }
 
-
 loadExistingQueue();
-
 
 setInterval(loadExistingQueue, 10000);
 
@@ -228,32 +204,29 @@ setInterval(loadExistingQueue, 10000);
 const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
 if (loggedInUser) {
+  const userName = document.getElementById("userName");
+  const userRole = document.getElementById("userRole");
 
-    const userName = document.getElementById("userName");
-    const userRole = document.getElementById("userRole");
-
-    if (userName) {
+  if (userName) {
     const firstName = loggedInUser.firstName || loggedInUser.name;
     const lastName = loggedInUser.lastName || loggedInUser.surname;
 
-    userName.textContent =
-        `${firstName} ${lastName}`;
-}
+    userName.textContent = `${firstName} ${lastName}`;
+  }
 
-    if (userRole) {
-        if (loggedInUser.staffNumber) {
-            userRole.textContent = "Staff";
-        } else if (loggedInUser.studentNumber) {
-            userRole.textContent = "Student";
-        } else {
-            userRole.textContent = "Guest";
-        }
+  if (userRole) {
+    if (loggedInUser.staffNumber) {
+      userRole.textContent = "Staff";
+    } else if (loggedInUser.studentNumber) {
+      userRole.textContent = "Student";
+    } else {
+      userRole.textContent = "Guest";
     }
+  }
 }
 
 // Hide Appointments from guests
-const appointmentMenuItem =
-  document.getElementById("appointmentMenuItem");
+const appointmentMenuItem = document.getElementById("appointmentMenuItem");
 
 console.log("Logged in user:", loggedInUser);
 console.log("Appointment menu:", appointmentMenuItem);
@@ -338,7 +311,6 @@ if (contactModal && emergencyDetails) {
   });
 }
 
-
 /* =========================
    CLINIC OPERATING STATUS
    Monday-Friday, 08:00-16:30
@@ -359,11 +331,11 @@ function updateClinicStatus() {
     weekday: "short",
     hour: "2-digit",
     minute: "2-digit",
-    hourCycle: "h23"
+    hourCycle: "h23",
   }).formatToParts(new Date());
 
   const values = {};
-  parts.forEach(part => {
+  parts.forEach((part) => {
     values[part.type] = part.value;
   });
 
@@ -372,16 +344,12 @@ function updateClinicStatus() {
   const minute = Number(values.minute);
   const currentMinutes = hour * 60 + minute;
 
-  const isWeekday = [
-    "Mon", "Tue", "Wed", "Thu", "Fri"
-  ].includes(weekday);
+  const isWeekday = ["Mon", "Tue", "Wed", "Thu", "Fri"].includes(weekday);
 
   const isWithinOperatingHours =
-    currentMinutes >= 8 * 60 &&
-    currentMinutes < 16 * 60 + 30;
+    currentMinutes >= 8 * 60 && currentMinutes < 16 * 60 + 30;
 
   const isOpen = isWeekday && isWithinOperatingHours;
-
 
   if (isOpen) {
     statusText.textContent = "Queue is currently open";
@@ -407,4 +375,3 @@ function updateClinicStatus() {
 // Check immediately and refresh the status every minute.
 updateClinicStatus();
 setInterval(updateClinicStatus, 60000);
-

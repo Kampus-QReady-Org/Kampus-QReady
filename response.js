@@ -341,7 +341,7 @@ if (loginForm) {
     const passwordValue = document.getElementById("password").value;
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/login", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -401,7 +401,7 @@ if (
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/guest", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/guest`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -464,7 +464,7 @@ if (registrationForm) {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/auth/register", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -510,7 +510,7 @@ async function loadDashboardQueue() {
   }
 
   try {
-    const response = await fetch("http://localhost:3000/api/queue/status", {
+    const response = await fetch(`${API_BASE_URL}/api/queue/status`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -590,7 +590,7 @@ async function loadDashboardAppointment() {
   }
 
   try {
-    const response = await fetch("http://localhost:3000/api/appointments/my", {
+    const response = await fetch(`${API_BASE_URL}/api/appointments/my`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -788,7 +788,7 @@ document
         cancelButton.disabled = true;
 
         const response = await fetch(
-          `http://localhost:3000/api/appointments/${visitId}/cancel`,
+          `${API_BASE_URL}/api/appointments/${visitId}/cancel`,
           {
             method: "PATCH",
             headers: {
