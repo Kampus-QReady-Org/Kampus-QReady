@@ -27,12 +27,24 @@ async function loadProfile() {
     const user = result.user;
     const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
 
-    // Hide Appointments from guests
-    const appointmentMenuItem = document.getElementById("appointmentMenuItem");
+     // Control Appointments visibility
+const appointmentMenuItem = document.getElementById("appointmentMenuItem");
 
-    if (appointmentMenuItem && !user.studentNumber && !user.staffNumber) {
-      appointmentMenuItem.style.display = "none";
-    }
+if (appointmentMenuItem) {
+  const isStudent =
+    user.isStudent === true ||
+    savedUser.isStudent === true ||
+    Boolean(user.studentNumber || savedUser.studentNumber);
+
+  const isStaff =
+    user.isStaff === true ||
+    savedUser.isStaff === true ||
+    Boolean(user.staffNumber || savedUser.staffNumber);
+
+  const hasAccess = isStudent || isStaff;
+
+  appointmentMenuItem.style.display = hasAccess ? "" : "none";
+}
 
     // Build full name
     const firstName = user.firstName || savedUser.firstName || "";
