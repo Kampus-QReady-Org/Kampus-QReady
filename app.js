@@ -15,8 +15,8 @@ const app = express();
 // Whitelist allowed frontend origins
 const allowedOrigins = [
   'http://127.0.0.1:5500',
-  'http://localhost:5500'
-  // TODO: Add Netlify URL here later 
+  'http://localhost:5500',
+  'https://kampus-qready.netlify.app'
 ];
 
 app.use(cors({
