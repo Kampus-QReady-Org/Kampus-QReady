@@ -25,6 +25,7 @@ async function loadProfile() {
     console.log("Profile received:", result);
 
     const user = result.user;
+    const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
 
     // Hide Appointments from guests
     const appointmentMenuItem = document.getElementById("appointmentMenuItem");
@@ -34,7 +35,10 @@ async function loadProfile() {
     }
 
     // Build full name
-    const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+    const firstName = user.firstName || savedUser.firstName || "";
+    const lastName = user.lastName || savedUser.lastName || "";
+
+    const fullName = `${firstName} ${lastName}`.trim();
 
     // =========================
     // PROFILE HEADER
@@ -52,9 +56,10 @@ async function loadProfile() {
       fullName || "Not provided";
 
     document.getElementById("studentNumber").textContent =
-      user.studentNumber || "Not provided";
+      user.studentNumber || savedUser.studentNumber || "Not provided";
 
-    document.getElementById("email").textContent = user.email || "Not provided";
+    document.getElementById("email").textContent =
+      user.email || savedUser.email || "Not provided";
 
     document.getElementById("phone").textContent = user.phone || "Not provided";
 
