@@ -572,8 +572,8 @@ function getLocalAppointmentDate(dateValue) {
   const dateString = String(dateValue).slice(0, 10);
   const [year, month, day] = dateString.split("-").map(Number);
 
-  // The API's UTC date is one day behind the intended SA date.
-  return new Date(year, month - 1, day + 1);
+  // Convert the appointment date to a local JavaScript Date.
+  return new Date(year, month - 1, day);
 }
 
 async function loadDashboardAppointment() {
