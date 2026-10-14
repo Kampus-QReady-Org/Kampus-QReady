@@ -102,20 +102,29 @@ const loggedInUser = JSON.parse(localStorage.getItem("user"));
 if (loggedInUser) {
   displayPatientInfo(loggedInUser);
 }
-// Hide Appointments from guests
-const appointmentMenuItem = document.getElementById("appointmentMenuItem");
 
-console.log("Logged in user:", loggedInUser);
-console.log("Appointment menu:", appointmentMenuItem);
 
-if (
-  appointmentMenuItem &&
+const appointmentMenuItem =
+  document.getElementById("appointmentMenuItem");
+
+const appointmentCard =
+  document.querySelector(".appointment-card");
+
+const isGuest =
   loggedInUser &&
   !loggedInUser.studentNumber &&
-  !loggedInUser.staffNumber
-) {
-  appointmentMenuItem.style.display = "none";
+  !loggedInUser.staffNumber;
+
+if (isGuest) {
+  if (appointmentMenuItem) {
+    appointmentMenuItem.style.display = "none";
+  }
+
+  if (appointmentCard) {
+    appointmentCard.remove();
+  }
 }
+
 // -----------------------------------------------------
 // 2. MOBILE SIDEBAR
 // -----------------------------------------------------
@@ -741,10 +750,10 @@ document
 
       alert(
         `Appointment Details\n\n` +
-          `Type: General Consultation\n` +
-          `Date: ${appointmentDate.toLocaleDateString("en-ZA")}\n` +
-          `Time: ${appointment.time}\n` +
-          `Status: ${appointment.status}`,
+        `Type: General Consultation\n` +
+        `Date: ${appointmentDate.toLocaleDateString("en-ZA")}\n` +
+        `Time: ${appointment.time}\n` +
+        `Status: ${appointment.status}`,
       );
 
       return;
