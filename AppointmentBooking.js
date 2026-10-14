@@ -149,6 +149,10 @@ async function loadTimeSlots(date) {
 
     const slots = data.slots;
 
+    // Check which day was selected
+    const selectedDate = new Date(`${date}T00:00:00`);
+    const isFriday = selectedDate.getDay() === 5;
+
     // Create each time slot
     slots.forEach(function (slot) {
       const column = document.createElement("div");
@@ -167,7 +171,23 @@ async function loadTimeSlots(date) {
       // AVAILABLE SLOT
       // =================================================
 
-      if (slot.available) {
+      const [slotHour, slotMinute] = slot.time.split(":").map(Number);
+      const slotMinutes = slotHour * 60 + slotMinute;
+      const clinicOpeningTime = 8 * 60 + 30;
+
+      const isBeforeOpening = slotMinutes < clinicOpeningTime;
+
+      const isAfterFridayClosing =
+        isFriday && (slotHour > 13 || (slotHour === 13 && slotMinute >= 0));
+      const isAfterWeekdayConsultationHours =
+        !isFriday && (slotHour > 16 || (slotHour === 16 && slotMinute > 0));
+
+      if (
+        slot.available &&
+        !isBeforeOpening &&
+        !isAfterFridayClosing &&
+        !isAfterWeekdayConsultationHours
+      ) {
         button.classList.add("available-slot");
 
         button.dataset.time = slot.time;
@@ -191,6 +211,13 @@ async function loadTimeSlots(date) {
 
           checkBooking();
         });
+      } else if (
+        isBeforeOpening ||
+        isAfterFridayClosing ||
+        isAfterWeekdayConsultationHours
+      ) {
+        button.classList.add("lunch-slot");
+        button.disabled = true;
       }
 
       // =================================================
