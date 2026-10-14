@@ -1,21 +1,79 @@
 const joinQueueButton = document.getElementById("joinQueueButton");
-
 const leaveQueueButton = document.getElementById("leaveQueueButton");
-
 const ticketCard = document.getElementById("ticketCard");
-
 const ticketNumber = document.getElementById("ticketNumber");
-
 const myPosition = document.getElementById("myPosition");
-
 const peopleAhead = document.getElementById("peopleAhead");
-
 const queueStatus = document.getElementById("queueStatus");
 
+const queueStatusText = document.getElementById("queueStatusText");
+const queueLiveBadge = document.getElementById("queueLiveBadge");
+const queueLiveDot = document.getElementById("queueLiveDot");
+
+function isQueueOpenNow() {
+  const now = new Date();
+
+  const day = now.getDay();
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+
+  const currentMinutes = hour * 60 + minute;
+
+  // Saturday and Sunday
+  if (day === 0 || day === 6) {
+    return false;
+  }
+
+  // Monday to Thursday: 08:30 - 16:15
+  if (day >= 1 && day <= 4) {
+    const openingTime = 8 * 60 + 30;
+    const closingTime = 16 * 60 + 15;
+
+    return currentMinutes >= openingTime && currentMinutes < closingTime;
+  }
+
+  // Friday: 08:30 - 13:00
+  if (day === 5) {
+    const openingTime = 8 * 60 + 30;
+    const closingTime = 13 * 60;
+
+    return currentMinutes >= openingTime && currentMinutes < closingTime;
+  }
+
+  return false;
+}
+
+function updateQueueAvailability() {
+  const isOpen = isQueueOpenNow();
+
+  if (isOpen) {
+    queueStatusText.textContent = "Queue is currently open";
+    queueLiveBadge.textContent = "Open";
+
+    if (!ticketCard || ticketCard.style.display === "none") {
+      joinQueueButton.disabled = false;
+      joinQueueButton.innerHTML =
+        '<i class="bi bi-plus-circle"></i> Join Queue';
+    }
+  } else {
+    queueStatusText.textContent = "Queue is currently closed";
+    queueLiveBadge.textContent = "Closed";
+
+    if (!ticketCard || ticketCard.style.display === "none") {
+      joinQueueButton.disabled = true;
+      joinQueueButton.innerHTML = '<i class="bi bi-x-circle"></i> Queue Closed';
+    }
+  }
+}
 // =========================
 // JOIN QUEUE
 // =========================
 joinQueueButton.addEventListener("click", async function () {
+  if (!isQueueOpenNow()) {
+    alert("The queue is currently closed. Please join during operating hours.");
+    updateQueueAvailability();
+    return;
+  }
   console.log("JOIN QUEUE BUTTON CLICKED");
   const token = localStorage.getItem("token");
 
@@ -152,10 +210,7 @@ async function loadExistingQueue() {
       if (visualPosition) visualPosition.textContent = "—";
       if (visualPeopleAhead) visualPeopleAhead.textContent = "—";
 
-      joinQueueButton.innerHTML =
-        '<i class="bi bi-plus-circle"></i> Join Queue';
-
-      joinQueueButton.disabled = false;
+      updateQueueAvailability();
 
       return;
     }
@@ -372,6 +427,12 @@ function updateClinicStatus() {
   }
 }
 
-// Check immediately and refresh the status every minute.
+// Check immediately
 updateClinicStatus();
-setInterval(updateClinicStatus, 60000);
+updateQueueAvailability();
+
+// Refresh queue status and availability every minute
+setInterval(() => {
+  updateClinicStatus();
+  updateQueueAvailability();
+}, 60000);
