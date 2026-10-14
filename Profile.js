@@ -46,11 +46,30 @@ if (appointmentMenuItem) {
   appointmentMenuItem.style.display = hasAccess ? "" : "none";
 }
 
-    // Build full name
-    const firstName = user.firstName || savedUser.firstName || "";
-    const lastName = user.lastName || savedUser.lastName || "";
+    
+    // Build full name (supports students, staff and guests)
+    const firstName =
+      user.firstName ||
+      savedUser.firstName ||
+      user.name ||
+      savedUser.name ||
+      "";
+
+    const lastName =
+      user.lastName ||
+      savedUser.lastName ||
+      user.surname ||
+      savedUser.surname ||
+      "";
 
     const fullName = `${firstName} ${lastName}`.trim();
+
+    document.getElementById("userName").textContent = fullName || "User";
+    document.getElementById("profileName").textContent = fullName || "User";
+
+    document.getElementById("fullName").textContent =
+      fullName || "Not provided";
+
 
     // =========================
     // PROFILE HEADER
@@ -79,20 +98,24 @@ if (appointmentMenuItem) {
     // ACCOUNT TYPE
     // =========================
 
-    let accountType = "User";
+    
+    // Determine account type
+let accountType = "User";
 
-    if (user.isStudent) {
-      accountType = "Student";
-    } else if (user.isStaff) {
-      accountType = "Staff";
-    } else if (user.isGuest) {
-      accountType = "Guest";
-    }
+if (user.isGuest === true || savedUser.isGuest === true) {
+  accountType = "Guest";
+} else if (user.isStudent === true || savedUser.isStudent === true) {
+  accountType = "Student";
+} else if (user.isStaff === true || savedUser.isStaff === true) {
+  accountType = "Staff";
+}
 
-    document.getElementById("userRole").textContent = accountType;
+// Update all account labels
+document.getElementById("userRole").textContent = accountType;
+document.getElementById("profileRole").textContent = accountType;
+document.getElementById("accountType").textContent = accountType;
 
-    document.getElementById("accountType").textContent = accountType;
-  } catch (error) {
+} catch (error) {
     console.error("Profile loading error:", error);
 
     alert("Unable to load your profile. Please log in again.");
