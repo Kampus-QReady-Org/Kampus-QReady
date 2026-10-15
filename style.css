@@ -61,12 +61,10 @@ body {
   height: 1px;
   margin: 0;
 
-  background-image: linear-gradient(
-    to right,
-    rgba(0, 136, 156, 0),
-    rgba(0, 136, 156, 0.75),
-    rgba(0, 136, 156, 0)
-  );
+  background-image: linear-gradient(to right,
+      rgba(0, 136, 156, 0),
+      rgba(0, 136, 156, 0.75),
+      rgba(0, 136, 156, 0));
 }
 
 .or-divider span {
@@ -184,8 +182,10 @@ body {
 }
 
 .login-container {
-  width: 500px;
+  width: 100%;
+  max-width: 500px;
   margin: 20px auto 0;
+  box-sizing: border-box;
 }
 
 .login-form {
@@ -199,7 +199,9 @@ body {
 }
 
 .login-input {
-  width: 400px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   border: 2px solid #00889c;
 }
 
@@ -244,7 +246,7 @@ body {
 }
 
 .registration-form .mb-3 {
-  margin-bottom: 8px !important;
+  margin-bottom: 8px
 }
 
 /* Slightly smaller input height */
@@ -258,7 +260,9 @@ body {
 }
 
 .registration-input {
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
   border: 2px solid #00889c;
   height: 40px;
 }
@@ -282,6 +286,7 @@ body {
 
 /* Tablets and smaller laptops */
 @media (max-width: 992px) {
+
   .registration-form,
   .login-form,
   .guest-form {
@@ -293,6 +298,12 @@ body {
 @media (max-width: 576px) {
   body {
     padding: 10px;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
 
   .registration-form,
@@ -312,6 +323,8 @@ body {
   .btn,
   .main-button {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .page-navigation {
@@ -384,11 +397,9 @@ body {
   display: grid;
   grid-template-columns: 220px 1fr;
 
-  background: linear-gradient(
-    135deg,
-    rgba(238, 224, 250, 0.97),
-    rgba(217, 194, 239, 0.94)
-  );
+  background: linear-gradient(135deg,
+      rgba(238, 224, 250, 0.97),
+      rgba(217, 194, 239, 0.94));
 
   border-radius: 28px;
 
@@ -411,11 +422,9 @@ body {
 .dashboard-sidebar {
   padding: 28px 20px;
 
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.78),
-    rgba(244, 235, 252, 0.72)
-  );
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.78),
+      rgba(244, 235, 252, 0.72));
 
   border-right: 1px solid rgba(255, 255, 255, 0.7);
 
@@ -471,11 +480,9 @@ body {
 
 .sidebar-nav a:hover,
 .sidebar-nav a.active {
-  background: linear-gradient(
-    135deg,
-    rgba(122, 64, 174, 0.18),
-    rgba(178, 122, 222, 0.16)
-  );
+  background: linear-gradient(135deg,
+      rgba(122, 64, 174, 0.18),
+      rgba(178, 122, 222, 0.16));
 
   color: #6c3d91;
 
@@ -501,6 +508,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+
 #appointmentMenuItem {
   list-style: none;
 }
@@ -570,11 +578,9 @@ body {
 .dashboard-main {
   min-width: 0;
 
-  background: linear-gradient(
-    135deg,
-    rgba(244, 235, 252, 0.68),
-    rgba(228, 211, 244, 0.68)
-  );
+  background: linear-gradient(135deg,
+      rgba(244, 235, 252, 0.68),
+      rgba(228, 211, 244, 0.68));
 }
 
 /* =========================
@@ -610,7 +616,7 @@ body {
   gap: 10px;
 }
 
-.profile-info > i {
+.profile-info>i {
   font-size: 34px;
   color: #7444a0;
 }
@@ -672,11 +678,9 @@ body {
 
   border-radius: 18px;
 
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.75),
-    rgba(239, 225, 250, 0.72)
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.75),
+      rgba(239, 225, 250, 0.72));
 
   border: 1px solid rgba(255, 255, 255, 0.8);
 
@@ -749,11 +753,9 @@ body {
 
   border-radius: 18px;
 
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.79),
-    rgba(244, 235, 252, 0.72)
-  );
+  background: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.79),
+      rgba(244, 235, 252, 0.72));
 
   border: 1px solid rgba(255, 255, 255, 0.8);
 
@@ -1002,16 +1004,14 @@ body {
 
   border-radius: 17px;
 
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.65),
-    rgba(226, 204, 245, 0.65)
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.65),
+      rgba(226, 204, 245, 0.65));
 
   border: 1px solid rgba(255, 255, 255, 0.75);
 }
 
-.dashboard-message > i {
+.dashboard-message>i {
   font-size: 28px;
 
   color: #6c3d91;
@@ -1261,7 +1261,7 @@ body {
   box-shadow: 0 8px 20px rgba(73, 36, 98, 0.08);
 }
 
-.queue-status-card > div {
+.queue-status-card>div {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1309,11 +1309,9 @@ body {
 
   border-radius: 18px;
 
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.79),
-    rgba(244, 235, 252, 0.72)
-  );
+  background: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.79),
+      rgba(244, 235, 252, 0.72));
 
   border: 1px solid rgba(255, 255, 255, 0.8);
 
@@ -1418,7 +1416,7 @@ body {
   font-size: 14px;
 }
 
-.queue-position > span {
+.queue-position>span {
   color: #7d688b;
 
   font-size: 12px;
@@ -1434,7 +1432,7 @@ body {
   box-shadow: 0 6px 15px rgba(0, 136, 156, 0.25);
 }
 
-.serving-position > span {
+.serving-position>span {
   color: #00889c;
 
   font-weight: 700;
@@ -1463,11 +1461,9 @@ body {
 
   border-radius: 18px;
 
-  background: linear-gradient(
-    135deg,
-    rgba(0, 136, 156, 0.12),
-    rgba(255, 255, 255, 0.65)
-  );
+  background: linear-gradient(135deg,
+      rgba(0, 136, 156, 0.12),
+      rgba(255, 255, 255, 0.65));
 
   border: 1px solid rgba(0, 136, 156, 0.2);
 
@@ -1920,6 +1916,7 @@ body {
     min-height: 55px;
   }
 }
+
 /* ==========================================================
    FLATPICKR APPOINTMENT CALENDAR
    ========================================================== */
@@ -2110,7 +2107,7 @@ body {
 }
 
 /* Warning icon */
-.emergency-heading > i {
+.emergency-heading>i {
   width: 36px;
   height: 36px;
 
@@ -2156,7 +2153,7 @@ body {
 }
 
 /* Emergency service icon */
-.emergency-detail > i {
+.emergency-detail>i {
   width: 36px;
   height: 36px;
 
@@ -2367,7 +2364,7 @@ body {
   min-width: 0;
 }
 
-.emergency-service-info > strong {
+.emergency-service-info>strong {
   display: block;
 
   margin-bottom: 2px;
@@ -2376,7 +2373,7 @@ body {
   font-size: 13px;
 }
 
-.emergency-service-info > span {
+.emergency-service-info>span {
   display: block;
 
   margin-bottom: 5px;
@@ -2465,11 +2462,9 @@ body {
   border-radius: 20px;
   overflow: hidden;
 
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.96),
-    rgba(244, 235, 252, 0.96)
-  );
+  background: linear-gradient(145deg,
+      rgba(255, 255, 255, 0.96),
+      rgba(244, 235, 252, 0.96));
 
   box-shadow: 0 20px 50px rgba(73, 36, 98, 0.25);
 }
@@ -2522,7 +2517,7 @@ body {
 }
 
 /* Turquoise contact icons */
-.contact-detail > i {
+.contact-detail>i {
   width: 36px;
   height: 36px;
 
@@ -2604,6 +2599,7 @@ body {
    ========================= */
 
 @media (max-width: 576px) {
+
   .contact-modal .modal-header,
   .contact-modal .modal-body,
   .contact-modal .modal-footer {
@@ -2721,7 +2717,7 @@ body {
 }
 
 /* Smaller gap between appointments */
-#upcomingAppointments .appointment-item + .appointment-item {
+#upcomingAppointments .appointment-item+.appointment-item {
   border-top: 1px solid rgba(107, 33, 168, 0.15);
   padding-top: 8px;
 }
