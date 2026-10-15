@@ -31,7 +31,7 @@ app.use(cors({
     }
   },
   credentials: true, // Enables JWT authorization headers and cookies across origins
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
