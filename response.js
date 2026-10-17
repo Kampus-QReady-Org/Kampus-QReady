@@ -132,17 +132,6 @@ if (isGuest) {
 // Gets the hamburger/menu button used on smaller screens
 const menuButton = document.getElementById("menuButton");
 
-// Gets the dashboard sidebar
-const dashboardSidebar = document.querySelector(".dashboard-sidebar");
-
-// Opens or closes the sidebar when the hamburger
-// button is clicked on a mobile device.
-if (menuButton && dashboardSidebar) {
-  menuButton.addEventListener("click", function () {
-    dashboardSidebar.classList.toggle("mobile-open");
-  });
-}
-
 // -----------------------------------------------------
 // BACKEND INTEGRATION NOTE
 // -----------------------------------------------------

@@ -126,12 +126,3 @@ document.getElementById("accountType").textContent = accountType;
     window.location.href = "index.html";
   }
 }
-
-const menuButton = document.getElementById("menuButton");
-const dashboardSidebar = document.querySelector(".dashboard-sidebar");
-
-if (menuButton && dashboardSidebar) {
-  menuButton.addEventListener("click", function () {
-    dashboardSidebar.classList.toggle("mobile-open");
-  });
-}
