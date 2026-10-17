@@ -308,9 +308,9 @@ confirmButton.addEventListener("click", async function () {
 
     alert(
       "Appointment booked successfully for " +
-        appointmentDate.value +
-        " at " +
-        selectedTime,
+      appointmentDate.value +
+      " at " +
+      selectedTime,
     );
 
     console.log("Booked appointment:", data);
@@ -324,3 +324,13 @@ confirmButton.addEventListener("click", async function () {
     alert(error.message);
   }
 });
+
+
+const menuButton = document.getElementById("menuButton");
+const sidebar = document.querySelector(".dashboard-sidebar");
+
+if (menuButton && sidebar) {
+  menuButton.addEventListener("click", () => {
+    sidebar.classList.toggle("mobile-open");
+  });
+}

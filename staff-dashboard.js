@@ -184,9 +184,8 @@ async function loadAppointments() {
                 </td>
                 <td>
 
-                    ${
-                      appointment.status.toLowerCase() === "scheduled"
-                        ? `
+                    ${appointment.status.toLowerCase() === "scheduled"
+          ? `
                         <button class="small-btn appointment-no-show-btn">
                             Mark No-Show
                         </button>
@@ -195,8 +194,8 @@ async function loadAppointments() {
                             Cancel
                         </button>
                     `
-                        : "—"
-                    }
+          : "—"
+        }
                 </td>
             `;
 
@@ -1196,3 +1195,13 @@ document
       showStudentDetails(button.closest("tr"));
     }
   });
+
+
+const menuButton = document.getElementById("menuButton");
+const sidebar = document.querySelector(".dashboard-sidebar");
+
+if (menuButton && sidebar) {
+  menuButton.addEventListener("click", () => {
+    sidebar.classList.toggle("mobile-open");
+  });
+}
