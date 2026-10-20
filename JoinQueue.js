@@ -1,3 +1,6 @@
+// =========================
+// GLOBAL ELEMENTS & SETUP
+// =========================
 const joinQueueButton = document.getElementById("joinQueueButton");
 const leaveQueueButton = document.getElementById("leaveQueueButton");
 const ticketCard = document.getElementById("ticketCard");
@@ -10,185 +13,210 @@ const queueStatusText = document.getElementById("queueStatusText");
 const queueLiveBadge = document.getElementById("queueLiveBadge");
 const queueLiveDot = document.getElementById("queueLiveDot");
 
+// =========================
+// CENTRALIZED OPERATING HOURS (SAST)
+// =========================
 function isQueueOpenNow() {
-  const now = new Date();
+  const parts = new Intl.DateTimeFormat("en-ZA", {
+    timeZone: "Africa/Johannesburg",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(new Date());
 
-  const day = now.getDay();
-  const hour = now.getHours();
-  const minute = now.getMinutes();
+  const values = {};
+  parts.forEach((part) => {
+    values[part.type] = part.value;
+  });
 
+  const weekday = values.weekday;
+  const hour = Number(values.hour);
+  const minute = Number(values.minute);
   const currentMinutes = hour * 60 + minute;
 
   // Saturday and Sunday
-  if (day === 0 || day === 6) {
+  if (weekday === "Sat" || weekday === "Sun") {
     return false;
   }
 
   // Monday to Thursday: 08:30 - 16:15
-  if (day >= 1 && day <= 4) {
+  if (["Mon", "Tue", "Wed", "Thu"].includes(weekday)) {
     const openingTime = 8 * 60 + 30;
     const closingTime = 16 * 60 + 15;
-
     return currentMinutes >= openingTime && currentMinutes < closingTime;
   }
 
   // Friday: 08:30 - 13:00
-  if (day === 5) {
+  if (weekday === "Fri") {
     const openingTime = 8 * 60 + 30;
     const closingTime = 13 * 60;
-
     return currentMinutes >= openingTime && currentMinutes < closingTime;
   }
 
   return false;
 }
 
-function updateQueueAvailability() {
+function updateClinicStatus() {
+  if (!queueStatusText || !queueLiveDot) {
+    return;
+  }
+
   const isOpen = isQueueOpenNow();
 
   if (isOpen) {
     queueStatusText.textContent = "Queue is currently open";
-    queueLiveBadge.textContent = "Open";
+    queueLiveDot.style.backgroundColor = "#198754";
 
-    if (!ticketCard || ticketCard.style.display === "none") {
+    if (queueLiveBadge) {
+      queueLiveBadge.textContent = "Live";
+      queueLiveBadge.style.backgroundColor = "#198754";
+      queueLiveBadge.style.color = "#ffffff";
+    }
+
+    if (joinQueueButton && (!ticketCard || ticketCard.style.display === "none")) {
       joinQueueButton.disabled = false;
-      joinQueueButton.innerHTML =
-        '<i class="bi bi-plus-circle"></i> Join Queue';
+      joinQueueButton.innerHTML = '<i class="bi bi-plus-circle"></i> Join Queue';
     }
   } else {
     queueStatusText.textContent = "Queue is currently closed";
-    queueLiveBadge.textContent = "Closed";
+    queueLiveDot.style.backgroundColor = "#6c757d";
 
-    if (!ticketCard || ticketCard.style.display === "none") {
+    if (queueLiveBadge) {
+      queueLiveBadge.textContent = "Closed";
+      queueLiveBadge.style.backgroundColor = "#6c757d";
+      queueLiveBadge.style.color = "#ffffff";
+    }
+
+    if (joinQueueButton && (!ticketCard || ticketCard.style.display === "none")) {
       joinQueueButton.disabled = true;
       joinQueueButton.innerHTML = '<i class="bi bi-x-circle"></i> Queue Closed';
     }
   }
 }
+
+// Check status immediately and refresh every minute
+updateClinicStatus();
+setInterval(updateClinicStatus, 60000);
+
+
 // =========================
 // JOIN QUEUE
 // =========================
-joinQueueButton.addEventListener("click", async function () {
-  if (!isQueueOpenNow()) {
-    alert("The queue is currently closed. Please join during operating hours.");
-    updateQueueAvailability();
-    return;
-  }
-
-  console.log("JOIN QUEUE BUTTON CLICKED");
-  const token = localStorage.getItem("token");
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/queue/join`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "Unable to join the queue.");
+if (joinQueueButton) {
+  joinQueueButton.addEventListener("click", async function () {
+    if (!isQueueOpenNow()) {
+      alert("The queue is currently closed. Please join during operating hours.");
+      updateClinicStatus();
+      return;
     }
 
-    const queue = data.queue;
+    console.log("JOIN QUEUE BUTTON CLICKED");
+    const token = localStorage.getItem("token");
 
-    ticketNumber.textContent = queue.ticket;
-    myPosition.textContent = queue.position;
-    peopleAhead.textContent = queue.peopleAhead;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/queue/join`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const visualTicket = document.getElementById("visualQueueTicket");
-    const visualPosition = document.getElementById("visualQueuePosition");
-    const visualPeopleAhead = document.getElementById("visualQueuePeopleAhead");
-    
+      const data = await response.json();
 
-    if (visualTicket) visualTicket.textContent = queue.ticket ?? "—";
-    if (visualPosition) visualPosition.textContent = queue.position ?? "—";
-    if (visualPeopleAhead)
-      visualPeopleAhead.textContent = queue.peopleAhead ?? "—";
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to join the queue.");
+      }
 
-    // Show ticket
-    ticketCard.style.display = "block";
+      const queue = data.queue;
 
-    // Change button
-    joinQueueButton.innerHTML =
-      '<i class="bi bi-check-circle"></i> Joined Queue';
+      if (ticketNumber) ticketNumber.textContent = queue.ticket;
+      if (myPosition) myPosition.textContent = queue.position;
+      if (peopleAhead) peopleAhead.textContent = queue.peopleAhead;
 
-    joinQueueButton.disabled = true;
+      const visualTicket = document.getElementById("visualQueueTicket");
+      const visualPosition = document.getElementById("visualQueuePosition");
+      const visualPeopleAhead = document.getElementById("visualQueuePeopleAhead");
 
-    // Scroll to ticket
-    ticketCard.scrollIntoView({
-      behavior: "smooth",
-    });
+      if (visualTicket) visualTicket.textContent = queue.ticket ?? "—";
+      if (visualPosition) visualPosition.textContent = queue.position ?? "—";
+      if (visualPeopleAhead) visualPeopleAhead.textContent = queue.peopleAhead ?? "—";
 
-    console.log("Successfully joined queue:", queue);
-  } catch (error) {
-    console.error("Error joining queue:", error);
-    alert(error.message);
-  }
-});
+      // Show ticket
+      if (ticketCard) {
+        ticketCard.style.display = "block";
+        ticketCard.scrollIntoView({ behavior: "smooth" });
+      }
+
+      // Change button state
+      joinQueueButton.innerHTML = '<i class="bi bi-check-circle"></i> Joined Queue';
+      joinQueueButton.disabled = true;
+
+      console.log("Successfully joined queue:", queue);
+    } catch (error) {
+      console.error("Error joining queue:", error);
+      alert(error.message);
+    }
+  });
+}
+
 
 // =========================
 // LEAVE QUEUE
 // =========================
+if (leaveQueueButton) {
+  leaveQueueButton.addEventListener("click", async function () {
+    const confirmLeave = confirm("Are you sure you want to leave the queue?");
+    if (!confirmLeave) return;
 
-leaveQueueButton.addEventListener("click", async function () {
-  const confirmLeave = confirm("Are you sure you want to leave the queue?");
+    const token = localStorage.getItem("token");
 
-  if (!confirmLeave) {
-    return;
-  }
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/queue/leave`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-  const token = localStorage.getItem("token");
+      const data = await response.json();
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/queue/leave`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      if (!response.ok) {
+        throw new Error(data.error || "Unable to leave the queue.");
+      }
 
-    const data = await response.json();
+      console.log("Successfully left queue:", data);
 
-    if (!response.ok) {
-      throw new Error(data.error || "Unable to leave the queue.");
+      if (ticketCard) ticketCard.style.display = "none";
+
+      const visualTicket = document.getElementById("visualQueueTicket");
+      const visualPosition = document.getElementById("visualQueuePosition");
+      const visualPeopleAhead = document.getElementById("visualQueuePeopleAhead");
+
+      if (visualTicket) visualTicket.textContent = "—";
+      if (visualPosition) visualPosition.textContent = "—";
+      if (visualPeopleAhead) visualPeopleAhead.textContent = "—";
+
+      if (joinQueueButton) {
+        joinQueueButton.innerHTML = '<i class="bi bi-plus-circle"></i> Join Queue';
+        joinQueueButton.disabled = false;
+      }
+      updateClinicStatus();
+
+    } catch (error) {
+      console.error("Error leaving queue:", error);
+      alert(error.message);
     }
+  });
+}
 
-    console.log("Successfully left queue:", data);
-
-    ticketCard.style.display = "none";
-
-    const visualTicket = document.getElementById("visualQueueTicket");
-    const visualPosition = document.getElementById("visualQueuePosition");
-    const visualPeopleAhead = document.getElementById("visualQueuePeopleAhead");
-
-    if (visualTicket) visualTicket.textContent = "—";
-    if (visualPosition) visualPosition.textContent = "—";
-    if (visualPeopleAhead) visualPeopleAhead.textContent = "—";
-
-    joinQueueButton.innerHTML = '<i class="bi bi-plus-circle"></i> Join Queue';
-    joinQueueButton.disabled = false;
-    updateQueueAvailability();
-
-  } catch (error) {
-    console.error("Error leaving queue:", error);
-
-    alert(error.message);
-  }
-});
 
 // =========================
 // LOAD EXISTING QUEUE
 // =========================
-
 async function loadExistingQueue() {
   const token = localStorage.getItem("token");
-
-  if (!token) {
-    return;
-  }
+  if (!token) return;
 
   try {
     const response = await fetch(`${API_BASE_URL}/api/queue/status`, {
@@ -197,72 +225,58 @@ async function loadExistingQueue() {
       },
     });
 
-    if (!response.ok) {
-      return;
-    }
+    if (!response.ok) return;
 
     const data = await response.json();
-
     console.log("Current queue status:", data);
     const queue = data.queue;
-
-    if (!queue) {
-      ticketCard.style.display = "none";
-
-      if (visualTicket) visualTicket.textContent = "—";
-      if (visualPosition) visualPosition.textContent = "—";
-      if (visualPeopleAhead) visualPeopleAhead.textContent = "—";
-
-      updateQueueAvailability();
-
-      joinQueueButton.innerHTML =
-        '<i class="bi bi-plus-circle"></i> Join Queue';
-
-      updateQueueAvailability();
-      return;
-    }
-
-    // Display existing queue information
-    ticketNumber.textContent = queue.ticket;
-    myPosition.textContent = queue.position;
-    peopleAhead.textContent = queue.peopleAhead;
 
     const visualTicket = document.getElementById("visualQueueTicket");
     const visualPosition = document.getElementById("visualQueuePosition");
     const visualPeopleAhead = document.getElementById("visualQueuePeopleAhead");
 
+    if (!queue) {
+      if (ticketCard) ticketCard.style.display = "none";
+      if (visualTicket) visualTicket.textContent = "—";
+      if (visualPosition) visualPosition.textContent = "—";
+      if (visualPeopleAhead) visualPeopleAhead.textContent = "—";
+
+      if (joinQueueButton) {
+        joinQueueButton.innerHTML = '<i class="bi bi-plus-circle"></i> Join Queue';
+      }
+      updateClinicStatus();
+      return;
+    }
+
+    // Display existing queue information
+    if (ticketNumber) ticketNumber.textContent = queue.ticket;
+    if (myPosition) myPosition.textContent = queue.position;
+    if (peopleAhead) peopleAhead.textContent = queue.peopleAhead;
+
     if (visualTicket) visualTicket.textContent = queue.ticket ?? "—";
     if (visualPosition) visualPosition.textContent = queue.position ?? "—";
-    if (visualPeopleAhead)
-      visualPeopleAhead.textContent = queue.peopleAhead ?? "—";
+    if (visualPeopleAhead) visualPeopleAhead.textContent = queue.peopleAhead ?? "—";
 
-    queueStatus.textContent = "Waiting";
+    if (queueStatus) queueStatus.textContent = "Waiting";
 
-    // Show ticket
-    ticketCard.style.display = "block";
+    if (ticketCard) ticketCard.style.display = "block";
 
-    // Update Join Queue button
-    joinQueueButton.innerHTML =
-      '<i class="bi bi-check-circle"></i> Joined Queue';
-
-    joinQueueButton.disabled = true;
+    if (joinQueueButton) {
+      joinQueueButton.innerHTML = '<i class="bi bi-check-circle"></i> Joined Queue';
+      joinQueueButton.disabled = true;
+    }
   } catch (error) {
     console.error("Error loading existing queue:", error);
   }
 }
 
 loadExistingQueue();
-
 setInterval(loadExistingQueue, 10000);
 
-// =====================================================
-// PATIENT DASHBOARD
-// =====================================================
 
-// ========================================
-// DISPLAY LOGGED-IN USER
-// ========================================
-
+// =========================
+// PATIENT DASHBOARD & USER INFO
+// =========================
 const loggedInUser = JSON.parse(localStorage.getItem("user"));
 
 if (loggedInUser) {
@@ -272,7 +286,6 @@ if (loggedInUser) {
   if (userName) {
     const firstName = loggedInUser.firstName || loggedInUser.name;
     const lastName = loggedInUser.lastName || loggedInUser.surname;
-
     userName.textContent = `${firstName} ${lastName}`;
 
     if (userRole) {
@@ -286,309 +299,32 @@ if (loggedInUser) {
     }
   }
 
-  // Hide Appointments from guests
+  // Hide Appointments & Cards from guests
   const appointmentMenuItem = document.getElementById("appointmentMenuItem");
+  const appointmentCard = document.getElementById("appointmentCard");
+  const isGuest = !loggedInUser.studentNumber && !loggedInUser.staffNumber;
+
+  if (isGuest) {
+    if (appointmentMenuItem) appointmentMenuItem.style.display = "none";
+    if (appointmentCard) appointmentCard.remove();
+  }
 
   console.log("Logged in user:", loggedInUser);
-  console.log("Appointment menu:", appointmentMenuItem);
-
-  if (
-    appointmentMenuItem &&
-    loggedInUser &&
-    !loggedInUser.studentNumber &&
-    !loggedInUser.staffNumber
-  ) {
-    appointmentMenuItem.style.display = "none";
-  }
-
-  // -----------------------------------------------------
-  // BACKEND INTEGRATION NOTE
-  // -----------------------------------------------------
-
-  // Do NOT hard-code a patient's actual name here.
-  //
-  // After backend authentication is connected,
-  // the backend should provide the logged-in user's
-  // information.
-  //
-  // Example of the expected information:
-  //
-  // {
-  //   name: "Patient's name",
-  //   role: "Patient"
-  // }
-  //
-  // The frontend can then call:
-  //
-  // displayPatientInfo(user);
-  //
-  // This will automatically update:
-  // 1. The account name
-  // 2. The account role
-  // 3. The "Welcome back, Name" message
-
-  // =====================================================
-  // RESET EMERGENCY SECTION WHEN CONTACT MODAL OPENS
-  // =====================================================
-
-  // Get the Contact & Location modal
-  const contactModal = document.getElementById("contactModal");
-
-  // Get the Emergency Assistance collapsible section
-  const emergencyDetails = document.getElementById("emergencyDetails");
-
-  // Only run if both elements exist
-  if (contactModal && emergencyDetails) {
-    // Runs every time the Contact & Location modal opens
-    contactModal.addEventListener("show.bs.modal", function () {
-      // Get the Bootstrap collapse instance
-      const emergencyCollapse = bootstrap.Collapse.getOrCreateInstance(
-        emergencyDetails,
-        {
-          toggle: false,
-        },
-      );
-
-      // Make sure Emergency Assistance starts collapsed
-      emergencyCollapse.hide();
-    });
-  }
-
-  /* =========================
-     CLINIC OPERATING STATUS
-     Monday-Friday, 08:00-16:30
-     South African time
-  ========================= */
-
-  function updateClinicStatus() {
-    const statusText = document.getElementById("queueStatusText");
-    const liveDot = document.getElementById("queueLiveDot");
-    const liveBadge = document.getElementById("queueLiveBadge");
-
-    if (!statusText || !liveDot) {
-      return;
-    }
-
-    const parts = new Intl.DateTimeFormat("en-ZA", {
-      timeZone: "Africa/Johannesburg",
-      weekday: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
-    }).formatToParts(new Date());
-
-    const values = {};
-    parts.forEach((part) => {
-      values[part.type] = part.value;
-    });
-
-    const weekday = values.weekday;
-    const hour = Number(values.hour);
-    const minute = Number(values.minute);
-    const currentMinutes = hour * 60 + minute;
-
-    const isWeekday = ["Mon", "Tue", "Wed", "Thu", "Fri"].includes(weekday);
-
-    const isWithinOperatingHours =
-      currentMinutes >= 8 * 60 && currentMinutes < 16 * 60 + 30;
-
-    const isOpen = isWeekday && isWithinOperatingHours;
-
-    if (isOpen) {
-      statusText.textContent = "Queue is currently open";
-      liveDot.style.backgroundColor = "#198754";
-
-      if (liveBadge) {
-        liveBadge.textContent = "Live";
-        liveBadge.style.backgroundColor = "#198754";
-        liveBadge.style.color = "#ffffff";
-      }
-    } else {
-      statusText.textContent = "Queue is currently closed";
-      liveDot.style.backgroundColor = "#6c757d";
-
-      if (liveBadge) {
-        liveBadge.textContent = "Closed";
-        liveBadge.style.backgroundColor = "#6c757d";
-        liveBadge.style.color = "#ffffff";
-      }
-    }
-  }
-
-  // Check immediately
-  updateClinicStatus();
-  updateQueueAvailability();
-
-  // Refresh queue status and availability every minute
-  setInterval(() => {
-    updateClinicStatus();
-    updateQueueAvailability();
-  }, 60000);
-
 }
 
-const appointmentCard =
-  document.getElementById("appointmentCard");
 
-const isGuest =
-  loggedInUser &&
-  !loggedInUser.studentNumber &&
-  !loggedInUser.staffNumber;
-
-console.log("Logged-in user:", loggedInUser);
-console.log("Is guest:", isGuest);
-console.log("Appointment card:", appointmentCard);
-
-if (isGuest && appointmentCard) {
-  appointmentCard.remove();
-}
-
-if (isGuest && appointmentMenuItem) {
-  appointmentMenuItem.style.display = "none";
-}
-
-// -----------------------------------------------------
-// BACKEND INTEGRATION NOTE
-// -----------------------------------------------------
-
-// Do NOT hard-code a patient's actual name here.
-//
-// After backend authentication is connected,
-// the backend should provide the logged-in user's
-// information.
-//
-// Example of the expected information:
-//
-// {
-//   name: "Patient's name",
-//   role: "Patient"
-// }
-//
-// The frontend can then call:
-//
-// displayPatientInfo(user);
-//
-// This will automatically update:
-// 1. The account name
-// 2. The account role
-// 3. The "Welcome back, Name" message
-
-// =====================================================
-// RESET EMERGENCY SECTION WHEN CONTACT MODAL OPENS
-// =====================================================
-
-// Get the Contact & Location modal
+// =========================
+// MODAL RESET (Emergency Section)
+// =========================
 const contactModal = document.getElementById("contactModal");
-
-// Get the Emergency Assistance collapsible section
 const emergencyDetails = document.getElementById("emergencyDetails");
 
-// Only run if both elements exist
 if (contactModal && emergencyDetails) {
-  // Runs every time the Contact & Location modal opens
   contactModal.addEventListener("show.bs.modal", function () {
-    // Get the Bootstrap collapse instance
     const emergencyCollapse = bootstrap.Collapse.getOrCreateInstance(
       emergencyDetails,
-      {
-        toggle: false,
-      },
+      { toggle: false }
     );
-
-    // Make sure Emergency Assistance starts collapsed
     emergencyCollapse.hide();
   });
 }
-
-
-/* =========================
-   CLINIC OPERATING STATUS
-   Monday-Friday, 08:00-16:30
-   South African time
-========================= */
-
-function updateClinicStatus() {
-  const statusText = document.getElementById("queueStatusText");
-  const liveDot = document.getElementById("queueLiveDot");
-  const liveBadge = document.getElementById("queueLiveBadge");
-
-  if (!statusText || !liveDot) {
-    return;
-  }
-
-  const parts = new Intl.DateTimeFormat("en-ZA", {
-    timeZone: "Africa/Johannesburg",
-    weekday: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-    hourCycle: "h23"
-  }).formatToParts(new Date());
-
-  const values = {};
-  parts.forEach(part => {
-    values[part.type] = part.value;
-  });
-
-  const weekday = values.weekday;
-  const hour = Number(values.hour);
-  const minute = Number(values.minute);
-  const currentMinutes = hour * 60 + minute;
-
-  const isWeekday = [
-    "Mon", "Tue", "Wed", "Thu", "Fri"
-  ].includes(weekday);
-
-  const isWithinOperatingHours =
-    currentMinutes >= 8 * 60 &&
-    currentMinutes < 16 * 60 + 30;
-
-  const isOpen = isWeekday && isWithinOperatingHours;
-
-
-  if (isOpen) {
-    statusText.textContent = "Queue is currently open";
-    liveDot.style.backgroundColor = "#198754";
-
-    if (liveBadge) {
-      liveBadge.textContent = "Live";
-      liveBadge.style.backgroundColor = "#198754";
-      liveBadge.style.color = "#ffffff";
-    }
-  } else {
-    statusText.textContent = "Queue is currently closed";
-    liveDot.style.backgroundColor = "#6c757d";
-
-    if (liveBadge) {
-      liveBadge.textContent = "Closed";
-      liveBadge.style.backgroundColor = "#6c757d";
-      liveBadge.style.color = "#ffffff";
-    }
-  }
-}
-
-// Check immediately and refresh the status every minute.
-updateClinicStatus();
-setInterval(updateClinicStatus, 60000);
-
-
-
-function updateJoinQueueButton() {
-  const statusText = document.getElementById("queueStatusText");
-
-  if (!statusText || !joinQueueButton) return;
-
-  const isOpen = statusText.textContent === "Queue is currently open";
-  const alreadyJoined = joinQueueButton.textContent.includes("Joined Queue");
-
-  if (alreadyJoined) {
-    joinQueueButton.disabled = true;
-    return;
-  }
-
-  joinQueueButton.disabled = !isOpen;
-
-  joinQueueButton.innerHTML = isOpen
-    ? '<i class="bi bi-plus-circle"></i> Join Queue'
-    : '<i class="bi bi-clock"></i> Queue Closed';
-}
-

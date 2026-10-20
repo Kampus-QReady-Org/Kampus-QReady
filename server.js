@@ -1,31 +1,33 @@
 // Author: Mudau Khuthadzo (51978156)
 
-// Load environment variables from the local .env configuration file into process.env
-// Import the configured Express application instance from the app module and the database connection pool from the config directory
+// Load environment variables from the local .env file into process.env
 require('dotenv').config();
+
+// Import the configured Express application instance from app.js
 const app = require('./app.js');
+
+// Import the PostgreSQL connection pool for efficient database querying
 const pool = require('./src/config/database');
 
-// 1. Enforce strict JWT_SECRET check (fails safely if missing, as suggested by Jacques)
-// Check if the JWT_SECRET environment variable is defined; log a fatal error and terminate if missing for security
+// Terminate startup if the required JWT_SECRET environment variable is missing
 if (!process.env.JWT_SECRET) {
     console.error("FATAL ERROR: JWT_SECRET environment variable is missing.");
     process.exit(1);
 }
 
+// Set the server port from environment variables or default to port 3000
 const PORT = process.env.PORT || 3000;
 
-// 2. Test database connection on startup, then start server
-// Execute a quick timestamp query to verify database connectivity before launching the Express server application
+// Verify the database connection before starting the HTTP server
 pool.query('SELECT NOW()')
     .then(() => {
         console.log("Database connection verified successfully.");
+        // Start listening for incoming HTTP requests on the designated port
         app.listen(PORT, () => {
             console.log(`Kampus-QReady server running on port ${PORT}`);
         });
     })
     .catch(err => {
-        // Catch database startup connection failures, log the error message, and safely exit the process
         console.error("Failed to connect to the database on startup:", err.message);
         process.exit(1);
     });

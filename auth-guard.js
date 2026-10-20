@@ -10,8 +10,14 @@
     return;
   }
 
+  // Resolve API Base URL dynamically (Local vs Production)
+  const BASE_URL =
+    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+      ? "http://localhost:3000"
+      : "https://kampus-qready-api.onrender.com";
+
   // Validate the token with the backend.
-  fetch("https://kampus-qready-api.onrender.com/api/auth/profile", {
+  fetch(`${BASE_URL}/api/auth/profile`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -26,13 +32,13 @@
       return response.json();
     })
     .then((data) => {
-      const user = data.user;
+      const user = data.user || (data.data && data.data.user);
 
-      if (!user || (user.userId == null && user.id == null)) {
+      if (!user) {
         throw new Error("No authenticated user returned.");
       }
 
-      // Authentication passed.
+      // Authentication passed. Reveal the dashboard UI.
       document.documentElement.style.visibility = "visible";
     })
     .catch((error) => {
