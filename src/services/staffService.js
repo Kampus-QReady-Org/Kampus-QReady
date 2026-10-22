@@ -59,6 +59,10 @@ async function getActiveQueue() {
                     ORDER BY q."Queue_Num" ASC
                 )
             )::int AS "position",
+            CASE
+                WHEN q."Is_In_Queue" = TRUE THEN 'Waiting'
+                ELSE 'Called'
+            END AS "status",
             u."U_FName" AS "firstName",
             u."U_LName" AS "lastName",
             s."Student_No" AS "studentNumber",
@@ -75,7 +79,6 @@ async function getActiveQueue() {
             ON s."User_ID" = u."User_ID"
         WHERE cv."Visit_Type" = 'Q'
           AND cv."Visit_End_Time" IS NULL
-          AND q."Is_In_Queue" = TRUE
           AND q."Queue_Join_date" =
               (
                   CURRENT_TIMESTAMP AT TIME ZONE
@@ -86,8 +89,6 @@ async function getActiveQueue() {
 
     const result = await pool.query(query);
 
-    // Queue_Num remains numeric in the database, while
-    // ticket provides the display-friendly Qxxx value.
     return result.rows.map((queueEntry) => ({
         ...queueEntry,
         ticket: formatQueueTicket(queueEntry.queueNumber)

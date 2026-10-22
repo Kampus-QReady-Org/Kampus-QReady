@@ -45,6 +45,8 @@ async function loadQueue() {
     data.queue.forEach((student) => {
       const row = document.createElement("tr");
 
+      const isCalled = (student.status || "").toLowerCase() === "called";
+
       row.dataset.visitId = student.visitId ?? "";
       row.dataset.studentNumber = student.studentNumber || "";
       row.dataset.studentName =
@@ -53,6 +55,7 @@ async function loadQueue() {
       row.dataset.ticket = student.ticket || "";
       row.dataset.position = student.position ?? "";
       row.dataset.joinTime = student.joinTime || "";
+      row.dataset.status = isCalled ? "called" : "waiting";
 
       const ticketCell = document.createElement("td");
       ticketCell.textContent = student.ticket || "—";
@@ -65,17 +68,19 @@ async function loadQueue() {
 
       const statusCell = document.createElement("td");
       const statusLabel = document.createElement("span");
-      statusLabel.className = "status waiting";
-      statusLabel.textContent = "Waiting";
+      statusLabel.className = isCalled ? "status called" : "status waiting";
+      statusLabel.textContent = isCalled ? "Called" : "Waiting";
       statusCell.appendChild(statusLabel);
 
       const actionsCell = document.createElement("td");
 
-      [
-        ["view-btn", "View"],
-        ["call-btn", "Call"],
-        ["complete-btn", "Complete"],
-      ].forEach(([className, label]) => {
+      // Once a student has been called, the Call button is removed.
+      // View and Complete stay available.
+      const actionButtons = [["view-btn", "View"]];
+      if (!isCalled) actionButtons.push(["call-btn", "Call"]);
+      actionButtons.push(["complete-btn", "Complete"]);
+
+      actionButtons.forEach(([className, label]) => {
         const button = document.createElement("button");
         button.type = "button";
         button.className = className;
@@ -89,8 +94,13 @@ async function loadQueue() {
       queueTableBody.appendChild(row);
     });
 
-    studentsWaitingElement.textContent = data.queue.length;
-    nextTicketElement.textContent = data.queue[0]?.ticket || "—";
+    // Only students who have not been called yet count as "waiting".
+    const waitingStudents = data.queue.filter(
+      (student) => (student.status || "").toLowerCase() !== "called",
+    );
+
+    studentsWaitingElement.textContent = waitingStudents.length;
+    nextTicketElement.textContent = waitingStudents[0]?.ticket || "—";
 
     const errorElement = document.getElementById("queueLoadError");
     if (errorElement) errorElement.remove();
@@ -466,6 +476,13 @@ document
 
         console.log("Queue visit completed:", data);
 
+        // Instantly increment the "Completed Today" counter on the UI using your exact ID
+        const completedCountEl = document.getElementById("completedToday");
+        if (completedCountEl) {
+          const currentCount = parseInt(completedCountEl.textContent, 10) || 0;
+          completedCountEl.textContent = currentCount + 1;
+        }
+
         // Reload the queue and summary cards from the backend.
         await loadQueue();
       } catch (error) {
@@ -476,7 +493,6 @@ document
       }
     }
   });
-
 // ----------------------------------------
 // CALL NEXT STUDENT
 // ----------------------------------------

@@ -551,7 +551,12 @@ async function loadDashboardQueue() {
     if (ticket) ticket.textContent = queue.ticket ?? "—";
     if (position) position.textContent = queue.position ?? "—";
     if (peopleAhead) peopleAhead.textContent = queue.peopleAhead ?? "—";
-    if (status) status.textContent = "Waiting";
+        if (status) {
+      const called = (queue.status || "").toLowerCase() === "called";
+      status.textContent = called ? "Called" : "Waiting";
+      status.classList.toggle("queue-status-called", called);
+    }
+
   } catch (error) {
     console.error("Error loading dashboard queue:", error);
   }

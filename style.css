@@ -826,11 +826,20 @@ body {
   color: #00889c;
 }
 
-.queue-status {
-  color: #238339 !important;
-  font-size: 1rem !important;
+.queue-status.queue-status-called {
+  color: #7a3fa0 !important;
 }
 
+/* Staff queue table status labels */
+.status.waiting {
+  color: #238339;
+  font-weight: 600;
+}
+
+.status.called {
+  color: #7a3fa0;
+  font-weight: 600;
+}
 .queue-card .card-heading i {
   color: #00889c;
 }

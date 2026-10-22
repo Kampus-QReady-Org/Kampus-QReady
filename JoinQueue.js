@@ -257,7 +257,10 @@ async function loadExistingQueue() {
     if (visualPosition) visualPosition.textContent = queue.position ?? "—";
     if (visualPeopleAhead) visualPeopleAhead.textContent = queue.peopleAhead ?? "—";
 
-    if (queueStatus) queueStatus.textContent = "Waiting";
+        if (queueStatus) {
+      queueStatus.textContent =
+        (queue.status || "").toLowerCase() === "called" ? "Called" : "Waiting";
+    }
 
     if (ticketCard) ticketCard.style.display = "block";
 
